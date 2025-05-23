@@ -35,3 +35,7 @@ Route.get('/etage/:id', 'EtageController.show')
 // Routes pour Piece
 Route.get('/piece', 'PieceController.index')
 Route.get('/piece/:id', 'PieceController.show')
+
+// Routes pour Article
+Route.get('/article', 'ArticleController.index')
+Route.get('/article/:id', 'ArticleController.show')
