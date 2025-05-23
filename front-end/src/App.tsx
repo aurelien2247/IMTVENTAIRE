@@ -9,7 +9,7 @@ function App() {
 
   return (
     <>
-      <div className="h-[calc(100vh-64px)] overflow-y-auto">
+      <div className="h-[calc(100vh-56px)] overflow-y-auto">
         <Routes>
           <Route path="/inventaire" element={<Inventaire />} />
           <Route path="/" element={<Scanner />} />
