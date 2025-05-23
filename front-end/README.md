@@ -1,6 +1,6 @@
 <h1 align="center">
     <br>
-        <img src="/public/logo.png" alt="Logo" width="200">
+        <img src="/front-end/public/logo.png" alt="Logo" width="200">
     <br>
     IMT'ventaire
 </h1>
@@ -12,7 +12,7 @@
   <a href="#🕹️-technologies">Technologies</a>
 </p>
 
-![Screenshot de l'application](/public/preview.png)
+![Screenshot de l'application](/front-end/public/preview.png)
 
 ## 🛠️ Participer au développement
 

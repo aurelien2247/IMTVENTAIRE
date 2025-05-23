@@ -1,6 +1,6 @@
 <h1 align="center">
     <br>
-        <img src="/public/logo.png" alt="Logo" width="200">
+        <img src="/front-end/public/logo.png" alt="Logo" width="200">
     <br>
     IMT'ventaire
 </h1>
