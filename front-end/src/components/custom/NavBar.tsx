@@ -22,7 +22,7 @@ const Ajouter = () => {
                 key="/"
                 to="/"
                 end>
-                <ScanBarcode />
+                <ScanBarcode/>
             </NavLink>
             <NavLink className={({ isActive }) =>
                 isActive
