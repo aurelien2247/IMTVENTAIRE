@@ -1,9 +1,9 @@
-import './App.css'
 import { Route, Routes } from 'react-router-dom'
 import Inventaire from './pages/Inventaire'
 import Ajouter from './pages/Ajouter'
 import Scanner from './pages/Scanner'
 import NavBar from './components/custom/NavBar'
+import { Toaster } from 'sonner'
 
 function App() {
 
@@ -15,7 +15,8 @@ function App() {
           <Route path="/" element={<Scanner />} />
           <Route path="/ajouter" element={<Ajouter />} />
         </Routes>
-        <NavBar></NavBar>
+        <NavBar />
+        <Toaster />
       </div>
 
     </>

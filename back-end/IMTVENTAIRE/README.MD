@@ -1,69 +1,44 @@
+<h1 align="center">
+    <br>
+        <img src="/front-end/public/logo.png" alt="Logo" width="200">
+    <br>
+    IMT'ventaire
+</h1>
 
-# IMTVENTAIRE
+<h4 align="center">Back-end de l'application de gestion d'inventaire</h4>
 
-IMTVENTAIRE est une application de gestion d'inventaire développée avec AdonisJS et PostgreSQL.
+<p align="center">
+  <a href="#🛠️-participer-au-développement">Participer</a> •
+  <a href="#🕹️-technologies">Technologies</a>
+</p>
 
-## Dépendances à installer
+## 🛠️ Participer au développement
 
-### Prérequis
-- Node.js (v14 ou supérieur)
-- npm (v6 ou supérieur)
-- PostgreSQL (v12 ou supérieur)
+### Code
 
-### Dépendances principales
-- @adonisjs/core: ^5.9.0
-- @adonisjs/lucid: ^18.4.0
-- @adonisjs/repl: ^3.1.11
-- pg: ^8.11.3
-- proxy-addr: ^2.0.7
-- reflect-metadata: ^0.2.2
-- source-map-support: ^0.5.21
+Depuis votre terminal:
 
-## Installation
-
-1. Cloner le dépôt
 ```bash
-git clone <url-du-depot>
-cd IMTVENTAIRE
+# Se déplacer dans le dossier
+$ cd back-end
+
+# Installer les dépendances
+$ npm install
+
+# Lancer l'application
+$ npm run dev
 ```
 
-2. Installer les dépendances
-```bash
-npm install
-```
+Puis, modifiez le fichier `.env` pour correspondre aux informations de votre base de données. L'application sera accessible à l'adresse https://localhost:3333
 
-3. Configurer l'environnement
-   - Copier le fichier `.env.example` vers `.env` (s'il existe)
-   - Configurer les variables d'environnement, notamment pour la base de données PostgreSQL:
-```
-DB_CONNECTION=pg
-PG_HOST=localhost
-PG_PORT=5432
-PG_USER=postgres
-PG_PASSWORD=admin
-PG_DB_NAME=postgres
-```
+C'est prêt ! 🚀
 
-4. Exécuter les migrations (si nécessaire)
-```bash
-node ace migration:run
-```
+## 🕹️ Technologies
 
-## Lancement du projet
+<img src="https://skillicons.dev/icons?i=adonis,postgres" alt="Les technologies utilisées" />
 
-### Mode développement
-```bash
-npm run dev
-```
-L'application sera accessible à l'adresse: http://localhost:3333
 
-### Mode production
-```bash
-npm run build
-npm start
-```
-
-## Diagrame de la base de donnée
+## 🤖 Diagrame de la base de donnée
 
 ```
 +---------------+       +---------------+       +---------------+
