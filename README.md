@@ -13,8 +13,6 @@
   <a href="#🤠-crédits">Crédit</a>
 </p>
 
-![Screenshot de l'application](/public/preview.png)
-
 ## ✨ Backlog
 
 https://www.notion.so/heinezo/1faca119a89580348ed4c946dabc8624?v=1faca119a89580ae9418000c849c2909&pvs=4
