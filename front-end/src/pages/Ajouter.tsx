@@ -36,7 +36,7 @@ export default function Ajouter() {
   }
 
   return (
-    <main className="px-8 py-12 flex flex-col gap-8">
+    <div className="px-8 py-12 flex flex-col gap-8">
       <h1>Ajouter</h1>
       <Form {...form}>
         <form
@@ -126,6 +126,6 @@ export default function Ajouter() {
           </Button>
         </form>
       </Form>
-    </main>
+    </div>
   );
 }
