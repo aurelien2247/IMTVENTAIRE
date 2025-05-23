@@ -4,10 +4,10 @@ import { Menubar, MenubarMenu, MenubarTrigger } from "../ui/menubar";
 
 const NavBar = () => {
     return (
-        <Menubar className='fixed bottom-0 left-0 right-0 h-16 flex justify-around bg-white border-t'>
-            <div className="w-full h-full flex">
+        <Menubar className='fixed md:left-0 md:top-0 md:bottom-0 md:w-20 md:h-full bottom-0 left-0 right-0 h-16 flex md:flex-col justify-around bg-white border-t md:border-t-0 md:border-r'>
+            <div className="w-full h-full flex md:flex-col md:gap-4 md:pt-4">
                 <MenubarMenu>
-                    <MenubarTrigger className="flex-1 p-0 min-w-[100px]">
+                    <MenubarTrigger className="flex-1 md:flex-initial md:h-20 p-0 min-w-[100px] md:min-w-0">
                         <NavLink 
                             className={({ isActive }) => `w-full h-full flex flex-col items-center justify-center gap-1 transition-colors duration-200 hover:bg-gray-100 group ${isActive ? 'text-actif bg-actif/10' : 'text-gray-600'}`}
                             key="/inventaire"
@@ -20,7 +20,7 @@ const NavBar = () => {
                     </MenubarTrigger>
                 </MenubarMenu>
                 <MenubarMenu>
-                    <MenubarTrigger className="flex-1 p-0 min-w-[100px]">
+                    <MenubarTrigger className="flex-1 md:flex-initial md:h-20 p-0 min-w-[100px] md:min-w-0">
                         <NavLink 
                             className={({ isActive }) => `w-full h-full flex flex-col items-center justify-center gap-1 transition-colors duration-200 hover:bg-gray-100 group ${isActive ? 'text-actif bg-actif/10' : 'text-gray-600'}`}
                             key="/"
@@ -33,7 +33,7 @@ const NavBar = () => {
                     </MenubarTrigger>
                 </MenubarMenu>
                 <MenubarMenu>
-                    <MenubarTrigger className="flex-1 p-0 min-w-[100px]">
+                    <MenubarTrigger className="flex-1 md:flex-initial md:h-20 p-0 min-w-[100px] md:min-w-0">
                         <NavLink 
                             className={({ isActive }) => `w-full h-full flex flex-col items-center justify-center gap-1 transition-colors duration-200 hover:bg-gray-100 group ${isActive ? 'text-actif bg-actif/10' : 'text-gray-600'}`}
                             key="/ajouter"
