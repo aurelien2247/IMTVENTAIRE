@@ -1,4 +1,3 @@
-import './App.css'
 import { Route, Routes } from 'react-router-dom'
 import Inventaire from './pages/Inventaire'
 import Ajouter from './pages/Ajouter'
