@@ -46,15 +46,15 @@ const statuses: Status[] = [
 ];
 
 export function CategoriesList() {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [selectedStatus, setSelectedStatus] = useState<Status | null>(null);
 
   if (isDesktop) {
     return (
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button variant="outline" className="w-[150px] jusitfy-start">
+        <PopoverTrigger>
+          <Button variant="outline" className="justify-between w-full" type="button">
             {selectedStatus ? (
               <>{selectedStatus.label}</>
             ) : (
