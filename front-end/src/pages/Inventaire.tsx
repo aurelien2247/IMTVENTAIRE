@@ -1,7 +1,7 @@
 import BatimentList from "@/components/custom/BatimentList";
 import { SearchBar } from "@/components/custom/SearchBar";
 
-const Inventaire = () => {
+export default function Inventaire() {
   return (
     <main className="px-8 py-12 flex flex-col gap-4">
       <h1>Inventaire</h1>
@@ -9,6 +9,5 @@ const Inventaire = () => {
       <BatimentList />
     </main>
   );
-};
+}
 
-export default Inventaire;
