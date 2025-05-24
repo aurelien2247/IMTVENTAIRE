@@ -27,6 +27,7 @@ Route.get('/', async () => {
 // Routes pour batiments
 Route.get('/batiments', 'BatimentsController.index')
 Route.get('/batiments/:id', 'BatimentsController.show')
+Route.get('/:id_batiment/:id_etage/:id_piece/:id_article', 'BatimentsController.getArticleByLocation')
 
 // Routes pour étages
 Route.get('/etage', 'EtageController.index')
