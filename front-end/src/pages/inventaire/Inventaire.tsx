@@ -1,4 +1,5 @@
 import Card from "@/components/custom/Card";
+import Header from "@/components/custom/Header";
 import { SearchBar } from "@/components/custom/SearchBar";
 import {
   Accordion,
@@ -39,7 +40,7 @@ export default function Inventaire() {
 
   return (
     <div className="container mx-auto">
-      <h1>Inventaire</h1>
+      <Header title="Inventaire" />
       <SearchBar label="Rechercher" />
       <Accordion type="multiple">
         {categories.map((category) => (

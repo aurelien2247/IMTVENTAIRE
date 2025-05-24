@@ -8,6 +8,7 @@ import { Toaster } from 'sonner'
 import Batiment from './pages/inventaire/EtageList'
 import PieceList from './pages/inventaire/PieceList'
 import ArticleList from './pages/inventaire/ArticleList'
+import ModifierArticle from './pages/inventaire/ModifierArticle'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path=":batimentId" element={<Batiment />} />
             <Route path=":batimentId/:etageId" element={<PieceList />} />
             <Route path=":batimentId/:etageId/:pieceId" element={<ArticleList />} />
+            <Route path=":batimentId/:etageId/:pieceId/:articleId" element={<ModifierArticle />} />
           </Route>
           <Route path="/" element={<Scanner />} />
           <Route path="/ajouter" element={<Ajouter />} />

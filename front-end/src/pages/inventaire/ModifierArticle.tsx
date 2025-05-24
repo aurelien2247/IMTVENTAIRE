@@ -1,23 +1,17 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import Card from "@/components/custom/Card";
-import { Combobox } from "@/components/ui/combobox";
 import Header from "@/components/custom/Header";
+import { FormControl, FormField, FormLabel } from "@/components/ui/form";
+import { Form, FormItem, FormMessage } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Combobox } from "@/components/ui/combobox";
+import z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Card from "@/components/custom/Card";
+import { toast } from "sonner";
+import { useParams } from "react-router-dom";
 
-const AjouterSchema = z.object({
+const ModifierSchema = z.object({
   numInventaire: z.number(),
   categorie: z.string(),
   piece: z.string(),
@@ -27,12 +21,13 @@ const AjouterSchema = z.object({
   marque: z.string(),
 });
 
-export default function Ajouter() {
-  const form = useForm<z.infer<typeof AjouterSchema>>({
-    resolver: zodResolver(AjouterSchema),
+export default function ModifierArticle() {
+  const { articleId } = useParams();
+  const form = useForm<z.infer<typeof ModifierSchema>>({
+    resolver: zodResolver(ModifierSchema),
   });
 
-  function onSubmit(data: z.infer<typeof AjouterSchema>) {
+  function onSubmit(data: z.infer<typeof ModifierSchema>) {
     toast("You submitted the following values: " + data);
   }
 
@@ -60,8 +55,8 @@ export default function Ajouter() {
   ];
 
   return (
-    <div className="container gap-8">
-      <Header title="Ajouter" />
+    <div className="container">
+      <Header title="Modifier article" />
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -145,8 +140,18 @@ export default function Ajouter() {
               </FormItem>
             )}
           />
+          <div className="flex gap-4 justify-between *:text-sm">
+            <span>
+              <p className="font-bold">Dernier inventaire</p>
+              <p>02/03/2025</p>
+            </span>
+            <span>
+              <p className="font-bold">Crée le</p>
+              <p>13/01/2019</p>
+            </span>
+          </div>
           <Button type="submit" className="w-full">
-            Ajouter
+            Modifier
           </Button>
         </form>
       </Form>

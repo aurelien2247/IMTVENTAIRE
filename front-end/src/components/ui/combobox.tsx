@@ -22,30 +22,11 @@ type Status = {
   label: string;
 };
 
-const statuses: Status[] = [
-  {
-    value: "chaise",
-    label: "Chaise",
-  },
-  {
-    value: "table",
-    label: "Table",
-  },
-  {
-    value: "ordinateur",
-    label: "Ordinateur",
-  },
-  {
-    value: "souris",
-    label: "Souris",
-  },
-  {
-    value: "clavier",
-    label: "Clavier",
-  },
-];
+interface Props {
+  options: Status[];
+};
 
-export function CategoriesList() {
+export function Combobox({ options }: Props) {
   const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [selectedStatus, setSelectedStatus] = useState<Status | null>(null);
@@ -64,7 +45,7 @@ export function CategoriesList() {
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[200px] p-0" align="start">
-          <StatusList setOpen={setOpen} setSelectedStatus={setSelectedStatus} />
+          <StatusList setOpen={setOpen} setSelectedStatus={setSelectedStatus} options={options} />
         </PopoverContent>
       </Popover>
     );
@@ -80,19 +61,22 @@ export function CategoriesList() {
       </DrawerTrigger>
       <DrawerContent>
         <div className="mt-4 border-t">
-          <StatusList setOpen={setOpen} setSelectedStatus={setSelectedStatus} />
+          <StatusList setOpen={setOpen} setSelectedStatus={setSelectedStatus} options={options} />
         </div>
       </DrawerContent>
     </Drawer>
   );
 }
 
+
 function StatusList({
   setOpen,
   setSelectedStatus,
+  options,
 }: {
   setOpen: (open: boolean) => void;
   setSelectedStatus: (status: Status | null) => void;
+  options: Status[];
 }) {
   return (
     <Command>
@@ -100,13 +84,13 @@ function StatusList({
       <CommandList>
         <CommandEmpty>Aucune catégorie trouvée</CommandEmpty>
         <CommandGroup>
-          {statuses.map((status) => (
+          {options.map((status) => (
             <CommandItem
               key={status.value}
               value={status.value}
               onSelect={(value) => {
                 setSelectedStatus(
-                  statuses.find((priority) => priority.value === value) || null
+                  options.find((priority) => priority.value === value) || null
                 );
                 setOpen(false);
               }}
