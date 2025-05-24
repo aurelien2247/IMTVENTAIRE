@@ -2,10 +2,10 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-COPY IMTVENTAIRE/package*.json ./
+COPY package*.json ./
 RUN npm install
 
-COPY IMTVENTAIRE/ .
+COPY . .
 RUN npm run build -- --ignore-ts-errors
 
 EXPOSE 3333

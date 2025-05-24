@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT:-3333}:3333"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    command: npm run dev
+
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "${PG_PORT:-5432}:5432"
+    environment:
+      - POSTGRES_USER=${PG_USER:-postgres}
+      - POSTGRES_PASSWORD=${PG_PASSWORD:-postgres}
+      - POSTGRES_DB=${PG_DB_NAME:-imtventaire}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/insert_table.sql:/docker-entrypoint-initdb.d/01-create-tables.sql
+      - ./database/insert_data.sql:/docker-entrypoint-initdb.d/02-insert-data.sql
+    env_file:
+      - .env
+
+volumes:
+  postgres_data: 

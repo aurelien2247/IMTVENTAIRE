@@ -25,17 +25,20 @@ $ cd back-end
 # Installer les dépendances
 $ npm install
 
+# Lancer les conteneurs
+$ docker-compose up --build
+
 # Lancer l'application
 $ npm run dev
 ```
 
-Puis, modifiez le fichier `.env` pour correspondre aux informations de votre base de données. L'application sera accessible à l'adresse https://localhost:3333
+L'application sera accessible à l'adresse https://localhost:3333 et la base de données PostgreSQL à localhost:5432.
 
 C'est prêt ! 🚀
 
 ## 🕹️ Technologies
 
-<img src="https://skillicons.dev/icons?i=adonis,postgres" alt="Les technologies utilisées" />
+<img src="https://skillicons.dev/icons?i=adonis,postgres,docker" alt="Les technologies utilisées" />
 
 
 ## 🤖 Diagrame de la base de donnée
