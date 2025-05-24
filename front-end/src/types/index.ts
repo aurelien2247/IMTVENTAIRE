@@ -22,4 +22,13 @@ export interface Article {
   categorie: string;
   num_serie: string;
   num_bon_commande: string;
+  etat: Etat;
+}
+
+export enum Etat {
+  Neuf,
+  "Bon état",
+  "Mauvais état",
+  "En attente de destruction",
+  Détruit,
 }

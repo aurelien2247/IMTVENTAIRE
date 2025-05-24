@@ -82,7 +82,7 @@ export default function Ajouter() {
           />
           <div className="flex flex-col gap-2.5">
             <FormLabel>Catégorie</FormLabel>
-            <Combobox options={categories} />
+            <Combobox options={categories} noOptionText="Aucune catégorie" />
           </div>
           <div className="flex flex-col gap-2.5">
             <FormLabel>Pièce</FormLabel>

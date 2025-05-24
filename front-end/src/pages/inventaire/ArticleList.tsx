@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { SearchBar } from "@/components/custom/SearchBar";
 import Header from "@/components/custom/Header";
-import type { Article } from "@/types";
+import { Etat, type Article } from "@/types";
 import ArticleCard from "@/components/custom/ArticleCard";
 
 export default function ArticleList() {
@@ -14,30 +14,35 @@ export default function ArticleList() {
       categorie: "Ordinateur",
       num_serie: "SN123456",
       num_bon_commande: "BC789",
+      etat: Etat.Neuf,
     },
     {
       num_inventaire: "INV-002",
       categorie: "Écran",
       num_serie: "SN789012",
       num_bon_commande: "BC456",
+      etat: Etat["Bon état"],
     },
     {
       num_inventaire: "INV-003",
       categorie: "Imprimante",
       num_serie: "SN345678",
       num_bon_commande: "BC123",
+      etat: Etat["Mauvais état"],
     },
     {
       num_inventaire: "INV-004",
       categorie: "Bureau",
       num_serie: "SN901234",
       num_bon_commande: "BC321",
+      etat: Etat["En attente de destruction"],
     },
     {
       num_inventaire: "INV-005",
       categorie: "Chaise",
       num_serie: "SN567890",
       num_bon_commande: "BC654",
+      etat: Etat.Détruit,
     },
   ];
 

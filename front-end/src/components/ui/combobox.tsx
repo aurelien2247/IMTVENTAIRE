@@ -22,11 +22,12 @@ type Status = {
   label: string;
 };
 
-interface Props {
+interface ComboboxProps {
   options: Status[];
+  noOptionText?: string;
 };
 
-export function Combobox({ options }: Props) {
+export function Combobox({ options, noOptionText = "Aucune option" }: ComboboxProps) {
   const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [selectedStatus, setSelectedStatus] = useState<Status | null>(null);
@@ -39,13 +40,13 @@ export function Combobox({ options }: Props) {
             {selectedStatus ? (
               <>{selectedStatus.label}</>
             ) : (
-              <>Aucune catégorie</>
+              <>{noOptionText}</>
             )}
             <ChevronsUpDown />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[200px] p-0" align="start">
-          <StatusList setOpen={setOpen} setSelectedStatus={setSelectedStatus} options={options} />
+          <StatusList setOpen={setOpen} setSelectedStatus={setSelectedStatus} options={options} noOptionText={noOptionText} />
         </PopoverContent>
       </Popover>
     );
@@ -55,34 +56,37 @@ export function Combobox({ options }: Props) {
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
         <Button variant="outline" className="justify-between">
-          {selectedStatus ? <>{selectedStatus.label}</> : <>Aucune catégorie</>}
+          {selectedStatus ? <>{selectedStatus.label}</> : <>{noOptionText}</>}
           <ChevronsUpDown />
         </Button>
       </DrawerTrigger>
       <DrawerContent>
         <div className="mt-4 border-t">
-          <StatusList setOpen={setOpen} setSelectedStatus={setSelectedStatus} options={options} />
+          <StatusList setOpen={setOpen} setSelectedStatus={setSelectedStatus} options={options} noOptionText={noOptionText} />
         </div>
       </DrawerContent>
     </Drawer>
   );
 }
 
+interface StatusListProps {
+  setOpen: (open: boolean) => void;
+  setSelectedStatus: (status: Status | null) => void;
+  options: Status[];
+  noOptionText: string;
+}
 
 function StatusList({
   setOpen,
   setSelectedStatus,
   options,
-}: {
-  setOpen: (open: boolean) => void;
-  setSelectedStatus: (status: Status | null) => void;
-  options: Status[];
-}) {
+  noOptionText,
+}: StatusListProps) {
   return (
     <Command>
-      <CommandInput placeholder="Chercher une catégorie" />
+      <CommandInput placeholder="Rechercher" />
       <CommandList>
-        <CommandEmpty>Aucune catégorie trouvée</CommandEmpty>
+        <CommandEmpty>{noOptionText} ne correspond à votre recherche</CommandEmpty>
         <CommandGroup>
           {options.map((status) => (
             <CommandItem

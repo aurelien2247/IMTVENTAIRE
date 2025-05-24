@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Card from "@/components/custom/Card";
 import { toast } from "sonner";
 import { useParams } from "react-router-dom";
+import { Etat } from "@/types";
 
 const ModifierSchema = z.object({
   numInventaire: z.number(),
@@ -54,6 +55,13 @@ export default function ModifierArticle() {
     },
   ];
 
+  const etats = Object.keys(Etat)
+    .filter((key) => isNaN(Number(key)))
+    .map((key) => ({
+      value: key,
+      label: key,
+    }));
+
   return (
     <div className="container">
       <Header title="Modifier article" />
@@ -69,7 +77,7 @@ export default function ModifierArticle() {
               <FormItem>
                 <FormLabel>Numéro d'inventaire</FormLabel>
                 <FormControl>
-                  <Input placeholder="12345" {...field} />
+                  <Input placeholder="12345" {...field} disabled />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -77,7 +85,7 @@ export default function ModifierArticle() {
           />
           <div className="flex flex-col gap-2.5">
             <FormLabel>Catégorie</FormLabel>
-            <Combobox options={categories} />
+            <Combobox options={categories} noOptionText="Aucune catégorie" />
           </div>
           <div className="flex flex-col gap-2.5">
             <FormLabel>Pièce</FormLabel>
@@ -87,6 +95,10 @@ export default function ModifierArticle() {
               link="/piece"
               className="text-muted-foreground "
             />
+          </div>
+          <div className="flex flex-col gap-2.5">
+            <FormLabel>Etat</FormLabel>
+            <Combobox options={etats} noOptionText="Aucun état" />
           </div>
           <FormField
             control={form.control}
