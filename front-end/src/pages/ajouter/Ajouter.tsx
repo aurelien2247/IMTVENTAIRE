@@ -36,7 +36,7 @@ export default function Ajouter() {
   }
 
   return (
-    <div className="px-8 py-12 flex flex-col gap-8">
+    <div className="container gap-8">
       <h1>Ajouter</h1>
       <Form {...form}>
         <form
@@ -63,7 +63,7 @@ export default function Ajouter() {
           <div className="flex flex-col gap-2.5">
             <FormLabel>Pièce</FormLabel>
             <Card
-              label="Aucune pièce"
+              content="Aucune pièce"
               size="small"
               link="/piece"
               className="text-muted-foreground "

@@ -132,15 +132,8 @@
   h1 {
     @apply text-3xl font-extrabold
   }
-}
 
-/*---break---*/
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
+  .container {
+    @apply px-8 py-12 flex flex-col gap-4;
   }
 }
