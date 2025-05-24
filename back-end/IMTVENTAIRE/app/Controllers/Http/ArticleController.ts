@@ -30,4 +30,27 @@ export default class ArticleController {
       return response.internalServerError({ error: 'Impossible de retrouver l\'article.' })
     }
   }
+
+  /**
+   * Store a new article
+   */
+  public async store({ request, response }: HttpContextContract) {
+    try {
+      const articleData = request.only([
+        'num_inventaire',
+        'categorie',
+        'id_piece',
+        'num_serie',
+        'num_bon_commande'
+      ])
+
+      const article = await Article.create(articleData)
+
+      return response.created(article)
+    } catch (error) {
+      return response.internalServerError({
+        error: 'Erreur lors de la création de l\'article !'
+      })
+    }
+  }
 }
