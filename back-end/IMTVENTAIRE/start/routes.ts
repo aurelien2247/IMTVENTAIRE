@@ -39,3 +39,4 @@ Route.get('/piece/:id', 'PieceController.show')
 // Routes pour Article
 Route.get('/article', 'ArticleController.index')
 Route.get('/article/:id', 'ArticleController.show')
+Route.post('/article', 'ArticleController.store')
