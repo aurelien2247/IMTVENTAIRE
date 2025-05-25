@@ -4,7 +4,6 @@ import Ajouter from './pages/ajouter/Ajouter'
 import Scanner from './pages/scanner/Scanner'
 import NavBar from './components/custom/NavBar'
 import Layout from './components/custom/Layout'
-import { Toaster } from 'sonner'
 import Batiment from './pages/inventaire/EtageList'
 import PieceList from './pages/inventaire/PieceList'
 import ArticleList from './pages/inventaire/ArticleList'
@@ -27,7 +26,6 @@ function App() {
         </Routes>
       </Layout>
       <NavBar />
-      <Toaster />
     </>
   )
 }
