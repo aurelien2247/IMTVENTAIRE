@@ -29,11 +29,11 @@ const databaseConfig: DatabaseConfig = {
     pg: {
       client: 'pg',
       connection: {
-        host: Env.get('PG_HOST', 'localhost'),
+        host: Env.get('PG_HOST', 'postgres'),
         port: Env.get('PG_PORT', 5432),
         user: Env.get('PG_USER', 'postgres'),
-        password: Env.get('PG_PASSWORD', 'admin'),
-        database: Env.get('PG_DB_NAME', 'postgres'),
+        password: Env.get('PG_PASSWORD', 'postgres'),
+        database: Env.get('PG_DB_NAME', 'imtventaire'),
       },
       healthCheck: false,
       debug: false,

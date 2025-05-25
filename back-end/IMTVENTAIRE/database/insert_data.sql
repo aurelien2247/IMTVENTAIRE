@@ -1,6 +1,7 @@
 INSERT INTO batiment (nom) VALUES ('Bat A');
 INSERT INTO batiment (nom) VALUES ('Bat B');
 INSERT INTO batiment (nom) VALUES ('Bat C');
+INSERT INTO batiment (nom) VALUES ('Bat J');
 INSERT INTO etage (nom, id_batiment) VALUES ('A1', 1);
 INSERT INTO etage (nom, id_batiment) VALUES ('A2', 1);
 INSERT INTO etage (nom, id_batiment) VALUES ('A3', 1);
@@ -10,6 +11,9 @@ INSERT INTO etage (nom, id_batiment) VALUES ('B3', 2);
 INSERT INTO etage (nom, id_batiment) VALUES ('C-1', 3);
 INSERT INTO etage (nom, id_batiment) VALUES ('C0', 3);
 INSERT INTO etage (nom, id_batiment) VALUES ('C1', 3);
+INSERT INTO etage (nom, id_batiment) VALUES ('J1', 4);
+INSERT INTO etage (nom, id_batiment) VALUES ('J2', 4);
+INSERT INTO etage (nom, id_batiment) VALUES ('J3', 4);
 INSERT INTO piece (nom, id_etage) VALUES ('A100', 1);
 INSERT INTO piece (nom, id_etage) VALUES ('A101', 1);
 INSERT INTO piece (nom, id_etage) VALUES ('A102', 1);
