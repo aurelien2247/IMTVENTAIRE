@@ -167,7 +167,7 @@ const Scanner: React.FC<ScannerProps> = ({ onCodeScanned }) => {
             facingMode: "environment",
             width: { min: 1280, ideal: 1920, max: 2560 },
             height: { min: 720, ideal: 1080, max: 1440 },
-            aspectRatio: { min: 1, max: 2 },
+            aspectRatio: { min: 16/9, max: 16/9 },
           },
         },
         decoder: {
@@ -183,6 +183,38 @@ const Scanner: React.FC<ScannerProps> = ({ onCodeScanned }) => {
       }, function(err: any) {
         if (err) {
           console.error("Erreur d'initialisation de Quagga:", err);
+          // Si la première tentative échoue, essayons avec une résolution plus basse
+          if (scannerRef.current) {
+            Quagga.init({
+              inputStream: {
+                name: "Live",
+                type: "LiveStream",
+                target: scannerRef.current,
+                constraints: {
+                  facingMode: "environment",
+                  width: { min: 640, ideal: 1280, max: 1920 },
+                  height: { min: 480, ideal: 720, max: 1080 },
+                  aspectRatio: { min: 4/3, max: 16/9 },
+                },
+              },
+              decoder: {
+                readers: ["code_128_reader"],
+                multiple: false,
+                debug: {
+                  drawBoundingBox: true,
+                  showPattern: true,
+                },
+              },
+              locate: true,
+              frequency: 10,
+            }, function(err2: any) {
+              if (err2) {
+                console.error("Deuxième erreur d'initialisation de Quagga:", err2);
+                return;
+              }
+              Quagga.start();
+            });
+          }
           return;
         }
         Quagga.start();
