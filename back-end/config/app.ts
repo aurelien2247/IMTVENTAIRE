@@ -232,3 +232,16 @@ export const profiler: ProfilerConfig = {
 |
 */
 export const validator: ValidatorConfig = {}
+
+/*
+|--------------------------------------------------------------------------
+| Providers
+|--------------------------------------------------------------------------
+|
+| List of providers to register in the application
+|
+*/
+export const providers = [
+  '@adonisjs/core',
+  '@adonisjs/lucid'
+]
