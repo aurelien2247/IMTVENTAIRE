@@ -35,7 +35,7 @@ CREATE TABLE categorie (
 );
 
 CREATE TABLE article (
-    num_inventaire INT PRIMARY KEY,
+    num_inventaire VARCHAR(5) PRIMARY KEY,
     categorie INTEGER,
     id_piece INTEGER,
     num_serie VARCHAR(100),

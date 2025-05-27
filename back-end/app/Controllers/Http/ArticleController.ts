@@ -15,11 +15,11 @@ export default class ArticleController {
   }
 
   /**
-   * Get a specific article by ID
+   * Get a specific article by num_inventaire
    */
   public async show({ params, response }: HttpContextContract) {
     try {
-      const article = await Article.find(params.id)
+      const article = await Article.findBy('num_inventaire', params.num_inventaire)
 
       if (!article) {
         return response.notFound({ message: 'Article non trouvé !' })

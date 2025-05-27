@@ -21,7 +21,8 @@ export default {
       },
       servers: [
         {
-          url: 'http://localhost:3333'
+          url: '/',
+          description: 'Current Server'
         }
       ],
       paths: {
@@ -183,7 +184,8 @@ export default {
                       },
                       num_inventaire: {
                         type: 'string',
-                        description: 'Numéro d\'inventaire unique'
+                        maxLength: 5,
+                        description: 'Numéro d\'inventaire unique (5 caractères maximum)'
                       },
                       id_piece: {
                         type: 'integer',

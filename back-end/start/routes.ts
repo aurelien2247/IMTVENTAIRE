@@ -73,7 +73,7 @@ Route.get('/batiments/:id', 'BatimentsController.show')
 
 /**
  * @swagger
- * /{id_batiment}/{id_etage}/{id_piece}/{id_article}:
+ * /{id_batiment}/{id_etage}/{id_piece}/{num_inventaire}:
  *   get:
  *     tags:
  *       - Articles
@@ -98,18 +98,18 @@ Route.get('/batiments/:id', 'BatimentsController.show')
  *         schema:
  *           type: integer
  *       - in: path
- *         name: id_article
+ *         name: num_inventaire
  *         required: true
- *         description: Identifiant de l'article
+ *         description: Numéro d'inventaire de l'article
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: Article trouvé
  *       404:
  *         description: Article non trouvé
  */
-Route.get('/:id_batiment/:id_etage/:id_piece/:id_article', 'BatimentsController.getArticleByLocation')
+Route.get('/:id_batiment/:id_etage/:id_piece/:num_inventaire', 'BatimentsController.getArticleByLocation')
 
 /**
  * @swagger
@@ -225,25 +225,25 @@ Route.post('/article', 'ArticleController.store')
 
 /**
  * @swagger
- * /article/{id}:
+ * /article/{num_inventaire}:
  *   get:
  *     tags:
  *       - Articles
  *     description: Récupère les détails d'un article spécifique
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: num_inventaire
  *         required: true
- *         description: Identifiant de l'article
+ *         description: Numéro d'inventaire de l'article
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: Détails de l'article
  *       404:
  *         description: Article non trouvé
  */
-Route.get('/article/:id', 'ArticleController.show')
+Route.get('/article/:num_inventaire', 'ArticleController.show')
 
 /**
  * @swagger
