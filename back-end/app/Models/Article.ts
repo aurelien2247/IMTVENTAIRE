@@ -1,4 +1,3 @@
-import { DateTime } from 'luxon'
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Article extends BaseModel {
@@ -18,5 +17,4 @@ export default class Article extends BaseModel {
 
   @column()
   public num_bon_commande: string
-
 }

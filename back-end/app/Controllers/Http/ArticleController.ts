@@ -1,5 +1,7 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Article from 'App/Models/Article'
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import { CustomMessages } from '@ioc:Adonis/Core/Validator'
 
 export default class ArticleController {
   /**
@@ -44,12 +46,33 @@ export default class ArticleController {
         'num_bon_commande'
       ])
 
-      const article = await Article.create(articleData)
+      // Validation basique
+      if (!articleData.num_inventaire || !articleData.categorie || !articleData.id_piece || 
+          !articleData.num_serie || !articleData.num_bon_commande) {
+        return response.status(400).json({
+          error: 'Tous les champs sont requis'
+        })
+      }
+
+      // Conversion des types
+      articleData.categorie = Number(articleData.categorie)
+      articleData.id_piece = Number(articleData.id_piece)
+
+      // Création de l'article
+      const article = new Article()
+      article.num_inventaire = articleData.num_inventaire
+      article.categorie = articleData.categorie
+      article.id_piece = articleData.id_piece
+      article.num_serie = articleData.num_serie
+      article.num_bon_commande = articleData.num_bon_commande
+
+      await article.save()
 
       return response.created(article)
     } catch (error) {
-      return response.internalServerError({
-        error: 'Erreur lors de la création de l\'article !'
+      console.error(error)
+      return response.status(500).json({
+        error: 'Erreur lors de la création de l\'article'
       })
     }
   }
