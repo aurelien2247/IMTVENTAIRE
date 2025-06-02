@@ -73,7 +73,7 @@ Route.get('/batiments/:id', 'BatimentsController.show')
 
 /**
  * @swagger
- * /{id_batiment}/{id_etage}/{id_piece}/{id_article}:
+ * /{id_batiment}/{id_etage}/{id_piece}/{num_inventaire}:
  *   get:
  *     tags:
  *       - Articles
@@ -98,18 +98,18 @@ Route.get('/batiments/:id', 'BatimentsController.show')
  *         schema:
  *           type: integer
  *       - in: path
- *         name: id_article
+ *         name: num_inventaire
  *         required: true
- *         description: Identifiant de l'article
+ *         description: Numéro d'inventaire de l'article
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: Article trouvé
  *       404:
  *         description: Article non trouvé
  */
-Route.get('/:id_batiment/:id_etage/:id_piece/:id_article', 'BatimentsController.getArticleByLocation')
+Route.get('/:id_batiment/:id_etage/:id_piece/:num_inventaire', 'BatimentsController.getArticleByLocation')
 
 /**
  * @swagger
@@ -191,6 +191,12 @@ Route.get('/piece/:id', 'PieceController.show')
  *     responses:
  *       200:
  *         description: Liste des articles
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Article'
  *   post:
  *     tags:
  *       - Articles
@@ -200,23 +206,14 @@ Route.get('/piece/:id', 'PieceController.show')
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               nom:
- *                 type: string
- *                 description: Nom de l'article
- *               description:
- *                 type: string
- *                 description: Description de l'article
- *               num_inventaire:
- *                 type: string
- *                 description: Numéro d'inventaire unique
- *               id_piece:
- *                 type: integer
- *                 description: Identifiant de la pièce où se trouve l'article
+ *             $ref: '#/components/schemas/ArticleInput'
  *     responses:
  *       201:
  *         description: Article créé avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Article'
  *       400:
  *         description: Données invalides
  */
@@ -225,29 +222,27 @@ Route.post('/article', 'ArticleController.store')
 
 /**
  * @swagger
- * /article/{id}:
+ * /article/{num_inventaire}:
  *   get:
  *     tags:
  *       - Articles
  *     description: Récupère les détails d'un article spécifique
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: num_inventaire
  *         required: true
- *         description: Identifiant de l'article
+ *         description: Numéro d'inventaire de l'article
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: Détails de l'article
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Article'
  *       404:
  *         description: Article non trouvé
- */
-Route.get('/article/:id', 'ArticleController.show')
-
-/**
- * @swagger
- * /article/{num_inventaire}:
  *   put:
  *     tags:
  *       - Articles
@@ -264,23 +259,55 @@ Route.get('/article/:id', 'ArticleController.show')
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               nom:
- *                 type: string
- *                 description: Nouveau nom de l'article
- *               description:
- *                 type: string
- *                 description: Nouvelle description de l'article
- *               id_piece:
- *                 type: integer
- *                 description: Nouvel identifiant de la pièce
+ *             $ref: '#/components/schemas/ArticleInput'
  *     responses:
  *       200:
  *         description: Article mis à jour avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Article'
  *       404:
  *         description: Article non trouvé
  *       400:
  *         description: Données invalides
  */
 Route.put('/article/:num_inventaire', 'ArticleController.update')
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     ArticleInput:
+ *       type: object
+ *       required:
+ *         - num_inventaire
+ *         - categorie
+ *         - id_piece
+ *         - num_serie
+ *         - num_bon_commande
+ *       properties:
+ *         num_inventaire:
+ *           type: string
+ *           example: "A1234"
+ *           description: Numéro d'inventaire unique de l'article
+ *         categorie:
+ *           type: integer
+ *           example: 1
+ *           description: Identifiant de la catégorie de l'article
+ *         id_piece:
+ *           type: integer
+ *           example: 3
+ *           description: Identifiant de la pièce où se trouve l'article
+ *         num_serie:
+ *           type: string
+ *           example: "SN123456789"
+ *           description: Numéro de série de l'article
+ *         num_bon_commande:
+ *           type: string
+ *           example: "BC123456"
+ *           description: Numéro du bon de commande
+ *     Article:
+ *       allOf:
+ *         - $ref: '#/components/schemas/ArticleInput'
+ */
