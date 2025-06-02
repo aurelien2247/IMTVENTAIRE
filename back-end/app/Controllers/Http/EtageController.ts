@@ -31,4 +31,17 @@ export default class EtageController {
       return response.internalServerError({ error: 'Impossible de retrouver l\'étage.' })
     }
   }
+
+  /**
+   * Get all floors for a specific building
+   */
+  public async getByBatiment({ params, response }: HttpContextContract) {
+    try {
+      const etages = await Etage.query().where('id_batiment', params.id_batiment)
+
+      return response.ok(etages)
+    } catch (error) {
+      return response.internalServerError({ error: 'Erreur lors de la recherche des étages pour ce bâtiment !' })
+    }
+  }
 }
