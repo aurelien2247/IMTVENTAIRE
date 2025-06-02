@@ -36,7 +36,7 @@ export const fetchEtages = async (batimentId: string): Promise<Etage[]> => {
  * @returns Les pièces de l'étage
  */
 export const fetchPieces = async (etageId: string): Promise<Piece[]> => {
-  const response = await fetch(`${API_BASE_URL}/etage/${etageId}`);
+  const response = await fetch(`${API_BASE_URL}/etages/${etageId}`);
 
   if (!response.ok) {
     throw new Error("Erreur lors de la récupération des pièces");
@@ -51,7 +51,7 @@ export const fetchPieces = async (etageId: string): Promise<Piece[]> => {
  * @returns Les articles de la pièce
  */
 export const fetchArticles = async (pieceId: string): Promise<Article[]> => {
-  const response = await fetch(`${API_BASE_URL}/piece/${pieceId}`);
+  const response = await fetch(`${API_BASE_URL}/pieces/${pieceId}`);
 
   if (!response.ok) {
     throw new Error("Erreur lors de la récupération des articles");
