@@ -11,14 +11,14 @@ import { useBatiments } from "@/hooks/useBatiments";
 import type { Categorie } from "@/types";
 import type { Batiment } from "@/types";
 
-export default function Inventaire() {
-  const { data, isLoading, error } = useBatiments();
+export default function ListeBatiments() {
+  const { data: batiments, isLoading, error } = useBatiments();
 
   const categories = [
     {
       id: 1,
       nom: "École",
-      batiments: data ?? [],
+      batiments: batiments ?? [],
     },
   ];
 
@@ -33,7 +33,7 @@ export default function Inventaire() {
     );
   }
 
-  if (error) {
+  if (error || !batiments) {
     return (
       <div className="container mx-auto">
         <Header title="Inventaire" />

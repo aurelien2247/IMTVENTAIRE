@@ -2,20 +2,20 @@ import { useParams } from "react-router-dom";
 import Card from "@/components/custom/Card";
 import { SearchBar } from "@/components/custom/SearchBar";
 import Header from "@/components/custom/Header";
-import type { Piece } from "@/types";
+import { usePieces } from "@/hooks/usePieces";
 
 
-export default function PieceList() {
+export default function ListePieces() {
   const { batimentId, etageId } = useParams();
+  const { data: pieces, isLoading, error } = usePieces(etageId ?? "");
 
-  // Données fictives des pièces
-  const pieces: Piece[] = [
-    { id: 101, nom: "Salle 101" },
-    { id: 102, nom: "Salle 102" },
-    { id: 103, nom: "Salle 103" },
-    { id: 104, nom: "Salle 104" },
-    { id: 105, nom: "Salle 105" },
-  ];
+  if (isLoading) {
+    return <div>Chargement...</div>;
+  }
+
+  if (error || !pieces) {
+    return <div>Erreur lors de la récupération des pièces</div>;
+  }
 
   return (
     <div className="container">

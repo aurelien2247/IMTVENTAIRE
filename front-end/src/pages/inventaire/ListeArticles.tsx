@@ -4,7 +4,7 @@ import Header from "@/components/custom/Header";
 import { Etat, type Article } from "@/types";
 import ArticleCard from "@/components/custom/ArticleCard";
 
-export default function ArticleList() {
+export default function ListeArticles() {
   const { batimentId, etageId, pieceId } = useParams();
 
   // Données fictives des articles

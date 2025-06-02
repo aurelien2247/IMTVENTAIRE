@@ -1,12 +1,12 @@
 import { Route, Routes } from 'react-router-dom'
-import Inventaire from './pages/inventaire/Inventaire'
+import ListeBatiments from './pages/inventaire/ListeBatiments'
 import Ajouter from './pages/ajouter/Ajouter'
 import Scanner from './pages/scanner/Scanner'
 import NavBar from './components/custom/NavBar'
 import Layout from './components/custom/Layout'
-import Batiment from './pages/inventaire/EtageList'
-import PieceList from './pages/inventaire/PieceList'
-import ArticleList from './pages/inventaire/ArticleList'
+import ListeEtages from './pages/inventaire/ListeEtages'
+import ListePieces from './pages/inventaire/ListePieces'
+import ListeArticles from './pages/inventaire/ListeArticles'
 import ModifierArticle from './pages/inventaire/ModifierArticle'
 
 function App() {
@@ -15,10 +15,10 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/inventaire">
-            <Route index element={<Inventaire />} />
-            <Route path=":batimentId" element={<Batiment />} />
-            <Route path=":batimentId/:etageId" element={<PieceList />} />
-            <Route path=":batimentId/:etageId/:pieceId" element={<ArticleList />} />
+            <Route index element={<ListeBatiments />} />
+            <Route path=":batimentId" element={<ListeEtages />} />
+            <Route path=":batimentId/:etageId" element={<ListePieces />} />
+            <Route path=":batimentId/:etageId/:pieceId" element={<ListeArticles />} />
             <Route path=":batimentId/:etageId/:pieceId/:articleId" element={<ModifierArticle />} />
           </Route>
           <Route path="/" element={<Scanner />} />
