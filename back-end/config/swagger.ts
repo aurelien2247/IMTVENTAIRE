@@ -21,7 +21,8 @@ export default {
       },
       servers: [
         {
-          url: 'http://localhost:3333'
+          url: '/',
+          description: 'Current Server'
         }
       ],
       paths: {
@@ -172,22 +173,33 @@ export default {
                 'application/json': {
                   schema: {
                     type: 'object',
+                    required: [
+                      'num_inventaire',
+                      'categorie',
+                      'id_piece',
+                      'num_serie',
+                      'num_bon_commande'
+                    ],
                     properties: {
-                      nom: {
-                        type: 'string',
-                        description: 'Nom de l\'article'
-                      },
-                      description: {
-                        type: 'string',
-                        description: 'Description de l\'article'
-                      },
                       num_inventaire: {
                         type: 'string',
                         description: 'Numéro d\'inventaire unique'
                       },
+                      categorie: {
+                        type: 'integer',
+                        description: 'Identifiant de la catégorie'
+                      },
                       id_piece: {
                         type: 'integer',
                         description: 'Identifiant de la pièce où se trouve l\'article'
+                      },
+                      num_serie: {
+                        type: 'string',
+                        description: 'Numéro de série de l\'article'
+                      },
+                      num_bon_commande: {
+                        type: 'string',
+                        description: 'Numéro du bon de commande'
                       }
                     }
                   }
@@ -196,10 +208,37 @@ export default {
             },
             responses: {
               '201': {
-                description: 'Article créé avec succès'
+                description: 'Article créé avec succès',
+                content: {
+                  'application/json': {
+                    schema: {
+                      type: 'object',
+                      properties: {
+                        num_inventaire: {
+                          type: 'string'
+                        },
+                        categorie: {
+                          type: 'integer'
+                        },
+                        id_piece: {
+                          type: 'integer'
+                        },
+                        num_serie: {
+                          type: 'string'
+                        },
+                        num_bon_commande: {
+                          type: 'string'
+                        }
+                      }
+                    }
+                  }
+                }
               },
               '400': {
                 description: 'Données invalides'
+              },
+              '500': {
+                description: 'Erreur serveur'
               }
             }
           }

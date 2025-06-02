@@ -63,7 +63,7 @@ export default class BatimentsController {
       }
 
       const article = await Article.query()
-        .where('num_inventaire', params.id_article)
+        .where('num_inventaire', params.num_inventaire)
         .where('id_piece', params.id_piece)
         .first()
 
