@@ -1,4 +1,5 @@
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
+import Piece from './Piece'
 
 export default class Article extends BaseModel {
   public static table = 'article'

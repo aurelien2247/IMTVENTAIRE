@@ -23,6 +23,8 @@ export default function ArticleCard({ article, link }: Props) {
     }
   };
 
+  console.log(article);
+
   const content = (
     <div className="flex flex-col gap-4">
       <span className="flex flex-col">
@@ -53,4 +55,30 @@ export default function ArticleCard({ article, link }: Props) {
   );
 
   return <Card content={content} link={link} />;
+}
+
+export function ArticleCardSkeleton() {
+  const content = (
+    <div className="flex flex-col gap-4 w-full">
+      <span className="flex flex-col gap-2">
+        <div className="flex items-center gap-2">
+          <div className="w-1.5 aspect-square rounded-full bg-muted-foreground/20" />
+          <div className="h-4 w-24 bg-muted-foreground/20 rounded" />
+        </div>
+        <div className="h-3 w-32 bg-muted-foreground/20 rounded" />
+      </span>
+      <div className="flex gap-4">
+        <span className="flex flex-col gap-1">
+          <div className="h-3 w-24 bg-muted-foreground/20 rounded" />
+          <div className="h-3 w-32 bg-muted-foreground/20 rounded" />
+        </span>
+        <span className="flex flex-col gap-1">
+          <div className="h-3 w-24 bg-muted-foreground/20 rounded" />
+          <div className="h-3 w-32 bg-muted-foreground/20 rounded" />
+        </span>
+      </div>
+    </div>
+  );
+
+  return <Card content={content} className="animate-pulse" />;
 }

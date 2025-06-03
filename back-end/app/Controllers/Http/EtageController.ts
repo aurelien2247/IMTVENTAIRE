@@ -1,4 +1,5 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Batiment from 'App/Models/Batiment'
 import Etage from 'App/Models/Etage'
 
 
@@ -11,7 +12,7 @@ export default class EtageController {
       const etage = await Etage.all()
       return response.ok(etage)
     } catch (error) {
-      return response.internalServerError({ error: 'Erreur lors de la recherche des étages !' })
+      return response.internalServerError({ error: 'Erreur lors de la recherche des étages' })
     }
   }
 
@@ -38,10 +39,11 @@ export default class EtageController {
   public async getByBatiment({ params, response }: HttpContextContract) {
     try {
       const etages = await Etage.query().where('id_batiment', params.id_batiment)
+      const batiment = await Batiment.find(params.id_batiment)
 
-      return response.ok(etages)
+      return response.ok({ etages, batiment })
     } catch (error) {
-      return response.internalServerError({ error: 'Erreur lors de la recherche des étages pour ce bâtiment !' })
+      return response.internalServerError({ error: 'Erreur lors de la recherche des étages pour ce bâtiment' })
     }
   }
 }

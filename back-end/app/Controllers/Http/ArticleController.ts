@@ -2,6 +2,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Article from 'App/Models/Article'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { CustomMessages } from '@ioc:Adonis/Core/Validator'
+import Piece from 'App/Models/Piece'
 
 export default class ArticleController {
   /**
@@ -22,10 +23,24 @@ export default class ArticleController {
   public async getByPiece({ params, response }: HttpContextContract) {
     try {
       const articles = await Article.query().where('id_piece', params.id_piece)
+      const piece = await Piece.find(params.id_piece)
 
-      return response.ok(articles)
+      if (!piece) {
+        return response.notFound({ message: 'Aucun article trouvé pour cette pièce' })
+      }
+
+      const articlesWithPiece = articles.map(article => ({
+        num_inventaire: article.num_inventaire,
+        categorie: article.categorie,
+        num_serie: article.num_serie,
+        num_bon_commande: article.num_bon_commande,
+        etat: article.etat,
+        piece: piece
+      }))
+
+      return response.ok({ articles: articlesWithPiece, piece })
     } catch (error) {
-      return response.internalServerError({ error: 'Erreur lors de la recherche des articles pour cette pièce !' })
+      return response.internalServerError({ error: 'Erreur lors de la recherche des articles pour cette pièce' })
     }
   }
 
