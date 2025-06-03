@@ -201,3 +201,6 @@ Route.post('/articles', 'ArticleController.store')
  *         description: Données invalides
  */
 Route.put('/articles/:num_inventaire', 'ArticleController.update')
+
+Route.post('/categories', 'CategorieController.add')
+Route.get('/categories', 'CategorieController.getAll')
