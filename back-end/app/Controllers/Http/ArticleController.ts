@@ -17,6 +17,19 @@ export default class ArticleController {
   }
 
   /**
+   * Get all articles in a specific room
+   */
+  public async getByPiece({ params, response }: HttpContextContract) {
+    try {
+      const articles = await Article.query().where('id_piece', params.id_piece)
+
+      return response.ok(articles)
+    } catch (error) {
+      return response.internalServerError({ error: 'Erreur lors de la recherche des articles pour cette pièce !' })
+    }
+  }
+
+  /**
    * Get a specific article by num_inventaire
    */
   public async show({ params, response }: HttpContextContract) {
@@ -47,7 +60,7 @@ export default class ArticleController {
       ])
 
       // Validation basique
-      if (!articleData.num_inventaire || !articleData.categorie || !articleData.id_piece || 
+      if (!articleData.num_inventaire || !articleData.categorie || !articleData.id_piece ||
           !articleData.num_serie || !articleData.num_bon_commande) {
         return response.status(400).json({
           error: 'Tous les champs sont requis'

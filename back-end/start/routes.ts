@@ -73,7 +73,85 @@ Route.get('/batiments/:id', 'BatimentsController.show')
 
 /**
  * @swagger
- * /{id_batiment}/{id_etage}/{id_piece}/{num_inventaire}:
+ * /batiments/{id_batiment}/etages:
+ *   get:
+ *     tags:
+ *       - Étages
+ *     description: Récupère tous les étages d'un bâtiment spécifique
+ *     parameters:
+ *       - in: path
+ *         name: id_batiment
+ *         required: true
+ *         description: Identifiant du bâtiment
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Liste des étages du bâtiment
+ */
+Route.get('/batiments/:id_batiment/etages', 'EtageController.getByBatiment')
+
+/**
+ * @swagger
+ * /batiments/{id_batiment}/etages/{id_etage}/pieces:
+ *   get:
+ *     tags:
+ *       - Pièces
+ *     description: Récupère toutes les pièces d'un étage spécifique
+ *     parameters:
+ *       - in: path
+ *         name: id_batiment
+ *         required: true
+ *         description: Identifiant du bâtiment
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: id_etage
+ *         required: true
+ *         description: Identifiant de l'étage
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Liste des pièces de l'étage
+ */
+Route.get('/batiments/:id_batiment/etages/:id_etage/pieces', 'PieceController.getByEtage')
+
+/**
+ * @swagger
+ * /batiments/{id_batiment}/etages/{id_etage}/pieces/{id_piece}/articles:
+ *   get:
+ *     tags:
+ *       - Articles
+ *     description: Récupère tous les articles d'une pièce spécifique
+ *     parameters:
+ *       - in: path
+ *         name: id_batiment
+ *         required: true
+ *         description: Identifiant du bâtiment
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: id_etage
+ *         required: true
+ *         description: Identifiant de l'étage
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: id_piece
+ *         required: true
+ *         description: Identifiant de la pièce
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Liste des articles de la pièce
+ */
+Route.get('/batiments/:id_batiment/etages/:id_etage/pieces/:id_piece/articles', 'ArticleController.getByPiece')
+
+/**
+ * @swagger
+ * /batiments/{id_batiment}/etages/{id_etage}/pieces/{id_piece}/articles/{num_inventaire}:
  *   get:
  *     tags:
  *       - Articles
@@ -109,11 +187,11 @@ Route.get('/batiments/:id', 'BatimentsController.show')
  *       404:
  *         description: Article non trouvé
  */
-Route.get('/:id_batiment/:id_etage/:id_piece/:num_inventaire', 'BatimentsController.getArticleByLocation')
+Route.get('/batiments/:id_batiment/etages/:id_etage/pieces/:id_piece/articles/:num_inventaire', 'BatimentsController.getArticleByLocation')
 
 /**
  * @swagger
- * /etage:
+ * /etages:
  *   get:
  *     tags:
  *       - Étages
@@ -122,11 +200,11 @@ Route.get('/:id_batiment/:id_etage/:id_piece/:num_inventaire', 'BatimentsControl
  *       200:
  *         description: Liste des étages
  */
-Route.get('/etage', 'EtageController.index')
+Route.get('/etages', 'EtageController.index')
 
 /**
  * @swagger
- * /etage/{id}:
+ * /etages/{id}:
  *   get:
  *     tags:
  *       - Étages
@@ -144,11 +222,11 @@ Route.get('/etage', 'EtageController.index')
  *       404:
  *         description: Étage non trouvé
  */
-Route.get('/etage/:id', 'EtageController.show')
+Route.get('/etages/:id', 'EtageController.show')
 
 /**
  * @swagger
- * /piece:
+ * /pieces:
  *   get:
  *     tags:
  *       - Pièces
@@ -157,11 +235,11 @@ Route.get('/etage/:id', 'EtageController.show')
  *       200:
  *         description: Liste des pièces
  */
-Route.get('/piece', 'PieceController.index')
+Route.get('/pieces', 'PieceController.index')
 
 /**
  * @swagger
- * /piece/{id}:
+ * /pieces/{id}:
  *   get:
  *     tags:
  *       - Pièces
@@ -179,11 +257,11 @@ Route.get('/piece', 'PieceController.index')
  *       404:
  *         description: Pièce non trouvée
  */
-Route.get('/piece/:id', 'PieceController.show')
+Route.get('/pieces/:id', 'PieceController.show')
 
 /**
  * @swagger
- * /article:
+ * /articles:
  *   get:
  *     tags:
  *       - Articles
@@ -217,12 +295,12 @@ Route.get('/piece/:id', 'PieceController.show')
  *       400:
  *         description: Données invalides
  */
-Route.get('/article', 'ArticleController.index')
-Route.post('/article', 'ArticleController.store')
+Route.get('/articles', 'ArticleController.index')
+Route.post('/articles', 'ArticleController.store')
 
 /**
  * @swagger
- * /article/{num_inventaire}:
+ * /articles/{num_inventaire}:
  *   get:
  *     tags:
  *       - Articles
@@ -272,7 +350,7 @@ Route.post('/article', 'ArticleController.store')
  *       400:
  *         description: Données invalides
  */
-Route.put('/article/:num_inventaire', 'ArticleController.update')
+Route.put('/articles/:num_inventaire', 'ArticleController.update')
 
 /**
  * @swagger

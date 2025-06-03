@@ -1,7 +1,7 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Piece from 'App/Models/Piece'
 
-export default class BatimentsController {
+export default class PieceController {
   /**
    * List all rooms
    */
@@ -30,4 +30,18 @@ export default class BatimentsController {
       return response.internalServerError({ error: 'Impossible de retrouver la pièce.' })
     }
   }
+
+  /**
+   * Get all rooms for a specific floor
+   */
+  public async getByEtage({ params, response }: HttpContextContract) {
+    try {
+      const pieces = await Piece.query().where('id_etage', params.id_etage)
+
+      return response.ok(pieces)
+    } catch (error) {
+      return response.internalServerError({ error: 'Erreur lors de la recherche des pièces pour cet étage !' })
+    }
+  }
 }
+ 
