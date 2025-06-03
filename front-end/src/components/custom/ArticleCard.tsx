@@ -23,8 +23,6 @@ export default function ArticleCard({ article, link }: Props) {
     }
   };
 
-  console.log(article);
-
   const content = (
     <div className="flex flex-col gap-4">
       <span className="flex flex-col">
@@ -33,7 +31,7 @@ export default function ArticleCard({ article, link }: Props) {
             className={`w-1.5 aspect-square rounded-full ${getEtatColor(article.etat)}`} 
             title={Etat[article.etat]}
           />
-          <p>{article.categorie}</p>
+          <p>{article.categorie.nom}</p>
         </div>
         <p className="text-sm text-muted-foreground">
           {article.num_inventaire}

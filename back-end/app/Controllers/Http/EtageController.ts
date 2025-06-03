@@ -2,7 +2,6 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Batiment from 'App/Models/Batiment'
 import Etage from 'App/Models/Etage'
 
-
 export default class EtageController {
   /**
    * List all floors
@@ -24,12 +23,12 @@ export default class EtageController {
       const etage = await Etage.find(params.id)
 
       if (!etage) {
-        return response.notFound({ message: 'Etage non trouvés !' })
+        return response.notFound({ message: 'Etage non trouvés' })
       }
 
       return response.ok(etage)
     } catch (error) {
-      return response.internalServerError({ error: 'Impossible de retrouver l\'étage.' })
+      return response.internalServerError({ error: "Impossible de retrouver l'étage" })
     }
   }
 
@@ -43,7 +42,9 @@ export default class EtageController {
 
       return response.ok({ etages, batiment })
     } catch (error) {
-      return response.internalServerError({ error: 'Erreur lors de la recherche des étages pour ce bâtiment' })
+      return response.internalServerError({
+        error: 'Erreur lors de la recherche des étages pour ce bâtiment',
+      })
     }
   }
 }

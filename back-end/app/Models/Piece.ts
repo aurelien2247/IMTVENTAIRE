@@ -1,4 +1,6 @@
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, belongsTo, BelongsTo, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
+import Etage from './Etage'
+import Article from './Article'
 
 export default class Piece extends BaseModel {
   public static table = 'piece'
@@ -11,4 +13,14 @@ export default class Piece extends BaseModel {
 
   @column()
   public id_etage: number
+
+  @belongsTo(() => Etage, {
+    foreignKey: 'id_etage',
+  })
+  public etage: BelongsTo<typeof Etage>
+
+  @hasMany(() => Article, {
+    foreignKey: 'id_piece',
+  })
+  public articles: HasMany<typeof Article>
 }

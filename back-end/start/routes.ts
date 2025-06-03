@@ -111,46 +111,6 @@ Route.get('/pieces/:id_piece', 'ArticleController.getByPiece')
 
 /**
  * @swagger
- * /batiments/{id_batiment}/etages/{id_etage}/pieces/{id_piece}/articles/{num_inventaire}:
- *   get:
- *     tags:
- *       - Articles
- *     description: Récupère un article par sa localisation (bâtiment, étage, pièce)
- *     parameters:
- *       - in: path
- *         name: id_batiment
- *         required: true
- *         description: Identifiant du bâtiment
- *         schema:
- *           type: integer
- *       - in: path
- *         name: id_etage
- *         required: true
- *         description: Identifiant de l'étage
- *         schema:
- *           type: integer
- *       - in: path
- *         name: id_piece
- *         required: true
- *         description: Identifiant de la pièce
- *         schema:
- *           type: integer
- *       - in: path
- *         name: num_inventaire
- *         required: true
- *         description: Numéro d'inventaire de l'article
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Article trouvé
- *       404:
- *         description: Article non trouvé
- */
-Route.get('/batiments/:id_batiment/etages/:id_etage/pieces/:id_piece/articles/:num_inventaire', 'BatimentsController.getArticleByLocation')
-
-/**
- * @swagger
  * /articles:
  *   get:
  *     tags:

@@ -52,7 +52,7 @@ export const fetchPieces = async (etageId: string): Promise<{ pieces: Piece[], e
  * @param pieceId - L'identifiant de la pièce
  * @returns Les articles de la pièce
  */
-export const fetchArticles = async (pieceId: string): Promise<{ articles: Article[], piece: Piece }> => {
+export const fetchArticles = async (pieceId: string): Promise<Article[]> => {
   const response = await fetch(`${API_BASE_URL}/pieces/${pieceId}`);
 
   if (!response.ok) {
@@ -60,7 +60,7 @@ export const fetchArticles = async (pieceId: string): Promise<{ articles: Articl
   }
 
   const data = await response.json();
-  return { articles: data.articles, piece: data.piece };
+  return data;
 };
 
 /**

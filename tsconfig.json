@@ -1,0 +1,12 @@
+{
+  "extends": "./back-end/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "App/*": ["./back-end/app/*"],
+      "Config/*": ["./back-end/config/*"],
+      "Contracts/*": ["./back-end/contracts/*"],
+      "Database/*": ["./back-end/database/*"]
+    }
+  }
+} 

@@ -8,9 +8,8 @@ import Error from "../common/Error";
 
 export default function ListeArticles() {
   const { batimentId, etageId, pieceId } = useParams();
-  const { data, isLoading, error } = useArticles(pieceId);
-  const { articles, piece } = data ?? { articles: [], piece: { nom: "" } };
-  const headerTitle = `Salle ${piece.nom.toUpperCase()}`;
+  const { data: articles, isLoading, error } = useArticles(pieceId);
+  const headerTitle = `Salle ${articles?.[0]?.piece.nom.toUpperCase()}`;
 
   if (isLoading) {
     return (

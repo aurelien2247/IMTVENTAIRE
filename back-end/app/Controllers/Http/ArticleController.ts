@@ -1,8 +1,9 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Article from 'App/Models/Article'
-import { schema, rules } from '@ioc:Adonis/Core/Validator'
-import { CustomMessages } from '@ioc:Adonis/Core/Validator'
 import Piece from 'App/Models/Piece'
+import Etage from 'App/Models/Etage'
+import Batiment from 'App/Models/Batiment'
+import Categorie from 'App/Models/Categorie'
 
 export default class ArticleController {
   /**
@@ -10,10 +11,16 @@ export default class ArticleController {
    */
   public async index({ response }: HttpContextContract) {
     try {
-      const articles = await Article.all()
+      const articles = await Article.query()
+        .preload('piece', (pieceQuery) => {
+          pieceQuery.preload('etage', (etageQuery) => {
+            etageQuery.preload('batiment')
+          })
+        })
+        .preload('categorieRelation')
       return response.ok(articles)
     } catch (error) {
-      return response.internalServerError({ error: 'Erreur lors de la recherche des articles !' })
+      return response.internalServerError({ error: 'Erreur lors de la recherche des articles' })
     }
   }
 
@@ -22,25 +29,20 @@ export default class ArticleController {
    */
   public async getByPiece({ params, response }: HttpContextContract) {
     try {
-      const articles = await Article.query().where('id_piece', params.id_piece)
-      const piece = await Piece.find(params.id_piece)
+      const articles = await Article.query()
+        .where('id_piece', params.id_piece)
+        .preload('piece', (pieceQuery) => {
+          pieceQuery.preload('etage', (etageQuery) => {
+            etageQuery.preload('batiment')
+          })
+        })
+        .preload('categorieRelation')
 
-      if (!piece) {
-        return response.notFound({ message: 'Aucun article trouvé pour cette pièce' })
-      }
-
-      const articlesWithPiece = articles.map(article => ({
-        num_inventaire: article.num_inventaire,
-        categorie: article.categorie,
-        num_serie: article.num_serie,
-        num_bon_commande: article.num_bon_commande,
-        etat: article.etat,
-        piece: piece
-      }))
-
-      return response.ok({ articles: articlesWithPiece, piece })
+      return response.ok(articles)
     } catch (error) {
-      return response.internalServerError({ error: 'Erreur lors de la recherche des articles pour cette pièce' })
+      return response.internalServerError({
+        error: 'Erreur lors de la recherche des articles pour cette pièce',
+      })
     }
   }
 
@@ -49,15 +51,23 @@ export default class ArticleController {
    */
   public async show({ params, response }: HttpContextContract) {
     try {
-      const article = await Article.findBy('num_inventaire', params.num_inventaire)
+      const article = await Article.query()
+        .where('num_inventaire', params.num_inventaire)
+        .preload('piece', (pieceQuery) => {
+          pieceQuery.preload('etage', (etageQuery) => {
+            etageQuery.preload('batiment')
+          })
+        })
+        .preload('categorieRelation')
+        .first()
 
       if (!article) {
-        return response.notFound({ message: 'Article non trouvé !' })
+        return response.notFound({ message: 'Article non trouvé' })
       }
 
       return response.ok(article)
     } catch (error) {
-      return response.internalServerError({ error: 'Impossible de retrouver l\'article.' })
+      return response.internalServerError({ error: "Impossible de retrouver l'article" })
     }
   }
 
@@ -71,14 +81,19 @@ export default class ArticleController {
         'categorie',
         'id_piece',
         'num_serie',
-        'num_bon_commande'
+        'num_bon_commande',
       ])
 
       // Validation basique
-      if (!articleData.num_inventaire || !articleData.categorie || !articleData.id_piece ||
-          !articleData.num_serie || !articleData.num_bon_commande) {
+      if (
+        !articleData.num_inventaire ||
+        !articleData.categorie ||
+        !articleData.id_piece ||
+        !articleData.num_serie ||
+        !articleData.num_bon_commande
+      ) {
         return response.status(400).json({
-          error: 'Tous les champs sont requis'
+          error: 'Tous les champs sont requis',
         })
       }
 
@@ -100,7 +115,7 @@ export default class ArticleController {
     } catch (error) {
       console.error(error)
       return response.status(500).json({
-        error: 'Erreur lors de la création de l\'article'
+        error: "Erreur lors de la création de l'article",
       })
     }
   }
@@ -110,20 +125,13 @@ export default class ArticleController {
    */
   public async update({ params, request, response }: HttpContextContract) {
     try {
-      const article = await Article.query()
-        .where('num_inventaire', params.num_inventaire)
-        .first()
+      const article = await Article.query().where('num_inventaire', params.num_inventaire).first()
 
       if (!article) {
-        return response.notFound({ message: 'Article non trouvé !' })
+        return response.notFound({ message: 'Article non trouvé' })
       }
 
-      const articleData = request.only([
-        'categorie',
-        'id_piece',
-        'num_serie',
-        'num_bon_commande'
-      ])
+      const articleData = request.only(['categorie', 'id_piece', 'num_serie', 'num_bon_commande'])
 
       if (articleData.categorie) {
         articleData.categorie = parseInt(articleData.categorie)
@@ -139,7 +147,7 @@ export default class ArticleController {
     } catch (error) {
       console.error(error)
       return response.internalServerError({
-        error: 'Erreur lors de la mise à jour de l\'article !'
+        error: "Erreur lors de la mise à jour de l'article",
       })
     }
   }

@@ -37,7 +37,7 @@ export interface Piece {
  */
 export interface Article {
   num_inventaire: string;
-  categorie: string;
+  categorie: Categorie;
   num_serie: string;
   num_bon_commande: string;
   etat: Etat;
@@ -50,4 +50,9 @@ export enum Etat {
   "Mauvais état",
   "En attente de destruction",
   Détruit,
+}
+
+export interface Categorie {
+  id: number;
+  nom: string;
 }
