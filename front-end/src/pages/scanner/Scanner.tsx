@@ -1,5 +1,6 @@
 import { BarcodeScanner } from "react-barcode-scanner";
 import "react-barcode-scanner/polyfill";
+import ScanRectangle from "./components/ScanRectangle";
 
 export default function Scanner() {
   return (
@@ -11,6 +12,7 @@ export default function Scanner() {
         }}
         className="w-full h-full object-cover"
       />
+      <ScanRectangle />
     </div>
   );
 }
