@@ -1,8 +1,8 @@
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
+import type { Categorie } from "@/types";
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
@@ -14,8 +14,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronsUpDown } from "lucide-react";
+import { createCategory, fetchCategories } from "@/api/article";
 
 type Status = {
   value: string;
@@ -27,10 +28,32 @@ interface ComboboxProps {
   noOptionText?: string;
 };
 
-export function Combobox({ options, noOptionText = "Aucune option" }: ComboboxProps) {
+export function Combobox({ noOptionText = "Aucune option" }: ComboboxProps) {
   const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [selectedStatus, setSelectedStatus] = useState<Status | null>(null);
+  const [options, setOptions] = useState<Status[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadOptions = async () => {
+      try {
+        const data = await fetchCategories();
+        const formatted = data.map((cat: Categorie) => ({
+          label: cat.nom,
+          value: cat.id.toString(),
+        }));
+
+      setOptions(formatted);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadOptions();
+  }, []);
 
   if (isDesktop) {
     return (
@@ -46,7 +69,7 @@ export function Combobox({ options, noOptionText = "Aucune option" }: ComboboxPr
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[200px] p-0" align="start">
-          <StatusList setOpen={setOpen} setSelectedStatus={setSelectedStatus} options={options} noOptionText={noOptionText} />
+          <StatusList setOpen={setOpen} setSelectedStatus={setSelectedStatus} options={options} setOptions={setOptions} noOptionText={noOptionText} />
         </PopoverContent>
       </Popover>
     );
@@ -62,7 +85,7 @@ export function Combobox({ options, noOptionText = "Aucune option" }: ComboboxPr
       </DrawerTrigger>
       <DrawerContent>
         <div className="mt-4 border-t">
-          <StatusList setOpen={setOpen} setSelectedStatus={setSelectedStatus} options={options} noOptionText={noOptionText} />
+          <StatusList setOpen={setOpen} setSelectedStatus={setSelectedStatus} options={options} setOptions={setOptions} noOptionText={noOptionText} />
         </div>
       </DrawerContent>
     </Drawer>
@@ -73,35 +96,72 @@ interface StatusListProps {
   setOpen: (open: boolean) => void;
   setSelectedStatus: (status: Status | null) => void;
   options: Status[];
+  setOptions: (options: Status[]) => void;
   noOptionText: string;
 }
 
 function StatusList({
   setOpen,
   setSelectedStatus,
+  setOptions,
   options,
-  noOptionText,
 }: StatusListProps) {
+
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSelect = (status: Status) => {
+    setSelectedStatus(status);
+    setOpen(false);
+  };
+
+  const inputAlreadyExists = options.some(
+    (status) => status.label.toLowerCase() === input.toLowerCase()
+  );
+
+  const handleCreate = async () => {
+    if (input.trim() === "") return;
+    setLoading(true);
+    try {
+      const categorie = await createCategory(input);
+      const newCategorie: Status = {
+        label: categorie.nom,
+        value: String(categorie.id),
+      };
+      setOptions([...options, newCategorie]);
+      handleSelect(newCategorie);
+    } catch (error) {
+      console.error("Erreur lors de la création :", error);
+      alert("Échec de la création du statut.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Command>
-      <CommandInput placeholder="Rechercher" />
+      <CommandInput placeholder="Rechercher" onValueChange={setInput} value={input}/>
       <CommandList>
-        <CommandEmpty>{noOptionText} ne correspond à votre recherche</CommandEmpty>
         <CommandGroup>
           {options.map((status) => (
             <CommandItem
               key={status.value}
               value={status.value}
-              onSelect={(value) => {
-                setSelectedStatus(
-                  options.find((priority) => priority.value === value) || null
-                );
-                setOpen(false);
-              }}
+              onSelect={() => handleSelect(status)}
             >
               {status.label}
             </CommandItem>
           ))}
+
+          {input.trim() !== "" && !inputAlreadyExists && (
+            <CommandItem
+              value={input}
+              onSelect={handleCreate}
+              className="italic text-muted-foreground"
+            >
+              {loading ? "Création..." : `Créer « ${input} »`}
+            </CommandItem>
+          )}
         </CommandGroup>
       </CommandList>
     </Command>

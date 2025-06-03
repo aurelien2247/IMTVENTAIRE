@@ -389,3 +389,6 @@ Route.put('/articles/:num_inventaire', 'ArticleController.update')
  *       allOf:
  *         - $ref: '#/components/schemas/ArticleInput'
  */
+
+Route.post('/categories', 'CategorieController.add')
+Route.get('/categories', 'CategorieController.getAll')
