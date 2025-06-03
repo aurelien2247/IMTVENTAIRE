@@ -18,23 +18,6 @@ export default class BatimentsController {
   }
 
   /**
-   * Get a specific building by ID
-   */
-  public async show({ params, response }: HttpContextContract) {
-    try {
-      const batiment = await Batiment.find(params.id)
-
-      if (!batiment) {
-        return response.notFound({ message: 'Batiment non trouvés !' })
-      }
-
-      return response.ok(batiment)
-    } catch (error) {
-      return response.internalServerError({ error: 'Impossible de retrouver de batiment.' })
-    }
-  }
-
-  /**
    * Get a specific article by batiment, etage, piece, and article ID
    */
   public async getArticleByLocation({ params, response }: HttpContextContract) {

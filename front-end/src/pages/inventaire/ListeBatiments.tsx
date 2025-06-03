@@ -10,9 +10,12 @@ import {
 import { useBatiments } from "@/hooks/useBatiments";
 import type { Categorie } from "@/types";
 import type { Batiment } from "@/types";
+import NotFound from "../common/NotFound";
+import Error from "../common/Error";
 
 export default function ListeBatiments() {
-  const { data: batiments, isLoading, error } = useBatiments();
+  const { data, isLoading, error } = useBatiments();
+  const batiments = data ?? [];
 
   const categories = [
     {
@@ -26,20 +29,22 @@ export default function ListeBatiments() {
     return (
       <div className="container mx-auto">
         <Header title="Inventaire" />
-        <div className="flex justify-center items-center h-64">
-          <p>Chargement...</p>
+        <SearchBar label="Rechercher" />
+        <div className="flex flex-col gap-2">
+          {Array.from({ length: 10 }).map((_, index) => (
+            <Card content={<div className="h-4 w-32 bg-muted-foreground/20 rounded" />} className="animate-pulse h-14" key={index} />
+          ))}
         </div>
       </div>
     );
   }
 
-  if (error || !batiments) {
+  if (error) {
     return (
       <div className="container mx-auto">
         <Header title="Inventaire" />
-        <div className="flex justify-center items-center h-64">
-          <p className="text-red-500">Erreur lors du chargement des données</p>
-        </div>
+        <SearchBar label="Rechercher" />
+        <Error />
       </div>
     );
   }
@@ -48,7 +53,10 @@ export default function ListeBatiments() {
     <div className="container mx-auto">
       <Header title="Inventaire" />
       <SearchBar label="Rechercher" />
-      <Accordion type="multiple">
+      <Accordion 
+        type="multiple" 
+        defaultValue={categories.map(category => category.id.toString())}
+      >
         {categories?.map((category: Categorie) => (
           <AccordionItem key={category.id} value={category.id.toString()}>
             <AccordionTrigger>{category.nom}</AccordionTrigger>
@@ -63,6 +71,7 @@ export default function ListeBatiments() {
             </AccordionContent>
           </AccordionItem>
         ))}
+        {categories.length === 0 && <NotFound message="Aucun bâtiment trouvé" />}
       </Accordion>
     </div>
   );

@@ -29,6 +29,7 @@ export interface Batiment {
 export interface Piece {
   id: number;
   nom: string;
+  etage: Etage;
 }
 
 /**
@@ -40,6 +41,7 @@ export interface Article {
   num_serie: string;
   num_bon_commande: string;
   etat: Etat;
+  piece: Piece;
 }
 
 export enum Etat {
