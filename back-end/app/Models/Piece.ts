@@ -11,11 +11,12 @@ export default class Piece extends BaseModel {
   @column()
   public nom: string
 
-  @column()
+  @column({ serializeAs: null })
   public id_etage: number
 
   @belongsTo(() => Etage, {
     foreignKey: 'id_etage',
+    serializeAs: 'etage',
   })
   public etage: BelongsTo<typeof Etage>
 

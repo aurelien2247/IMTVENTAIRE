@@ -8,9 +8,8 @@ import Error from "../common/Error";
 
 export default function ListeEtages() {
   const { batimentId } = useParams();
-  const { data, isLoading, error } = useEtages(batimentId);
-  const { etages, batiment } = data ?? { etages: [], batiment: { nom: "" } };
-  const headerTitle = `Bâtiment ${batiment.nom.toUpperCase()}`;
+  const { data: etages, isLoading, error } = useEtages(batimentId);
+  const headerTitle = `Bâtiment ${etages?.[0]?.batiment.nom.toUpperCase()}`;
 
   if (isLoading) {
     return (
@@ -36,18 +35,27 @@ export default function ListeEtages() {
     );
   }
 
+  if (!etages || etages.length === 0) {
+    return (
+      <div className="container">
+        <Header title={headerTitle} />
+        <SearchBar label="Rechercher" />
+        <NotFound message="Aucun étage trouvé" />
+      </div>
+    );
+  }
+
   return (
     <div className="container">
       <Header title={headerTitle} />
       <SearchBar label="Rechercher" />
       <div className="flex flex-col gap-2">
-        {etages?.map((etage) => (
+        {etages.map((etage) => (
           <Card
             content={etage.nom}
             link={`/inventaire/${batimentId}/${etage.id}`}
           />
         ))}
-        {etages?.length === 0 && <NotFound message="Aucun étage trouvé" />}
       </div>
     </div>
   );

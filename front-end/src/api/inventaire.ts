@@ -1,5 +1,15 @@
-import type { Article, Batiment, Etage, Piece } from "@/types";
+import type { Article, Batiment, Etage, Piece, Zone } from "@/types";
 import { API_BASE_URL } from "./config";
+
+export const fetchZones = async (): Promise<Zone[]> => {
+  const response = await fetch(`${API_BASE_URL}/zones`);
+
+  if (!response.ok) {
+    throw new Error("Erreur lors de la récupération des zones");
+  }
+
+  return response.json();
+};
 
 /**
  * Récupère les bâtiments
@@ -20,15 +30,14 @@ export const fetchBatiments = async (): Promise<Batiment[]> => {
  * @param batimentId - L'identifiant du bâtiment
  * @returns Les étages du bâtiment
  */
-export const fetchEtages = async (batimentId: string): Promise<{ etages: Etage[], batiment: Batiment }> => {
+export const fetchEtages = async (batimentId: string): Promise<Etage[]> => {
   const response = await fetch(`${API_BASE_URL}/batiments/${batimentId}`);
 
   if (!response.ok) {
     throw new Error("Erreur lors de la récupération des étages");
   }
 
-  const data = await response.json();
-  return { etages: data.etages, batiment: data.batiment };
+  return response.json();
 };
 
 /**
@@ -36,15 +45,14 @@ export const fetchEtages = async (batimentId: string): Promise<{ etages: Etage[]
  * @param etageId - L'identifiant de l'étage
  * @returns Les pièces de l'étage
  */
-export const fetchPieces = async (etageId: string): Promise<{ pieces: Piece[], etage: Etage }> => {
+export const fetchPieces = async (etageId: string): Promise<Piece[]> => {
   const response = await fetch(`${API_BASE_URL}/etages/${etageId}`);
 
   if (!response.ok) {
     throw new Error("Erreur lors de la récupération des pièces");
   }
 
-  const data = await response.json();
-  return { pieces: data.pieces, etage: data.etage };
+  return response.json();
 };
 
 /**
@@ -59,8 +67,7 @@ export const fetchArticles = async (pieceId: string): Promise<Article[]> => {
     throw new Error("Erreur lors de la récupération des articles");
   }
 
-  const data = await response.json();
-  return data;
+  return response.json();
 };
 
 /**

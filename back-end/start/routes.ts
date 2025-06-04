@@ -204,3 +204,16 @@ Route.put('/articles/:num_inventaire', 'ArticleController.update')
 
 Route.post('/categories', 'CategorieController.add')
 Route.get('/categories', 'CategorieController.getAll')
+
+/**
+ * @swagger
+ * /zones:
+ *   get:
+ *     tags:
+ *       - Zones
+ *     description: Récupère la liste de toutes les zones avec leurs bâtiments
+ *     responses:
+ *       200:
+ *         description: Liste des zones avec leurs bâtiments
+ */
+Route.get('/zones', 'ZonesController.index')

@@ -6,12 +6,12 @@ import { usePieces } from "@/hooks/usePieces";
 import NotFound from "../common/NotFound";
 import Error from "../common/Error";
 
-
 export default function ListePieces() {
   const { batimentId, etageId } = useParams();
-  const { data, isLoading, error } = usePieces(etageId);
-  const { pieces, etage } = data ?? { pieces: [], etage: { nom: "" } };
-  const headerTitle = `Étage ${etage.nom.toUpperCase()}`;
+  const { data: pieces, isLoading, error } = usePieces(etageId);
+  const headerTitle = pieces?.[0]?.etage.nom.toUpperCase() 
+    ? `Étage ${pieces[0].etage.nom.toUpperCase()}`
+    : "Étage";
 
   if (isLoading) {
     return (
@@ -37,6 +37,16 @@ export default function ListePieces() {
     );
   }
 
+  if (!pieces || pieces.length === 0) {
+    return (
+      <div className="container">
+        <Header title={headerTitle} />
+        <SearchBar label="Rechercher" />
+        <NotFound message="Aucune pièce trouvée" />
+      </div>
+    );
+  }
+
   return (
     <div className="container">
       <Header title={headerTitle} />
@@ -49,7 +59,6 @@ export default function ListePieces() {
             link={`/inventaire/${batimentId}/${etageId}/${piece.id}`}
           />
         ))}
-        {pieces?.length === 0 && <NotFound message="Aucune pièce trouvée" />}
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, hasMany, HasMany, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
 import Etage from './Etage'
+import Zone from './Zone'
 
 export default class Batiment extends BaseModel {
   public static table = 'batiment'
@@ -10,6 +11,15 @@ export default class Batiment extends BaseModel {
 
   @column()
   public nom: string
+
+  @column({ serializeAs: null })
+  public id_zone: number
+
+  @belongsTo(() => Zone, {
+    foreignKey: 'id_zone',
+    serializeAs: 'zone',
+  })
+  public zone: BelongsTo<typeof Zone>
 
   @hasMany(() => Etage, {
     foreignKey: 'id_batiment',

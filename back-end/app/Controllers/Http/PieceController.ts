@@ -1,5 +1,4 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Etage from 'App/Models/Etage'
 import Piece from 'App/Models/Piece'
 
 export default class PieceController {
@@ -37,13 +36,15 @@ export default class PieceController {
    */
   public async getByEtage({ params, response }: HttpContextContract) {
     try {
-      const pieces = await Piece.query().where('id_etage', params.id_etage)
-      const etage = await Etage.find(params.id_etage)
+      const pieces = await Piece.query()
+        .where('id_etage', params.id_etage)
+        .preload('etage', (etageQuery) => {
+          etageQuery.preload('batiment')
+        })
 
-      return response.ok({ pieces, etage })
+      return response.ok(pieces)
     } catch (error) {
       return response.internalServerError({ error: 'Erreur lors de la recherche des pièces' })
     }
   }
 }
- 

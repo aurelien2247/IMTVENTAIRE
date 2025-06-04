@@ -4,6 +4,7 @@
 export interface Etage {
   id: number;
   nom: string;
+  batiment: Batiment;
 }
 
 /**
@@ -21,6 +22,16 @@ export interface Categorie {
 export interface Batiment {
   id: number;
   nom: string;
+  zone: Zone;
+}
+
+/**
+ * Représente une zone
+ */
+export interface Zone {
+  id: number;
+  nom: string;
+  batiments: Batiment[];
 }
 
 /**
@@ -44,12 +55,17 @@ export interface Article {
   piece: Piece;
 }
 
-export enum Etat {
-  Neuf,
-  "Bon état",
-  "Mauvais état",
-  "En attente de destruction",
-  Détruit,
+export interface Etat {
+  id: number;
+  nom: string;
+}
+
+export enum EtatEnum {
+  Neuf = 1,
+  "Bon état" = 2,
+  "Mauvais état" = 3,
+  "En attente de destruction" = 4,
+  Détruit = 5,
 }
 
 export interface Categorie {

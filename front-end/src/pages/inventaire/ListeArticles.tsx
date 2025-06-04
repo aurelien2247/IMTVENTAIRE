@@ -35,19 +35,28 @@ export default function ListeArticles() {
     );
   }
 
+  if (!articles || articles.length === 0) {
+    return (
+      <div className="container">
+        <Header title={headerTitle} />
+        <SearchBar label="Rechercher" />
+        <NotFound message="Aucun article trouvé" />
+      </div>
+    );
+  }
+
   return (
     <div className="container">
       <Header title={headerTitle} />
       <SearchBar label="Rechercher" />
       <div className="flex flex-col gap-2">
-        {articles?.map((article) => (
+        {articles.map((article) => (
           <ArticleCard
             key={article.num_inventaire}
             article={article}
             link={`/inventaire/${batimentId}/${etageId}/${pieceId}/${article.num_inventaire}`}
           />
         ))}
-        {articles?.length === 0 && <NotFound message="Aucun article trouvé" />}
       </div>
     </div>
   );

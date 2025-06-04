@@ -1,5 +1,5 @@
-import type { Article } from "@/types";
-import { Etat } from "@/types";
+import type { Article, Etat } from "@/types";
+import { EtatEnum } from "@/types";
 import Card from "./Card";
 
 interface Props {
@@ -9,17 +9,19 @@ interface Props {
 
 export default function ArticleCard({ article, link }: Props) {
   const getEtatColor = (etat: Etat) => {
-    switch (etat) {
-      case Etat.Neuf:
+    switch (etat.id) {
+      case EtatEnum.Neuf:
         return 'bg-green-500';
-      case Etat["Bon état"]:
+      case EtatEnum["Bon état"]:
         return 'bg-green-400';
-      case Etat["Mauvais état"]:
+      case EtatEnum["Mauvais état"]:
         return 'bg-yellow-500';
-      case Etat["En attente de destruction"]:
+      case EtatEnum["En attente de destruction"]:
         return 'bg-orange-500';
-      case Etat.Détruit:
+      case EtatEnum.Détruit:
         return 'bg-red-500';
+      default:
+        return 'bg-gray-500';
     }
   };
 
@@ -29,12 +31,12 @@ export default function ArticleCard({ article, link }: Props) {
         <div className="flex items-center gap-2">
           <div 
             className={`w-1.5 aspect-square rounded-full ${getEtatColor(article.etat)}`} 
-            title={Etat[article.etat]}
+            title={EtatEnum[article.etat.id]}
           />
           <p>{article.categorie.nom}</p>
         </div>
         <p className="text-sm text-muted-foreground">
-          {article.num_inventaire}
+          #{article.num_inventaire}
         </p>
       </span>
       <div className="flex gap-4">

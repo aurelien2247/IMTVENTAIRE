@@ -1,9 +1,5 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Article from 'App/Models/Article'
-import Piece from 'App/Models/Piece'
-import Etage from 'App/Models/Etage'
-import Batiment from 'App/Models/Batiment'
-import Categorie from 'App/Models/Categorie'
 
 export default class ArticleController {
   /**
@@ -31,12 +27,9 @@ export default class ArticleController {
     try {
       const articles = await Article.query()
         .where('id_piece', params.id_piece)
-        .preload('piece', (pieceQuery) => {
-          pieceQuery.preload('etage', (etageQuery) => {
-            etageQuery.preload('batiment')
-          })
-        })
+        .preload('piece')
         .preload('categorieRelation')
+        .preload('etatRelation')
 
       return response.ok(articles)
     } catch (error) {

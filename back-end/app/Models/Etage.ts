@@ -11,11 +11,12 @@ export default class Etage extends BaseModel {
   @column()
   public nom: string
 
-  @column()
+  @column({ serializeAs: null })
   public id_batiment: number
 
   @belongsTo(() => Batiment, {
     foreignKey: 'id_batiment',
+    serializeAs: 'batiment',
   })
   public batiment: BelongsTo<typeof Batiment>
 
