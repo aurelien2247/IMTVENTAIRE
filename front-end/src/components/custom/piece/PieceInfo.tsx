@@ -56,7 +56,6 @@ export default function PieceInfo() {
           {scanMode && <small className="animate-pulse">Scan en cours</small>}
           <h1>{piece.nom}</h1>
         </span>
-        <p>Étage {piece.etage.nom}</p>
       </div>
       {scanMode ? (
         <ScanMode piece={piece} articlesScanned={articlesScanned} />

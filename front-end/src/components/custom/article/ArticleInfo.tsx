@@ -13,7 +13,7 @@ export default function ArticleInfo() {
   }
 
   return (
-    <div className="container flex flex-col gap-4 justify-between">
+    <div className="container flex flex-col gap-16">
       <div className="flex flex-col gap-6 min-w-0">
         <div className="flex flex-col gap-1">
           <span className="flex items-center gap-2">
