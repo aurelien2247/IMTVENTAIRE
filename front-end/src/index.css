@@ -9,10 +9,6 @@
 }
 
 @theme inline {
-  /*Template pour une couleur personnalisée*/
-  /*--color-nomdevar: var(--nomDeVarDeclareDansRoot);*/
-  /*Template pour une var personnalisée*/
-  /*--nomdevar: var(--nomDeVarDeclareDansRoot);*/
   --color-actif: #40C0E2;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -138,7 +134,7 @@
   }
 
   h3 {
-    @apply text-lg font-bold
+    @apply text-lg font-semibold
   }
 
   small {

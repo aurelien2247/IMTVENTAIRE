@@ -51,7 +51,9 @@ export default class PieceController {
     try {
       const piece = await Piece.query()
         .where('nom', params.nom)
-        .preload('articles')
+        .preload('articles', (articleQuery) => {
+          articleQuery.preload('categorieRelation').preload('etatRelation')
+        })
         .preload('etage', (etageQuery) => {
           etageQuery.preload('batiment')
         })

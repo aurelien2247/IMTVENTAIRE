@@ -41,6 +41,7 @@ export interface Piece {
   id: number;
   nom: string;
   etage: Etage;
+  articles?: Article[];
 }
 
 /**

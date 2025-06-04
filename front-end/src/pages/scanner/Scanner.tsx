@@ -2,18 +2,24 @@ import { BarcodeScanner, type DetectedBarcode } from "react-barcode-scanner";
 import "react-barcode-scanner/polyfill";
 import ScanRectangle from "./components/ScanRectangle";
 import { ScanDrawer } from "./components/ScanDrawer";
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import ArticleInfo from "@/components/custom/article/ArticleInfo";
 import PieceInfo from "@/components/custom/piece/PieceInfo";
+import { useAtom } from "jotai";
+import { codeScannedAtom, scanModeAtom } from "@/lib/atoms";
 
 export default function Scanner() {
-  const [codeScanned, setCodeScanned] = useState<string | null>(null);
+  const [codeScanned, setCodeScanned] = useAtom(codeScannedAtom);
+  const [scanMode] = useAtom(scanModeAtom);
 
-  const handleCapture = useCallback((result: DetectedBarcode[]) => {
-    setCodeScanned(result[0].rawValue);
-  }, []);
+  const handleCapture = useCallback(
+    (result: DetectedBarcode[]) => {
+      setCodeScanned(result[0].rawValue);
+    },
+    [setCodeScanned]
+  );
 
-  const isPiece = codeScanned?.match(/[a-zA-Z]/);
+  const isPiece = scanMode || codeScanned?.match(/[a-zA-Z]/);
 
   return (
     <div className="fixed inset-0 w-screen h-screen overflow-hidden">
@@ -23,16 +29,7 @@ export default function Scanner() {
         className="w-full h-full object-cover"
       />
       <ScanRectangle />
-      <ScanDrawer
-        articleScanned={codeScanned}
-        setArticleScanned={setCodeScanned}
-      >
-        {isPiece ? (
-          <PieceInfo pieceName={codeScanned} />
-        ) : (
-          <ArticleInfo idArticle={codeScanned} />
-        )}
-      </ScanDrawer>
+      <ScanDrawer>{isPiece ? <PieceInfo /> : <ArticleInfo />}</ScanDrawer>
     </div>
   );
 }

@@ -12,7 +12,7 @@ export const useArticles = (pieceId: string | undefined) => {
   });
 };
 
-export const useArticle = (idArticle: string | null) => {
+export const useArticle = (idArticle: string | null, enabled = true) => {
   if (!idArticle) {
     throw new Error("L'article est introuvable");
   }
@@ -20,5 +20,6 @@ export const useArticle = (idArticle: string | null) => {
   return useQuery({
     queryKey: ["article", idArticle],
     queryFn: () => fetchArticle(idArticle),
+    enabled,
   });
 };

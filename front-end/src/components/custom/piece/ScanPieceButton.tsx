@@ -1,23 +1,19 @@
 import { Button } from "@/components/ui/button";
+import { scanModeAtom } from "@/lib/atoms";
 import { cn } from "@/lib/utils";
+import { useAtom } from "jotai";
 import { CheckIcon, ScanIcon } from "lucide-react";
 
-interface ScanPieceButtonProps {
-  isScanning: boolean;
-  setIsScanning: (isScanning: boolean) => void;
-}
-
-export default function ScanPieceButton({
-  isScanning,
-  setIsScanning,
-}: ScanPieceButtonProps) {
+export default function ScanPieceButton() {
+  const [scanMode, setScanMode] = useAtom(scanModeAtom);
   const defaultStyle =
-    "absolute -top-24 left-1/2 -translate-x-1/2 backdrop-blur-2xl";
+    "absolute -top-16 left-1/2 -translate-x-1/2 backdrop-blur-2xl";
+    
   const handleClick = (startScan: boolean) => {
-    setIsScanning(startScan);
+    setScanMode(startScan);
   };
 
-  if (isScanning) {
+  if (scanMode) {
     return (
       <Button
         className={cn(defaultStyle, "bg-green-600/50 border border-green-600")}

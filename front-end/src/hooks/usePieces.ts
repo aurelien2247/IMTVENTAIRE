@@ -12,7 +12,7 @@ export const usePieces = (etageId: string | undefined) => {
   });
 };
 
-export const usePieceByName = (nom: string | null) => {
+export const usePieceByName = (nom: string | null, enabled = true) => {
   if (!nom) {
     throw new Error("Impossible de récupérer la pièce");
   }
@@ -20,5 +20,7 @@ export const usePieceByName = (nom: string | null) => {
   return useQuery({
     queryKey: ["piece", "nom", nom],
     queryFn: () => fetchPieceByName(nom),
+    enabled,
+    placeholderData: (previousData) => previousData
   });
 };

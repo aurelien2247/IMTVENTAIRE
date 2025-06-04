@@ -1,31 +1,73 @@
 import { usePieceByName } from "@/hooks/usePieces";
 import ScanPieceButton from "./ScanPieceButton";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import type { Article } from "@/types";
+import { useAtom } from "jotai";
+import { codeScannedAtom, scanModeAtom } from "@/lib/atoms";
+import { useArticle } from "@/hooks/useArticles";
+import ScanConfirmDialog from "@/pages/scanner/components/ScanConfirmDialog";
+import ArticleList from "../article/ArticleList";
+import ScanMode from "@/pages/scanner/components/ScanMode";
 
-interface PieceInfoProps {
-  pieceName: string | null;
-}
+export default function PieceInfo() {
+  const [scanMode, setScanMode] = useAtom(scanModeAtom);
+  const [codeScanned] = useAtom(codeScannedAtom);
+  const [articlesScanned, setArticlesScanned] = useState<Article[]>([]);
+  const [openConfirmScan, setOpenConfirmScan] = useState(false);
+  // const [articleScanned, setArticleScanned] = useState<string | null>(null);
 
-export default function PieceInfo({ pieceName }: PieceInfoProps) {
-  const { data: piece } = usePieceByName(pieceName);
-  const [isScanning, setIsScanning] = useState(false);
+  const isPiece = !!codeScanned?.match(/[a-zA-Z]/);
+  const { data: piece } = usePieceByName(codeScanned, !!codeScanned && isPiece);
+  const { data: article } = useArticle(
+    codeScanned,
+    scanMode && !isPiece && codeScanned !== piece?.nom
+  );
+
+  useEffect(() => {
+    if (scanMode && article) {
+      setArticlesScanned((articles) => [...articles, article]);
+    } else if (articlesScanned.length > 0) {
+      setOpenConfirmScan(true);
+    }
+  }, [codeScanned, scanMode, article]);
+
+  const saveScan = () => {
+    // TODO: Enregistrer les articles sauvegardées dans le back
+  };
+
+  const resetArticlesScanned = () => {
+    setArticlesScanned([]);
+    setScanMode(false);
+  };
+
+  const handleConfirmScan = (confirm: boolean) => {
+    if (confirm) {
+      saveScan();
+      resetArticlesScanned();
+    }
+    setOpenConfirmScan(false);
+  };
 
   if (!piece) {
     return null;
   }
 
   return (
-    <div className="container h-screen relative">
-      <ScanPieceButton isScanning={isScanning} setIsScanning={setIsScanning} />
-      <div className="flex flex-col gap-6 min-w-0">
-        <div className="flex flex-col gap-1">
-          <span>
-            {isScanning && <small className="animate-pulse">Scan en cours</small>}
-            <h1>{piece.nom}</h1>
-          </span>
-          <p>Étage {piece.etage.nom}</p>
-        </div>
+    <div className="container gap-6">
+      <ScanPieceButton />
+      <div className="flex flex-col gap-1">
+        <span>
+          {scanMode && <small className="animate-pulse">Scan en cours</small>}
+          <h1>{piece.nom}</h1>
+        </span>
+        <p>Étage {piece.etage.nom}</p>
       </div>
+      {scanMode ? (
+        <ScanMode piece={piece} articlesScanned={articlesScanned} />
+      ) : (
+        <ArticleList articles={piece.articles} />
+      )}
+      <ScanConfirmDialog open={openConfirmScan} onConfirm={handleConfirmScan} />
     </div>
   );
 }
