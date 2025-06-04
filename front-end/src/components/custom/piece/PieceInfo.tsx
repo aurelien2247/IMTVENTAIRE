@@ -14,14 +14,10 @@ export default function PieceInfo() {
   const [codeScanned] = useAtom(codeScannedAtom);
   const [articlesScanned, setArticlesScanned] = useState<Article[]>([]);
   const [openConfirmScan, setOpenConfirmScan] = useState(false);
-  // const [articleScanned, setArticleScanned] = useState<string | null>(null);
 
   const isPiece = !!codeScanned?.match(/[a-zA-Z]/);
-  const { data: piece } = usePieceByName(codeScanned, !!codeScanned && isPiece);
-  const { data: article } = useArticle(
-    codeScanned,
-    scanMode && !isPiece && codeScanned !== piece?.nom
-  );
+  const { data: piece } = usePieceByName(codeScanned, isPiece);
+  const { data: article } = useArticle(codeScanned, scanMode && !isPiece);
 
   useEffect(() => {
     if (scanMode && article) {
