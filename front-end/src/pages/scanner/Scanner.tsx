@@ -3,6 +3,7 @@ import "react-barcode-scanner/polyfill";
 import ScanRectangle from "./components/ScanRectangle";
 import { ScanDrawer } from "./components/ScanDrawer";
 import { useState, useCallback } from "react";
+import ArticleInfo from "@/components/custom/article/ArticleInfo";
 
 export default function Scanner() {
   const [articleScanned, setArticleScanned] = useState<string | null>(null);
@@ -22,7 +23,9 @@ export default function Scanner() {
       <ScanDrawer
         articleScanned={articleScanned}
         setArticleScanned={setArticleScanned}
-      />
+      >
+        <ArticleInfo idArticle={articleScanned} />
+      </ScanDrawer>
     </div>
   );
 }

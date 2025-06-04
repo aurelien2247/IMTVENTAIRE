@@ -201,6 +201,31 @@ Route.post('/articles', 'ArticleController.store')
  *         description: Données invalides
  */
 Route.put('/articles/:num_inventaire', 'ArticleController.update')
+/**
+ * @swagger
+ * /article/{num_inventaire}:
+ *   get:
+ *     tags:
+ *       - Articles
+ *     description: Récupère les détails d'un article spécifique
+ *     parameters:
+ *       - in: path
+ *         name: num_inventaire
+ *         required: true
+ *         description: Numéro d'inventaire de l'article
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Détails de l'article
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Article'
+ *       404:
+ *         description: Article non trouvé
+ */
+Route.get('/article/:num_inventaire', 'ArticleController.show')
 
 Route.post('/categories', 'CategorieController.add')
 Route.get('/categories', 'CategorieController.getAll')

@@ -1,6 +1,6 @@
 import type { Article, Etat } from "@/types";
 import { EtatEnum } from "@/types";
-import Card from "./Card";
+import Card from "../Card";
 
 interface Props {
   article: Article;

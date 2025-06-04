@@ -1,16 +1,17 @@
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
-import ModifierArticle from "@/pages/inventaire/ModifierArticle";
 
 interface ScanDrawerProps {
   articleScanned: string | null;
   setArticleScanned: (articleScanned: string | null) => void;
+  children: React.ReactNode;
 }
 
 export function ScanDrawer({
   articleScanned,
   setArticleScanned,
+  children,
 }: ScanDrawerProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const isOpen = articleScanned !== null;
@@ -23,7 +24,7 @@ export function ScanDrawer({
     return (
       <Dialog open={isOpen} onOpenChange={closeDrawer}>
         <DialogContent className="sm:max-w-[425px]">
-          <ModifierArticle />
+          {children}
         </DialogContent>
       </Dialog>
     );
@@ -32,7 +33,7 @@ export function ScanDrawer({
   return (
     <Drawer open={isOpen} onOpenChange={closeDrawer}>
       <DrawerContent>
-        <ModifierArticle />
+        {children}
       </DrawerContent>
     </Drawer>
   );

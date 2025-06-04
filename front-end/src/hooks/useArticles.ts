@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchArticles } from "@/api/inventaire";
+import { fetchArticle, fetchArticles } from "@/api/inventaire";
 
 export const useArticles = (pieceId: string | undefined) => {
   if (!pieceId) {
@@ -9,5 +9,16 @@ export const useArticles = (pieceId: string | undefined) => {
   return useQuery({
     queryKey: ["articles", pieceId],
     queryFn: () => fetchArticles(pieceId),
+  });
+};
+
+export const useArticle = (idArticle: string | null) => {
+  if (!idArticle) {
+    throw new Error("L'article est introuvable");
+  }
+
+  return useQuery({
+    queryKey: ["article", idArticle],
+    queryFn: () => fetchArticle(idArticle),
   });
 };

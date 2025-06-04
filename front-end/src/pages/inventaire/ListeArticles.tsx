@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { SearchBar } from "@/components/custom/SearchBar";
 import Header from "@/components/custom/Header";
-import ArticleCard, { ArticleCardSkeleton } from "@/components/custom/ArticleCard";
+import ArticleCard, { ArticleCardSkeleton } from "@/components/custom/article/ArticleCard";
 import NotFound from "../common/NotFound";
 import { useArticles } from "@/hooks/useArticles";
 import Error from "../common/Error";

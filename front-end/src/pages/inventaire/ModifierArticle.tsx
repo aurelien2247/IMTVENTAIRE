@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Card from "@/components/custom/Card";
 import { toast } from "sonner";
 import { useParams } from "react-router-dom";
-import { Etat } from "@/types";
+import { EtatEnum } from "@/types";
 
 const ModifierSchema = z.object({
   numInventaire: z.number(),
@@ -55,7 +55,7 @@ export default function ModifierArticle() {
     },
   ];
 
-  const etats = Object.keys(Etat)
+  const etats = Object.keys(EtatEnum)
     .filter((key) => isNaN(Number(key)))
     .map((key) => ({
       value: key,
