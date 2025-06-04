@@ -56,6 +56,22 @@ export const fetchPieces = async (etageId: string): Promise<Piece[]> => {
 };
 
 /**
+ * Récupère une pièce par son nom
+ * @param nom - Le nom de la pièce
+ * @returns La pièce correspondante
+ */
+export const fetchPieceByName = async (nom: string): Promise<Piece> => {
+  const response = await fetch(`${API_BASE_URL}/pieces/nom/${nom}`);
+
+  if (!response.ok) {
+    throw new Error("Erreur lors de la récupération de la pièce");
+  }
+
+  return response.json();
+};
+
+
+/**
  * Récupère les articles d'une pièce
  * @param pieceId - L'identifiant de la pièce
  * @returns Les articles de la pièce

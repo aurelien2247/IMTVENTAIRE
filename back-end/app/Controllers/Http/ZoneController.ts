@@ -1,7 +1,7 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Zone from 'App/Models/Zone'
 
-export default class ZonesController {
+export default class ZoneController {
   /**
    * List all zones with their buildings
    */

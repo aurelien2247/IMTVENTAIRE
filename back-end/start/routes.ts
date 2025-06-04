@@ -38,6 +38,19 @@ Route.get('/', async () => {
 
 /**
  * @swagger
+ * /zones:
+ *   get:
+ *     tags:
+ *       - Zones
+ *     description: Récupère la liste de toutes les zones avec leurs bâtiments
+ *     responses:
+ *       200:
+ *         description: Liste des zones avec leurs bâtiments
+ */
+Route.get('/zones', 'ZoneController.index')
+
+/**
+ * @swagger
  * /batiments:
  *   get:
  *     tags:
@@ -91,14 +104,14 @@ Route.get('/etages/:id_etage', 'PieceController.getByEtage')
 
 /**
  * @swagger
- * /pieces/{id_piece}:
+ * /pieces/{id}:
  *   get:
  *     tags:
  *       - Articles
  *     description: Récupère tous les articles d'une pièce spécifique
  *     parameters:
  *       - in: path
- *         name: id_piece
+ *         name: id
  *         required: true
  *         description: Identifiant de la pièce
  *         schema:
@@ -107,7 +120,33 @@ Route.get('/etages/:id_etage', 'PieceController.getByEtage')
  *       200:
  *         description: Liste des articles de la pièce
  */
-Route.get('/pieces/:id_piece', 'ArticleController.getByPiece')
+Route.get('/pieces/:id', 'ArticleController.getByPiece')
+
+/**
+ * @swagger
+ * /pieces/{nom}:
+ *   get:
+ *     tags:
+ *       - Pièces
+ *     description: Récupère une pièce par son nom
+ *     parameters:
+ *       - in: path
+ *         name: nom
+ *         required: true
+ *         description: Nom de la pièce
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Pièce trouvée
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Piece'
+ *       404:
+ *         description: Pièce non trouvée
+ */
+Route.get('/pieces/nom/:nom', 'PieceController.getByName')
 
 /**
  * @swagger
@@ -229,16 +268,3 @@ Route.get('/article/:num_inventaire', 'ArticleController.show')
 
 Route.post('/categories', 'CategorieController.add')
 Route.get('/categories', 'CategorieController.getAll')
-
-/**
- * @swagger
- * /zones:
- *   get:
- *     tags:
- *       - Zones
- *     description: Récupère la liste de toutes les zones avec leurs bâtiments
- *     responses:
- *       200:
- *         description: Liste des zones avec leurs bâtiments
- */
-Route.get('/zones', 'ZonesController.index')

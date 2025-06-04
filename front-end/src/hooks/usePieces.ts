@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchPieces } from "@/api/inventaire";
+import { fetchPieces, fetchPieceByName } from "@/api/inventaire";
 
 export const usePieces = (etageId: string | undefined) => {
   if (!etageId) {
@@ -9,5 +9,16 @@ export const usePieces = (etageId: string | undefined) => {
   return useQuery({
     queryKey: ["pieces", etageId],
     queryFn: () => fetchPieces(etageId),
+  });
+};
+
+export const usePieceByName = (nom: string | null) => {
+  if (!nom) {
+    throw new Error("Impossible de récupérer la pièce");
+  }
+
+  return useQuery({
+    queryKey: ["piece", "nom", nom],
+    queryFn: () => fetchPieceByName(nom),
   });
 };

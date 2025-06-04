@@ -1,6 +1,7 @@
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import { useState } from "react";
 
 interface ScanDrawerProps {
   articleScanned: string | null;
@@ -8,11 +9,14 @@ interface ScanDrawerProps {
   children: React.ReactNode;
 }
 
+const snapPoints = [0.4, 0.6, 0.9];
+
 export function ScanDrawer({
   articleScanned,
   setArticleScanned,
   children,
 }: ScanDrawerProps) {
+  const [snap, setSnap] = useState<number | string | null>(snapPoints[0]);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const isOpen = articleScanned !== null;
 
@@ -31,7 +35,7 @@ export function ScanDrawer({
   }
 
   return (
-    <Drawer open={isOpen} onOpenChange={closeDrawer}>
+    <Drawer open={isOpen} onOpenChange={closeDrawer} snapPoints={snapPoints} activeSnapPoint={snap} setActiveSnapPoint={setSnap}>
       <DrawerContent>
         {children}
       </DrawerContent>

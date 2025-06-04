@@ -22,6 +22,7 @@ export default class Piece extends BaseModel {
 
   @hasMany(() => Article, {
     foreignKey: 'id_piece',
+    serializeAs: 'articles',
   })
   public articles: HasMany<typeof Article>
 }

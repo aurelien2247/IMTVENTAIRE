@@ -1,7 +1,7 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Batiment from 'App/Models/Batiment'
 
-export default class BatimentsController {
+export default class BatimentController {
   /**
    * List all buildings
    */

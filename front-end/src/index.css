@@ -141,6 +141,10 @@
     @apply text-lg font-bold
   }
 
+  small {
+    @apply text-sm text-muted-foreground
+  }
+
   .container {
     @apply px-8 py-12 flex flex-col gap-4;
   }

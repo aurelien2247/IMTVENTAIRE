@@ -27,7 +27,7 @@ export default class PieceController {
 
       return response.ok(piece)
     } catch (error) {
-      return response.internalServerError({ error: 'Impossible de retrouver la pièce.' })
+      return response.internalServerError({ error: 'Impossible de retrouver la pièce' })
     }
   }
 
@@ -36,15 +36,34 @@ export default class PieceController {
    */
   public async getByEtage({ params, response }: HttpContextContract) {
     try {
-      const pieces = await Piece.query()
-        .where('id_etage', params.id_etage)
-        .preload('etage', (etageQuery) => {
-          etageQuery.preload('batiment')
-        })
+      const pieces = await Piece.query().where('id_etage', params.id_etage).preload('etage')
 
       return response.ok(pieces)
     } catch (error) {
       return response.internalServerError({ error: 'Erreur lors de la recherche des pièces' })
+    }
+  }
+
+  /**
+   * Get a room by its name
+   */
+  public async getByName({ params, response }: HttpContextContract) {
+    try {
+      const piece = await Piece.query()
+        .where('nom', params.nom)
+        .preload('articles')
+        .preload('etage', (etageQuery) => {
+          etageQuery.preload('batiment')
+        })
+        .first()
+
+      if (!piece) {
+        return response.notFound({ message: 'Pièce non trouvée' })
+      }
+
+      return response.ok(piece)
+    } catch (error) {
+      return response.internalServerError({ error: 'Erreur lors de la recherche de la pièce' })
     }
   }
 }
