@@ -10,7 +10,7 @@ export default class BatimentsController {
       const batiment = await Batiment.all()
       return response.ok(batiment)
     } catch (error) {
-      return response.internalServerError({ error: error.message })
+      return response.internalServerError({ error: 'Erreur lors de la recherche des bâtiments' })
     }
   }
 }
