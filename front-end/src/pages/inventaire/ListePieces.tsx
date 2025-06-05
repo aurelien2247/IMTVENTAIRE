@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import Card from "@/components/custom/Card";
 import { SearchBar } from "@/components/custom/SearchBar";
-import Header from "@/components/custom/Header";
+import Header, { HeaderSkeleton } from "@/components/custom/Header";
 import { usePieces } from "@/hooks/usePieces";
 import NotFound from "../common/NotFound";
 import Error from "../common/Error";
@@ -16,7 +16,7 @@ export default function ListePieces() {
   if (isLoading) {
     return (
       <div className="container">
-        <Header title={headerTitle} />
+        <HeaderSkeleton />
         <SearchBar label="Rechercher" />
         <div className="flex flex-col gap-2">
           {Array.from({ length: 10 }).map((_, index) => (
@@ -30,7 +30,7 @@ export default function ListePieces() {
   if (error) {
     return (
       <div className="container">
-        <Header title={headerTitle} />
+        <Header title="Étage introuvable" />
         <SearchBar label="Rechercher" />
         <Error />
       </div>

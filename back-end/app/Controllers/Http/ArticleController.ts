@@ -26,7 +26,7 @@ export default class ArticleController {
   public async getByPiece({ params, response }: HttpContextContract) {
     try {
       const articles = await Article.query()
-        .where('id_piece', params.id_piece)
+        .where('id_piece', params.id)
         .preload('piece')
         .preload('categorieRelation')
         .preload('etatRelation')

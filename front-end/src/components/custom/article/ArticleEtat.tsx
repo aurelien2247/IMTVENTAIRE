@@ -1,3 +1,4 @@
+import { Skeleton } from "@/components/ui/skeleton";
 import { EtatEnum, type Etat } from "@/types";
 
 interface ArticleEtatProps {
@@ -28,4 +29,8 @@ export default function ArticleEtat({ etat }: ArticleEtatProps) {
       title={EtatEnum[etat.id]}
     />
   );
+}
+
+export function ArticleEtatSkeleton() {
+  return <Skeleton className="w-1.5 aspect-square rounded-full" />;
 }

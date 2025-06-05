@@ -1,5 +1,5 @@
 import type { Article } from "@/types";
-import ArticleItem from "./ArticleItem";
+import ArticleItem, { ArticleItemSkeleton } from "./ArticleItem";
 
 interface ArticleListProps {
   articles?: Article[];
@@ -11,13 +11,22 @@ export default function ArticleList({ articles }: ArticleListProps) {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       <p className="text-muted-foreground">Articles dans la pièce</p>
-      <div className="flex flex-col gap-2">
-        {articles.map((article) => (
-          <ArticleItem key={article.num_inventaire} article={article} />
-        ))}
-      </div>
+      {articles.map((article) => (
+        <ArticleItem key={article.num_inventaire} article={article} />
+      ))}
+    </div>
+  );
+}
+
+export function ArticleListSkeleton() {
+  return (
+    <div className="flex flex-col gap-6">
+      <p className="text-muted-foreground">Articles dans la pièce</p>
+      {[...Array(3)].map((_, index) => (
+        <ArticleItemSkeleton key={index} />
+      ))}
     </div>
   );
 }

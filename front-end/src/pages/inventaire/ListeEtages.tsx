@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import Card from "@/components/custom/Card";
 import { SearchBar } from "@/components/custom/SearchBar";
-import Header from "@/components/custom/Header";
+import Header, { HeaderSkeleton } from "@/components/custom/Header";
 import { useEtages } from "@/hooks/useEtages";
 import NotFound from "../common/NotFound";
 import Error from "../common/Error";
@@ -14,7 +14,7 @@ export default function ListeEtages() {
   if (isLoading) {
     return (
       <div className="container">
-        <Header title={headerTitle} />
+        <HeaderSkeleton />
         <SearchBar label="Rechercher" />
         <div className="flex flex-col gap-2">
           {Array.from({ length: 10 }).map((_, index) => (
@@ -28,7 +28,7 @@ export default function ListeEtages() {
   if (error) {
     return (
       <div className="container">
-        <Header title={headerTitle} />
+        <Header title="Bâtiment introuvable" />
         <SearchBar label="Rechercher" />
         <Error />
       </div>

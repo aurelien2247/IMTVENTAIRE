@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { SearchBar } from "@/components/custom/SearchBar";
-import Header from "@/components/custom/Header";
+import Header, { HeaderSkeleton } from "@/components/custom/Header";
 import ArticleCard, { ArticleCardSkeleton } from "@/components/custom/article/ArticleCard";
 import NotFound from "../common/NotFound";
 import { useArticles } from "@/hooks/useArticles";
@@ -14,7 +14,7 @@ export default function ListeArticles() {
   if (isLoading) {
     return (
       <div className="container">
-        <Header title={headerTitle} />
+        <HeaderSkeleton />
         <SearchBar label="Rechercher" />
         <div className="flex flex-col gap-2">
           {Array.from({ length: 10 }).map((_, index) => (
@@ -28,7 +28,7 @@ export default function ListeArticles() {
   if (error) {
     return (
       <div className="container">
-        <Header title={headerTitle} />
+        <Header title="Salle introuvable" />
         <SearchBar label="Rechercher" />
         <Error />
       </div>
