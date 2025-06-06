@@ -10,7 +10,7 @@ export const fetchPieces = async (etageId: string): Promise<Piece[]> => {
   const response = await fetchApi(`/etages/${etageId}`);
 
   if (!response.ok) {
-    throw new Error("Erreur lors de la récupération des pièces");
+    throw new Error(response.error);
   }
 
   return response;
@@ -25,7 +25,7 @@ export const fetchPieceByName = async (nom: string): Promise<Piece> => {
   const response = await fetchApi(`/pieces/nom/${nom}`);
 
   if (!response.ok) {
-    throw new Error("Erreur lors de la récupération de la pièce");
+    throw new Error(response.error);
   }
 
   return response;

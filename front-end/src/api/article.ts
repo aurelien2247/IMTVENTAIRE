@@ -10,7 +10,7 @@ export const fetchArticles = async (pieceId: string): Promise<Article[]> => {
   const response = await fetchApi(`/pieces/${pieceId}`);
 
   if (!response.ok) {
-    throw new Error("Erreur lors de la récupération des articles");
+    throw new Error(response.error);
   }
 
   return response;
@@ -25,7 +25,7 @@ export const fetchArticle = async (articleId: string): Promise<Article> => {
   const response = await fetchApi(`/article/${articleId}`);
 
   if (!response.ok) {
-    throw new Error("Erreur lors de la récupération de l'article");
+    throw new Error(response.error);
   }
 
   return response;
@@ -36,14 +36,16 @@ export const fetchArticle = async (articleId: string): Promise<Article> => {
  * @param query - Le terme de recherche
  * @returns Les articles et salles correspondant à la recherche
  */
-export const searchArticles = async (query: string): Promise<{ articles: Article[], rooms: Piece[] }> => {
+export const searchArticles = async (
+  query: string
+): Promise<{ articles: Article[]; rooms: Piece[] }> => {
   const response = await fetchApi(`/search?query=${encodeURIComponent(query)}`);
 
   if (!response.ok) {
-    throw new Error("Erreur lors de la recherche des articles");
+    throw new Error(response.error);
   }
 
-  return response.json();
+  return response;
 };
 /**
  * Ajoute un nouvel article
@@ -73,17 +75,11 @@ export const addArticle = async (articleData: {
 
   const response = await fetchApi(`/articles`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(payload),
   });
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(
-      error.error || "Une erreur est survenue lors de l'ajout de l'article"
-    );
+    throw new Error(response.error);
   }
 
   return response;
@@ -92,14 +88,11 @@ export const addArticle = async (articleData: {
 export const createCategory = async (label: string): Promise<Categorie> => {
   const response = await fetchApi(`/categories`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify({ nom: label }),
   });
 
   if (!response.ok) {
-    throw new Error("Erreur lors de la création du statut");
+    throw new Error(response.error);
   }
 
   return response;
@@ -107,6 +100,10 @@ export const createCategory = async (label: string): Promise<Categorie> => {
 
 export const fetchCategories = async (): Promise<Categorie[]> => {
   const response = await fetchApi(`/categories`);
-  if (!response.ok) throw new Error("Erreur lors du chargement des catégories");
+
+  if (!response.ok) {
+    throw new Error(response.error);
+  }
+
   return response;
 };

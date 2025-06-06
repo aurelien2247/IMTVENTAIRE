@@ -10,7 +10,7 @@ export const fetchEtages = async (batimentId: string): Promise<Etage[]> => {
     const response = await fetchApi(`/batiments/${batimentId}`);
   
     if (!response.ok) {
-      throw new Error("Erreur lors de la récupération des étages");
+      throw new Error(response.error);
     }
   
     return response;

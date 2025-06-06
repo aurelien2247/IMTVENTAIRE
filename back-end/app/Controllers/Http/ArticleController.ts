@@ -77,13 +77,20 @@ export default class ArticleController {
         'fournisseur',
         'code_fournisseur',
         'marque',
-        'etat'
+        'etat',
       ])
 
       // Validation basique
-      if (!articleData.num_inventaire || !articleData.categorie || !articleData.id_piece ||
-          !articleData.num_serie || !articleData.num_bon_commande || !articleData.fournisseur ||
-           !articleData.code_fournisseur || !articleData.marque || !articleData.etat) {
+      if (
+        !articleData.num_inventaire ||
+        !articleData.categorie ||
+        !articleData.id_piece ||
+        !articleData.num_serie ||
+        !articleData.num_bon_commande ||
+        !articleData.fournisseur ||
+        !articleData.marque ||
+        !articleData.etat
+      ) {
         return response.status(400).json({
           error: 'Tous les champs sont requis',
         })
@@ -136,7 +143,7 @@ export default class ArticleController {
         'fournisseur',
         'code_fournisseur',
         'marque',
-        'etat'
+        'etat',
       ])
 
       if (articleData.categorie) {
@@ -180,7 +187,7 @@ export default class ArticleController {
       if (rooms.length > 0) {
         return response.ok({
           articles: [],
-          rooms: rooms
+          rooms: rooms,
         })
       }
 
@@ -190,7 +197,7 @@ export default class ArticleController {
         .select('id')
 
       if (categoriesQuery.length > 0) {
-        const categoryIds = categoriesQuery.map(cat => cat.id)
+        const categoryIds = categoriesQuery.map((cat) => cat.id)
 
         const articlesByCategory = await Article.query()
           .whereIn('categorie', categoryIds)
@@ -204,7 +211,7 @@ export default class ArticleController {
 
         return response.ok({
           articles: articlesByCategory,
-          rooms: []
+          rooms: [],
         })
       }
 
@@ -224,12 +231,12 @@ export default class ArticleController {
 
       return response.ok({
         articles: articlesByInventoryOrBrandOrSupplier,
-        rooms: []
+        rooms: [],
       })
     } catch (error) {
       console.error(error)
       return response.internalServerError({
-        error: 'Erreur lors de la recherche des articles et des salles'
+        error: 'Erreur lors de la recherche des articles et des salles',
       })
     }
   }
