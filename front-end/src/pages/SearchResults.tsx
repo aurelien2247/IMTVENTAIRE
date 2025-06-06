@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { searchArticles } from "@/api/inventaire";
+import { searchArticles } from "@/api/article";
 import type { Article, Piece } from "@/types";
 import Header, { HeaderSkeleton } from "@/components/custom/Header";
 import { SearchBar } from "@/components/custom/SearchBar";

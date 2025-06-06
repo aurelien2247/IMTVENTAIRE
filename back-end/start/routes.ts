@@ -275,17 +275,17 @@ Route.get('/categories', 'CategorieController.getAll')
  *   get:
  *     tags:
  *       - Recherche
- *     description: Recherche des articles par numéro d'inventaire ou nom de pièce
+ *     description: Recherche des articles par numéro d'inventaire, nom de pièce, nom de catégorie, marque ou fournisseur
  *     parameters:
  *       - in: query
  *         name: query
  *         required: true
- *         description: Terme de recherche (numéro d'inventaire ou nom de pièce)
+ *         description: Terme de recherche (numéro d'inventaire, nom de pièce, nom de catégorie, marque ou fournisseur)
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: Liste des articles correspondant à la recherche
+ *         description: Liste des articles et salles correspondant à la recherche
  *       400:
  *         description: Paramètre de recherche manquant
  */

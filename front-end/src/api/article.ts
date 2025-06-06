@@ -1,4 +1,4 @@
-import type { Article, Categorie } from "@/types";
+import type { Article, Categorie, Piece } from "@/types";
 import { fetchApi } from "./api";
 
 /**
@@ -32,20 +32,19 @@ export const fetchArticle = async (articleId: string): Promise<Article> => {
 };
 
 /**
- * Recherche des articles par numéro d'inventaire ou nom de pièce
+ * Recherche des articles par numéro d'inventaire, nom de pièce, nom de catégorie, marque, fournisseur ou numéro de bon de commande
  * @param query - Le terme de recherche
- * @returns Les articles correspondant à la recherche
+ * @returns Les articles et salles correspondant à la recherche
  */
-export const searchArticles = async (query: string): Promise<Article[]> => {
+export const searchArticles = async (query: string): Promise<{ articles: Article[], rooms: Piece[] }> => {
   const response = await fetchApi(`/search?query=${encodeURIComponent(query)}`);
 
   if (!response.ok) {
     throw new Error("Erreur lors de la recherche des articles");
   }
 
-  return response;
+  return response.json();
 };
-
 /**
  * Ajoute un nouvel article
  * @param articleData - Les données de l'article à ajouter
