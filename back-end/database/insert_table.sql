@@ -57,6 +57,9 @@ create table article (
     id_piece INTEGER,
     num_serie VARCHAR(100),
     num_bon_commande VARCHAR(100),
+    fournisseur VARCHAR(100),
+    code_fournisseur INTEGER,
+    marque VARCHAR(100),
     CONSTRAINT fk_piece
         FOREIGN KEY (id_piece)
         REFERENCES piece(id),

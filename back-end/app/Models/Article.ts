@@ -41,4 +41,13 @@ export default class Article extends BaseModel {
     serializeAs: 'etat',
   })
   public etatRelation: BelongsTo<typeof Etat>
+  @column()
+  public fournisseur: string
+
+  @column()
+  public code_fournisseur: number
+
+  @column()
+  public marque: string
+
 }
