@@ -166,7 +166,7 @@ INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_b
 
 -- PC portables
 INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29597', 3, 1, 7, 'PC2024A001', 'BC2024C001','Fournisseur 1', 1234, 'Marque 1');
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29598', 3, 2, 8, 'PC2024A002', 'BC2024C002','Fournisseur 2', 5678, 'Marque 2'));
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29598', 3, 2, 8, 'PC2024A002', 'BC2024C002','Fournisseur 2', 5678, 'Marque 2');
 INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29599', 3, 3, 9, 'PC2024A003', 'BC2024C003','Fournisseur 3', 9101, 'Marque 3');
 
 -- Vidéo projecteurs
