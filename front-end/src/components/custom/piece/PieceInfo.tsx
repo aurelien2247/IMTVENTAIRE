@@ -1,9 +1,9 @@
-import { usePieceByName } from "@/hooks/usePieces";
+import { usePieceByName } from "@/hooks/usePiece";
 import { useState, useEffect } from "react";
 import type { Article } from "@/types";
 import { useAtom } from "jotai";
 import { codeScannedAtom, scanModeAtom } from "@/lib/atoms";
-import { useArticle } from "@/hooks/useArticles";
+import { useArticle } from "@/hooks/useArticle";
 import ScanConfirmDialog from "@/pages/scanner/components/ScanConfirmDialog";
 import ArticleList, { ArticleListSkeleton } from "../article/ArticleList";
 import ScanMode from "@/pages/scanner/components/ScanMode";

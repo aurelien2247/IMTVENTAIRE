@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchBatiments } from '@/api/inventaire';
+import { fetchBatiments } from '@/api/batiment';
 import type { Batiment } from '@/types';
 
 export const useBatiments = () => {

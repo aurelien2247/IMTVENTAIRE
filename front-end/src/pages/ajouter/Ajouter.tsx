@@ -2,7 +2,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,18 +15,33 @@ import { Input } from "@/components/ui/input";
 import Card from "@/components/custom/Card";
 import { Combobox } from "@/components/ui/combobox";
 import Header from "@/components/custom/Header";
-import { API_BASE_URL } from "@/api/config";
+import { useAddArticle } from "@/hooks/useArticle";
 
 const AjouterSchema = z.object({
-  num_inventaire: z.string().regex(/^\d{5,}$/, { message: "Renseignez un nombre valide (5 chiffres min)" }),
-  num_serie: z.string().regex(/.+/, { message: "Renseignez le numéro de série" }),
-  categorie: z.string().regex(/.+/, { message: "Renseignez la catégorie" }),
+  num_inventaire: z
+    .string()
+    .regex(/^\d{5,}$/, {
+      message:
+        "Veuillez renseigner un numéro d'inventaire valide (5 chiffres minimum)",
+    }),
+  num_serie: z
+    .string()
+    .regex(/.+/, { message: "Veuillez renseigner le numéro de série" }),
+  categorie: z
+    .string()
+    .regex(/.+/, { message: "Veuillez renseigner la catégorie" }),
   etat: z.string(),
   id_piece: z.string(),
-  num_bon_commande: z.string().regex(/.+/, { message: "Renseignez le numéro de commande" }),
-  fournisseur: z.string().regex(/.+/, { message: "Renseignez le nom du fournisseur" }),
-  code_fournisseur: z.string().regex(/^\d{4,}$/, { message: "Renseignez un code fournisseur valide (4 chiffres min)" }),
-  marque: z.string().regex(/.+/, { message: "Renseignez une marque valide" }),
+  num_bon_commande: z
+    .string()
+    .regex(/.+/, { message: "Veuillez renseigner le numéro de commande" }),
+  fournisseur: z
+    .string()
+    .regex(/.+/, { message: "Veuillez renseigner le nom du fournisseur" }),
+  code_fournisseur: z.string().optional(),
+  marque: z
+    .string()
+    .regex(/.+/, { message: "Veuillez renseigner une marque valide" }),
 });
 
 type AjouterFormValues = z.infer<typeof AjouterSchema>;
@@ -47,41 +61,14 @@ export default function Ajouter() {
     },
   });
 
+  const addArticle = useAddArticle();
+
   function onSubmit(data: AjouterFormValues) {
-    
-    // Conversion du numéro d'inventaire et code fournisseur en nombre
-    const payload = {
-      ...data,
-      code_fournisseur: parseInt(data.code_fournisseur, 10),
-      etat: parseInt(data.etat, 10),
-      id_piece: parseInt(data.id_piece, 10),
-      categorie: parseInt(data.categorie, 10)
-    };
-
-    console.log(payload);
-
-    fetch(`${API_BASE_URL}/articles`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.message || 'Une erreur est survenue');
-        }
-        return response.json();
-      })
-      .then(() => {
-        toast.success('Article ajouté avec succès');
-        // Réinitialiser le formulaire
+    addArticle.mutate(data, {
+      onSuccess: () => {
         form.reset();
-      })
-      .catch((error) => {
-        toast.error(error.message || 'Une erreur est survenue lors de l\'ajout de l\'article');
-      });
+      },
+    });
   }
 
   return (
@@ -99,7 +86,7 @@ export default function Ajouter() {
               <FormItem>
                 <FormLabel>Numéro d'inventaire</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder='12345' {...field} />
+                  <Input type="number" placeholder="12345" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -112,7 +99,7 @@ export default function Ajouter() {
               <FormItem>
                 <FormLabel>Catégorie</FormLabel>
                 <FormControl>
-                  <Combobox 
+                  <Combobox
                     noOptionText="Aucune catégorie"
                     onSelectedStatusChange={(status) => {
                       console.log(status);

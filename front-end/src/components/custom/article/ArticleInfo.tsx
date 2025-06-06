@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useArticle } from "@/hooks/useArticles";
+import { useArticle } from "@/hooks/useArticle";
 import ArticleEtat, { ArticleEtatSkeleton } from "./ArticleEtat";
 import { useAtom } from "jotai";
 import { codeScannedAtom } from "@/lib/atoms";

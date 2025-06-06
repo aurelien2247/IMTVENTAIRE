@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchEtages } from "@/api/inventaire";
+import { fetchEtages } from "@/api/etage";
 
 export const useEtages = (batimentId: string | undefined) => {
   if (!batimentId) {

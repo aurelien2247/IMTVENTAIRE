@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import Card from "@/components/custom/Card";
 import { SearchBar } from "@/components/custom/SearchBar";
 import Header, { HeaderSkeleton } from "@/components/custom/Header";
-import { useEtages } from "@/hooks/useEtages";
+import { useEtages } from "@/hooks/useEtage";
 import NotFound from "../common/NotFound";
 import Error from "../common/Error";
 
