@@ -1,8 +1,8 @@
 import type { Article, Batiment, Etage, Piece, Zone } from "@/types";
-import { API_BASE_URL } from "./config";
+import { fetchApi } from "@/config/api";
 
 export const fetchZones = async (): Promise<Zone[]> => {
-  const response = await fetch(`${API_BASE_URL}/zones`);
+  const response = await fetchApi(`/zones`);
 
   if (!response.ok) {
     throw new Error("Erreur lors de la récupération des zones");
@@ -16,7 +16,7 @@ export const fetchZones = async (): Promise<Zone[]> => {
  * @returns Les bâtiments
  */
 export const fetchBatiments = async (): Promise<Batiment[]> => {
-  const response = await fetch(`${API_BASE_URL}/batiments`);
+  const response = await fetchApi(`/batiments`);
 
   if (!response.ok) {
     throw new Error("Erreur lors de la récupération des bâtiments");
@@ -31,7 +31,7 @@ export const fetchBatiments = async (): Promise<Batiment[]> => {
  * @returns Les étages du bâtiment
  */
 export const fetchEtages = async (batimentId: string): Promise<Etage[]> => {
-  const response = await fetch(`${API_BASE_URL}/batiments/${batimentId}`);
+  const response = await fetchApi(`/batiments/${batimentId}`);
 
   if (!response.ok) {
     throw new Error("Erreur lors de la récupération des étages");
@@ -46,7 +46,7 @@ export const fetchEtages = async (batimentId: string): Promise<Etage[]> => {
  * @returns Les pièces de l'étage
  */
 export const fetchPieces = async (etageId: string): Promise<Piece[]> => {
-  const response = await fetch(`${API_BASE_URL}/etages/${etageId}`);
+  const response = await fetchApi(`/etages/${etageId}`);
 
   if (!response.ok) {
     throw new Error("Erreur lors de la récupération des pièces");
@@ -61,7 +61,7 @@ export const fetchPieces = async (etageId: string): Promise<Piece[]> => {
  * @returns La pièce correspondante
  */
 export const fetchPieceByName = async (nom: string): Promise<Piece> => {
-  const response = await fetch(`${API_BASE_URL}/pieces/nom/${nom}`);
+  const response = await fetchApi(`/pieces/nom/${nom}`);
 
   if (!response.ok) {
     throw new Error("Erreur lors de la récupération de la pièce");
@@ -77,7 +77,7 @@ export const fetchPieceByName = async (nom: string): Promise<Piece> => {
  * @returns Les articles de la pièce
  */
 export const fetchArticles = async (pieceId: string): Promise<Article[]> => {
-  const response = await fetch(`${API_BASE_URL}/pieces/${pieceId}`);
+  const response = await fetchApi(`/pieces/${pieceId}`);
 
   if (!response.ok) {
     throw new Error("Erreur lors de la récupération des articles");
@@ -92,7 +92,7 @@ export const fetchArticles = async (pieceId: string): Promise<Article[]> => {
  * @returns L'article spécifique
  */
 export const fetchArticle = async (articleId: string): Promise<Article> => {
-  const response = await fetch(`${API_BASE_URL}/article/${articleId}`);
+  const response = await fetchApi(`/article/${articleId}`);
 
   if (!response.ok) {
     throw new Error("Erreur lors de la récupération de l'article");
@@ -107,7 +107,7 @@ export const fetchArticle = async (articleId: string): Promise<Article> => {
  * @returns Les articles correspondant à la recherche
  */
 export const searchArticles = async (query: string): Promise<Article[]> => {
-  const response = await fetch(`${API_BASE_URL}/search?query=${encodeURIComponent(query)}`);
+  const response = await fetchApi(`/search?query=${encodeURIComponent(query)}`);
 
   if (!response.ok) {
     throw new Error("Erreur lors de la recherche des articles");

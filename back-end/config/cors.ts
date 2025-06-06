@@ -45,7 +45,7 @@ const corsConfig: CorsConfig = {
   |                     one of the above values.
   |
   */
-  origin: '*',
+  origin: true,
 
   /*
   |--------------------------------------------------------------------------
@@ -76,7 +76,7 @@ const corsConfig: CorsConfig = {
   | Function          - Receives the current header and should return one of the above values.
   |
   */
-  headers: ['*', 'Content-Type', 'Accept', 'Authorization', 'X-Requested-With'],
+  headers: true,
 
   /*
   |--------------------------------------------------------------------------
