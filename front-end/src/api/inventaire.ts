@@ -102,11 +102,11 @@ export const fetchArticle = async (articleId: string): Promise<Article> => {
 };
 
 /**
- * Recherche des articles par numéro d'inventaire ou nom de pièce
+ * Recherche des articles par numéro d'inventaire, nom de pièce, nom de catégorie, marque, fournisseur ou numéro de bon de commande
  * @param query - Le terme de recherche
- * @returns Les articles correspondant à la recherche
+ * @returns Les articles et salles correspondant à la recherche
  */
-export const searchArticles = async (query: string): Promise<Article[]> => {
+export const searchArticles = async (query: string): Promise<{ articles: Article[], rooms: Piece[] }> => {
   const response = await fetch(`${API_BASE_URL}/search?query=${encodeURIComponent(query)}`);
 
   if (!response.ok) {

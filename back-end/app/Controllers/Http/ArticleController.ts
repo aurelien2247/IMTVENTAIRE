@@ -159,7 +159,7 @@ export default class ArticleController {
   }
 
   /**
-   * Search articles by inventory number or room name
+   * Search articles by inventory number, room name, category name, brand name, or supplier
    */
   public async search({ request, response }: HttpContextContract) {
     try {
@@ -184,9 +184,36 @@ export default class ArticleController {
         })
       }
 
-      // If no rooms match, search for articles by inventory number
-      const articlesByInventory = await Article.query()
+      // If no rooms match, search for articles by category name
+      const categoriesQuery = await Database.from('categorie')
+        .where('nom', 'ILIKE', `%${query}%`)
+        .select('id')
+
+      if (categoriesQuery.length > 0) {
+        const categoryIds = categoriesQuery.map(cat => cat.id)
+
+        const articlesByCategory = await Article.query()
+          .whereIn('categorie', categoryIds)
+          .preload('piece', (pieceQuery) => {
+            pieceQuery.preload('etage', (etageQuery) => {
+              etageQuery.preload('batiment')
+            })
+          })
+          .preload('categorieRelation')
+          .preload('etatRelation')
+
+        return response.ok({
+          articles: articlesByCategory,
+          rooms: []
+        })
+      }
+
+      // If no categories match, search for articles by inventory number, brand name, supplier, or purchase order number
+      const articlesByInventoryOrBrandOrSupplier = await Article.query()
         .where('num_inventaire', 'ILIKE', `%${query}%`)
+        .orWhere('marque', 'ILIKE', `%${query}%`)
+        .orWhere('fournisseur', 'ILIKE', `%${query}%`)
+        .orWhere('num_bon_commande', 'ILIKE', `%${query}%`)
         .preload('piece', (pieceQuery) => {
           pieceQuery.preload('etage', (etageQuery) => {
             etageQuery.preload('batiment')
@@ -196,7 +223,7 @@ export default class ArticleController {
         .preload('etatRelation')
 
       return response.ok({
-        articles: articlesByInventory,
+        articles: articlesByInventoryOrBrandOrSupplier,
         rooms: []
       })
     } catch (error) {
