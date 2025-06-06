@@ -155,51 +155,51 @@ INSERT INTO etat (nom) VALUES ('Détruit');
 
 -- Insertion des articles (exemples variés)
 -- Chaises
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29591', 1, 1, 1, 'CH2024A001', 'BC2024A001');
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29592', 1, 2, 2, 'CH2024A002', 'BC2024A002');
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29593', 1, 3, 3, 'CH2024A003', 'BC2024A003');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29591', 1, 1, 1, 'CH2024A001', 'BC2024A001','Fournisseur 1', 1234, 'Marque 1');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29592', 1, 2, 2, 'CH2024A002', 'BC2024A002','Fournisseur 2', 5678, 'Marque 2');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29593', 1, 3, 3, 'CH2024A003', 'BC2024A003','Fournisseur 3', 9101, 'Marque 3');
 
 -- Tables
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29594', 2, 1, 4, 'TB2024A001', 'BC2024B001');
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29595', 2, 2, 5, 'TB2024A002', 'BC2024B002');
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29596', 2, 1, 6, 'TB2024A003', 'BC2024B003');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29594', 2, 1, 4, 'TB2024A001', 'BC2024B001','Fournisseur 1', 1234, 'Marque 1');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29595', 2, 2, 5, 'TB2024A002', 'BC2024B002','Fournisseur 2', 5678, 'Marque 2');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29596', 2, 1, 6, 'TB2024A003', 'BC2024B003','Fournisseur 3', 9101, 'Marque 3');
 
 -- PC portables
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29597', 3, 1, 7, 'PC2024A001', 'BC2024C001');
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29598', 3, 2, 8, 'PC2024A002', 'BC2024C002');
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29599', 3, 3, 9, 'PC2024A003', 'BC2024C003');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29597', 3, 1, 7, 'PC2024A001', 'BC2024C001','Fournisseur 1', 1234, 'Marque 1');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29598', 3, 2, 8, 'PC2024A002', 'BC2024C002','Fournisseur 2', 5678, 'Marque 2'));
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29599', 3, 3, 9, 'PC2024A003', 'BC2024C003','Fournisseur 3', 9101, 'Marque 3');
 
 -- Vidéo projecteurs
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29600', 4, 1, 10, 'VP2024A001', 'BC2024D001');
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29601', 4, 2, 11, 'VP2024A002', 'BC2024D002');
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29602', 4, 1, 12, 'VP2024A003', 'BC2024D003');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29600', 4, 1, 10, 'VP2024A001', 'BC2024D001','Fournisseur 1', 1234, 'Marque 1');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29601', 4, 2, 11, 'VP2024A002', 'BC2024D002','Fournisseur 2', 5678, 'Marque 2');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29602', 4, 1, 12, 'VP2024A003', 'BC2024D003','Fournisseur 3', 9101, 'Marque 3');
 
 -- Écrans
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29603', 5, 1, 13, 'EC2024A001', 'BC2024E001');
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29604', 5, 2, 14, 'EC2024A002', 'BC2024E002');
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29605', 5, 1, 15, 'EC2024A003', 'BC2024E003');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29603', 5, 1, 13, 'EC2024A001', 'BC2024E001','Fournisseur 1', 1234, 'Marque 1');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29604', 5, 2, 14, 'EC2024A002', 'BC2024E002','Fournisseur 2', 5678, 'Marque 2');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29605', 5, 1, 15, 'EC2024A003', 'BC2024E003','Fournisseur 3', 9101, 'Marque 3');
 
 -- Imprimantes
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29606', 6, 1, 16, 'IM2024A001', 'BC2024F001');
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29607', 6, 2, 17, 'IM2024A002', 'BC2024F002');
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29608', 6, 3, 18, 'IM2024A003', 'BC2024F003');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29606', 6, 1, 16, 'IM2024A001', 'BC2024F001','Fournisseur 1', 1234, 'Marque 1');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29607', 6, 2, 17, 'IM2024A002', 'BC2024F002','Fournisseur 2', 5678, 'Marque 2');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29608', 6, 3, 18, 'IM2024A003', 'BC2024F003','Fournisseur 3', 9101, 'Marque 3');
 
 -- Tableaux blancs
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29609', 7, 1, 19, 'TB2024A001', 'BC2024G001');
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29610', 7, 2, 20, 'TB2024A002', 'BC2024G002');
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29611', 7, 1, 21, 'TB2024A003', 'BC2024G003');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29609', 7, 1, 19, 'TB2024A001', 'BC2024G001','Fournisseur 1', 1234, 'Marque 1');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29610', 7, 2, 20, 'TB2024A002', 'BC2024G002','Fournisseur 2', 5678, 'Marque 2');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29611', 7, 1, 21, 'TB2024A003', 'BC2024G003','Fournisseur 3', 9101, 'Marque 3');
 
 -- Armoires
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29612', 8, 1, 22, 'AR2024A001', 'BC2024H001');
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29613', 8, 2, 23, 'AR2024A002', 'BC2024H002');
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29614', 8, 1, 24, 'AR2024A003', 'BC2024H003');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29612', 8, 1, 22, 'AR2024A001', 'BC2024H001','Fournisseur 1', 1234, 'Marque 1');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29613', 8, 2, 23, 'AR2024A002', 'BC2024H002','Fournisseur 2', 5678, 'Marque 2');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29614', 8, 1, 24, 'AR2024A003', 'BC2024H003','Fournisseur 3', 9101, 'Marque 3');
 
 -- Bureaux
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29615', 9, 1, 25, 'BU2024A001', 'BC2024I001');
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29616', 9, 2, 26, 'BU2024A002', 'BC2024I002');
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29617', 9, 1, 27, 'BU2024A003', 'BC2024I003');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29615', 9, 1, 25, 'BU2024A001', 'BC2024I001','Fournisseur 1', 1234, 'Marque 1');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29616', 9, 2, 26, 'BU2024A002', 'BC2024I002','Fournisseur 2', 5678, 'Marque 2');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29617', 9, 1, 27, 'BU2024A003', 'BC2024I003','Fournisseur 3', 9101, 'Marque 3');
 
 -- Éclairages
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29618', 10, 1, 28, 'EL2024A001', 'BC2024J001');
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29619', 10, 2, 29, 'EL2024A002', 'BC2024J002');
-INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande) VALUES ('29620', 10, 1, 30, 'EL2024A003', 'BC2024J003');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29618', 10, 1, 28, 'EL2024A001', 'BC2024J001','Fournisseur 1', 1234, 'Marque 1');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29619', 10, 2, 29, 'EL2024A002', 'BC2024J002','Fournisseur 2', 5678, 'Marque 2');
+INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ('29620', 10, 1, 30, 'EL2024A003', 'BC2024J003','Fournisseur 3', 9101, 'Marque 3');
