@@ -1,5 +1,7 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Article from 'App/Models/Article'
+import Piece from 'App/Models/Piece'
+import Database from '@ioc:Adonis/Lucid/Database'
 
 export default class ArticleController {
   /**
@@ -79,7 +81,7 @@ export default class ArticleController {
       ])
 
       // Validation basique
-      if (!articleData.num_inventaire || !articleData.categorie || !articleData.id_piece || 
+      if (!articleData.num_inventaire || !articleData.categorie || !articleData.id_piece ||
           !articleData.num_serie || !articleData.num_bon_commande || !articleData.fournisseur ||
            !articleData.code_fournisseur || !articleData.marque || !articleData.etat) {
         return response.status(400).json({
@@ -152,6 +154,55 @@ export default class ArticleController {
       console.error(error)
       return response.internalServerError({
         error: "Erreur lors de la mise à jour de l'article",
+      })
+    }
+  }
+
+  /**
+   * Search articles by inventory number or room name
+   */
+  public async search({ request, response }: HttpContextContract) {
+    try {
+      const { query } = request.qs()
+
+      if (!query) {
+        return response.badRequest({ error: 'Le paramètre de recherche est requis' })
+      }
+
+      // First, check if the query matches any room names
+      const rooms = await Piece.query()
+        .where('nom', 'ILIKE', `%${query}%`)
+        .preload('etage', (etageQuery) => {
+          etageQuery.preload('batiment')
+        })
+
+      // If we found rooms matching the query, only return those
+      if (rooms.length > 0) {
+        return response.ok({
+          articles: [],
+          rooms: rooms
+        })
+      }
+
+      // If no rooms match, search for articles by inventory number
+      const articlesByInventory = await Article.query()
+        .where('num_inventaire', 'ILIKE', `%${query}%`)
+        .preload('piece', (pieceQuery) => {
+          pieceQuery.preload('etage', (etageQuery) => {
+            etageQuery.preload('batiment')
+          })
+        })
+        .preload('categorieRelation')
+        .preload('etatRelation')
+
+      return response.ok({
+        articles: articlesByInventory,
+        rooms: []
+      })
+    } catch (error) {
+      console.error(error)
+      return response.internalServerError({
+        error: 'Erreur lors de la recherche des articles et des salles'
       })
     }
   }

@@ -100,3 +100,18 @@ export const fetchArticle = async (articleId: string): Promise<Article> => {
 
   return response.json();
 };
+
+/**
+ * Recherche des articles par numéro d'inventaire ou nom de pièce
+ * @param query - Le terme de recherche
+ * @returns Les articles correspondant à la recherche
+ */
+export const searchArticles = async (query: string): Promise<Article[]> => {
+  const response = await fetch(`${API_BASE_URL}/search?query=${encodeURIComponent(query)}`);
+
+  if (!response.ok) {
+    throw new Error("Erreur lors de la recherche des articles");
+  }
+
+  return response.json();
+};

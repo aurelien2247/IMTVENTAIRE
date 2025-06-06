@@ -268,3 +268,25 @@ Route.get('/article/:num_inventaire', 'ArticleController.show')
 
 Route.post('/categories', 'CategorieController.add')
 Route.get('/categories', 'CategorieController.getAll')
+
+/**
+ * @swagger
+ * /search:
+ *   get:
+ *     tags:
+ *       - Recherche
+ *     description: Recherche des articles par numéro d'inventaire ou nom de pièce
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         required: true
+ *         description: Terme de recherche (numéro d'inventaire ou nom de pièce)
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Liste des articles correspondant à la recherche
+ *       400:
+ *         description: Paramètre de recherche manquant
+ */
+Route.get('/search', 'ArticleController.search')
