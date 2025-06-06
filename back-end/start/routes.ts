@@ -60,7 +60,7 @@ Route.get('/zones', 'ZoneController.index')
  *       200:
  *         description: Liste des bâtiments
  */
-Route.get('/batiments', 'BatimentsController.index')
+Route.get('/batiments', 'BatimentController.index')
 
 /**
  * @swagger

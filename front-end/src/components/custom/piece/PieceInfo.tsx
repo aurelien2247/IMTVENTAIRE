@@ -13,20 +13,24 @@ export default function PieceInfo() {
   const [codeScanned] = useAtom(codeScannedAtom);
   const [articlesScanned, setArticlesScanned] = useState<Article[]>([]);
   const [openConfirmScan, setOpenConfirmScan] = useState(false);
+  const [changePiece, setChangePiece] = useState(true);
 
   const isPiece = !!codeScanned?.match(/[a-zA-Z]/);
   console.log(codeScanned, isPiece, openConfirmScan);
   const { data: piece, isLoading: isLoadingPiece } = usePieceByName(
     codeScanned,
-    isPiece && !openConfirmScan
+    isPiece && changePiece
   );
   const { data: article } = useArticle(codeScanned, scanMode && !isPiece);
 
   useEffect(() => {
+    // if (codeScanned !== piece?.nom) {
+    //   setOpenConfirmScan(true);
+    // }
     if (scanMode && article) {
       setArticlesScanned((articles) => [...articles, article]);
     } 
-    if (scanMode && articlesScanned.length > 0) {
+    if (codeScanned !== piece?.nom && scanMode && articlesScanned.length > 0) {
       setOpenConfirmScan(true);
     }
   }, [codeScanned, scanMode, article]);
@@ -44,6 +48,7 @@ export default function PieceInfo() {
     if (confirm) {
       saveScan();
       resetArticlesScanned();
+      setChangePiece(true);
     }
     setOpenConfirmScan(false);
   };
