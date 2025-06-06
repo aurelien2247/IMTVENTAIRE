@@ -1,6 +1,5 @@
+import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Dialog } from '@/components/ui/dialog';
 
 interface ScanConfirmDialogProps {
   open: boolean;
@@ -9,19 +8,21 @@ interface ScanConfirmDialogProps {
 
 export default function ScanConfirmDialog({ open, onConfirm }: ScanConfirmDialogProps) {
   return (
-    <Dialog open={open} onOpenChange={onConfirm}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Confirmation</DialogTitle>
-          <DialogDescription>
+    <AlertDialog open={open} onOpenChange={onConfirm}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Sauvegarde de l'inventaire</AlertDialogTitle>
+          <AlertDialogDescription>
+            Vous vous apprêtez à quitter le scan de l'inventaire.
+            <br />
             Voulez-vous enregistrer les articles sauvegardés ?
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
           <Button variant="secondary" onClick={() => onConfirm(false)}>Annuler</Button>
           <Button onClick={() => onConfirm(true)}>Enregistrer</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }

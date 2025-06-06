@@ -15,16 +15,18 @@ export default function PieceInfo() {
   const [openConfirmScan, setOpenConfirmScan] = useState(false);
 
   const isPiece = !!codeScanned?.match(/[a-zA-Z]/);
+  console.log(codeScanned, isPiece, openConfirmScan);
   const { data: piece, isLoading: isLoadingPiece } = usePieceByName(
     codeScanned,
-    isPiece
+    isPiece && !openConfirmScan
   );
   const { data: article } = useArticle(codeScanned, scanMode && !isPiece);
 
   useEffect(() => {
     if (scanMode && article) {
       setArticlesScanned((articles) => [...articles, article]);
-    } else if (articlesScanned.length > 0) {
+    } 
+    if (scanMode && articlesScanned.length > 0) {
       setOpenConfirmScan(true);
     }
   }, [codeScanned, scanMode, article]);
