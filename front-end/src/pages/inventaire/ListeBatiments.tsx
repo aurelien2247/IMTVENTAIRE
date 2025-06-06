@@ -65,7 +65,7 @@ export default function ListeBatiments() {
               {zone.batiments.map((building: Batiment) => (
                 <Card
                   key={building.id}
-                  content={building.nom}
+                  content={`Bâtiment ${building.nom}`}
                   link={`/inventaire/${building.id}`}
                 />
               ))}
