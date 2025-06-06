@@ -4,7 +4,7 @@ import { Menubar, MenubarMenu, MenubarTrigger } from "../ui/menubar";
 
 const NavBar = () => {
   return (
-    <Menubar className="fixed md:left-0 md:top-0 md:bottom-0 md:w-20 md:h-full bottom-0 left-0 right-0 h-16 flex md:flex-col justify-around bg-white border-t md:border-t-0 md:border-r">
+    <Menubar className="fixed md:left-0 md:top-0 md:bottom-0 md:w-20 md:h-full bottom-0 left-0 right-0 h-16 flex md:flex-col justify-around bg-white border-t md:border-t-0 md:border-r rounded-t-lg rounded-bl-none rounded-br-none md:rounded-tl-none md:rounded-tr-lg md:rounded-bl-none md:rounded-br-lg">
       <div className="w-full h-full flex md:flex-col md:gap-4 md:pt-4">
         <MenubarMenu>
           <MenubarTrigger className="flex-1 md:flex-initial md:h-20 p-0 min-w-[100px] md:min-w-0">
