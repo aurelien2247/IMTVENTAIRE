@@ -24,11 +24,12 @@ type Status = {
 };
 
 interface ComboboxProps {
-  options: Status[];
+  options?: Status[];
   noOptionText?: string;
+  onSelectedStatusChange?: (status: Status | null) => void;
 };
 
-export function Combobox({ noOptionText = "Aucune option" }: ComboboxProps) {
+export function Combobox({ noOptionText = "Aucune option", onSelectedStatusChange }: ComboboxProps) {
   const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [selectedStatus, setSelectedStatus] = useState<Status | null>(null);
@@ -69,7 +70,14 @@ export function Combobox({ noOptionText = "Aucune option" }: ComboboxProps) {
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[200px] p-0" align="start">
-          <StatusList setOpen={setOpen} setSelectedStatus={setSelectedStatus} options={options} setOptions={setOptions} noOptionText={noOptionText} />
+          <StatusList 
+            setOpen={setOpen} 
+            setSelectedStatus={setSelectedStatus} 
+            options={options} 
+            setOptions={setOptions} 
+            noOptionText={noOptionText}
+            onSelectedStatusChange={onSelectedStatusChange}
+          />
         </PopoverContent>
       </Popover>
     );
@@ -85,7 +93,14 @@ export function Combobox({ noOptionText = "Aucune option" }: ComboboxProps) {
       </DrawerTrigger>
       <DrawerContent>
         <div className="mt-4 border-t">
-          <StatusList setOpen={setOpen} setSelectedStatus={setSelectedStatus} options={options} setOptions={setOptions} noOptionText={noOptionText} />
+          <StatusList 
+            setOpen={setOpen} 
+            setSelectedStatus={setSelectedStatus} 
+            options={options} 
+            setOptions={setOptions} 
+            noOptionText={noOptionText}
+            onSelectedStatusChange={onSelectedStatusChange}
+          />
         </div>
       </DrawerContent>
     </Drawer>
@@ -98,6 +113,7 @@ interface StatusListProps {
   options: Status[];
   setOptions: (options: Status[]) => void;
   noOptionText: string;
+  onSelectedStatusChange?: (status: Status | null) => void;
 }
 
 function StatusList({
@@ -105,13 +121,14 @@ function StatusList({
   setSelectedStatus,
   setOptions,
   options,
+  onSelectedStatusChange,
 }: StatusListProps) {
-
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSelect = (status: Status) => {
     setSelectedStatus(status);
+    onSelectedStatusChange?.(status);
     setOpen(false);
   };
 

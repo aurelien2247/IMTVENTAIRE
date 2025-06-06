@@ -21,7 +21,7 @@ import { API_BASE_URL } from "@/api/config";
 const AjouterSchema = z.object({
   num_inventaire: z.string().regex(/^\d{5,}$/, { message: "Renseignez un nombre valide (5 chiffres min)" }),
   num_serie: z.string().regex(/.+/, { message: "Renseignez le numéro de série" }),
-  categorie: z.string(), //.regex(/.+/, { message: "Renseignez la catégorie" }),
+  categorie: z.string().regex(/.+/, { message: "Renseignez la catégorie" }),
   etat: z.string(),
   id_piece: z.string(),
   num_bon_commande: z.string().regex(/.+/, { message: "Renseignez le numéro de commande" }),
@@ -37,7 +37,7 @@ export default function Ajouter() {
     resolver: zodResolver(AjouterSchema),
     defaultValues: {
       num_inventaire: "",
-      categorie: "1", // A gérer avec le merge de la feature catégorie
+      categorie: "", // A gérer avec le merge de la feature catégorie
       etat: "1", // Neuf par défaut
       id_piece: "1", // A gérer avec le merge de la feature pièce
       num_bon_commande: "",
@@ -52,16 +52,15 @@ export default function Ajouter() {
     // Conversion du numéro d'inventaire et code fournisseur en nombre
     const payload = {
       ...data,
-      num_inventaire: parseInt(data.num_inventaire, 10),
       code_fournisseur: parseInt(data.code_fournisseur, 10),
       etat: parseInt(data.etat, 10),
       id_piece: parseInt(data.id_piece, 10),
-      categorie: 1 // A gérer avec le merge de la feature catégorie
+      categorie: parseInt(data.categorie, 10)
     };
 
     console.log(payload);
 
-    fetch(`${API_BASE_URL}/article`, {
+    fetch(`${API_BASE_URL}/articles`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -101,6 +100,25 @@ export default function Ajouter() {
                 <FormLabel>Numéro d'inventaire</FormLabel>
                 <FormControl>
                   <Input type="number" placeholder='12345' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="categorie"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Catégorie</FormLabel>
+                <FormControl>
+                  <Combobox 
+                    noOptionText="Aucune catégorie"
+                    onSelectedStatusChange={(status) => {
+                      console.log(status);
+                      field.onChange(status?.value || "");
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
