@@ -10,6 +10,9 @@ export default class Article extends BaseModel {
   public categorie: number
 
   @column()
+  public etat: number
+
+  @column()
   public id_piece: number
 
   @column()
@@ -17,4 +20,14 @@ export default class Article extends BaseModel {
 
   @column()
   public num_bon_commande: string
+
+  @column()
+  public fournisseur: string
+
+  @column()
+  public code_fournisseur: number
+
+  @column()
+  public marque: string
+
 }

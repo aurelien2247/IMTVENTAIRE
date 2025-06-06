@@ -43,12 +43,17 @@ export default class ArticleController {
         'categorie',
         'id_piece',
         'num_serie',
-        'num_bon_commande'
+        'num_bon_commande',
+        'fournisseur',
+        'code_fournisseur',
+        'marque',
+        'etat'
       ])
 
       // Validation basique
       if (!articleData.num_inventaire || !articleData.categorie || !articleData.id_piece || 
-          !articleData.num_serie || !articleData.num_bon_commande) {
+          !articleData.num_serie || !articleData.num_bon_commande || !articleData.fournisseur ||
+           !articleData.code_fournisseur || !articleData.marque || !articleData.etat) {
         return response.status(400).json({
           error: 'Tous les champs sont requis'
         })
@@ -65,6 +70,10 @@ export default class ArticleController {
       article.id_piece = articleData.id_piece
       article.num_serie = articleData.num_serie
       article.num_bon_commande = articleData.num_bon_commande
+      article.fournisseur = articleData.fournisseur
+      article.code_fournisseur = articleData.code_fournisseur
+      article.marque = articleData.marque
+      article.etat = articleData.etat
 
       await article.save()
 
@@ -91,10 +100,15 @@ export default class ArticleController {
       }
 
       const articleData = request.only([
+        'num_inventaire',
         'categorie',
         'id_piece',
         'num_serie',
-        'num_bon_commande'
+        'num_bon_commande',
+        'fournisseur',
+        'code_fournisseur',
+        'marque',
+        'etat'
       ])
 
       if (articleData.categorie) {

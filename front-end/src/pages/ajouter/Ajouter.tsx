@@ -16,48 +16,74 @@ import { Input } from "@/components/ui/input";
 import Card from "@/components/custom/Card";
 import { Combobox } from "@/components/ui/combobox";
 import Header from "@/components/custom/Header";
+import { API_BASE_URL } from "@/api/config";
 
 const AjouterSchema = z.object({
-  numInventaire: z.number(),
-  categorie: z.string(),
-  piece: z.string(),
-  numCommande: z.string(),
-  fournisseur: z.string(),
-  codeFournisseur: z.string(),
-  marque: z.string(),
+  num_inventaire: z.string().regex(/^\d{5,}$/, { message: "Renseignez un nombre valide (5 chiffres min)" }),
+  num_serie: z.string().regex(/.+/, { message: "Renseignez le numéro de série" }),
+  categorie: z.string(), //.regex(/.+/, { message: "Renseignez la catégorie" }),
+  etat: z.string(),
+  id_piece: z.string(),
+  num_bon_commande: z.string().regex(/.+/, { message: "Renseignez le numéro de commande" }),
+  fournisseur: z.string().regex(/.+/, { message: "Renseignez le nom du fournisseur" }),
+  code_fournisseur: z.string().regex(/^\d{4,}$/, { message: "Renseignez un code fournisseur valide (4 chiffres min)" }),
+  marque: z.string().regex(/.+/, { message: "Renseignez une marque valide" }),
 });
 
+type AjouterFormValues = z.infer<typeof AjouterSchema>;
+
 export default function Ajouter() {
-  const form = useForm<z.infer<typeof AjouterSchema>>({
+  const form = useForm<AjouterFormValues>({
     resolver: zodResolver(AjouterSchema),
+    defaultValues: {
+      num_inventaire: "",
+      categorie: "1", // A gérer avec le merge de la feature catégorie
+      etat: "1", // Neuf par défaut
+      id_piece: "1", // A gérer avec le merge de la feature pièce
+      num_bon_commande: "",
+      fournisseur: "",
+      code_fournisseur: "",
+      marque: "",
+    },
   });
 
-  function onSubmit(data: z.infer<typeof AjouterSchema>) {
-    toast("You submitted the following values: " + data);
-  }
+  function onSubmit(data: AjouterFormValues) {
+    
+    // Conversion du numéro d'inventaire et code fournisseur en nombre
+    const payload = {
+      ...data,
+      num_inventaire: parseInt(data.num_inventaire, 10),
+      code_fournisseur: parseInt(data.code_fournisseur, 10),
+      etat: parseInt(data.etat, 10),
+      id_piece: parseInt(data.id_piece, 10),
+      categorie: 1 // A gérer avec le merge de la feature catégorie
+    };
 
-  const categories = [
-    {
-      value: "chaise",
-      label: "Chaise",
-    },
-    {
-      value: "table",
-      label: "Table",
-    },
-    {
-      value: "ordinateur",
-      label: "Ordinateur",
-    },
-    {
-      value: "souris",
-      label: "Souris",
-    },
-    {
-      value: "clavier",
-      label: "Clavier",
-    },
-  ];
+    console.log(payload);
+
+    fetch(`${API_BASE_URL}/article`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || 'Une erreur est survenue');
+        }
+        return response.json();
+      })
+      .then(() => {
+        toast.success('Article ajouté avec succès');
+        // Réinitialiser le formulaire
+        form.reset();
+      })
+      .catch((error) => {
+        toast.error(error.message || 'Une erreur est survenue lors de l\'ajout de l\'article');
+      });
+  }
 
   return (
     <div className="container gap-8">
@@ -69,38 +95,47 @@ export default function Ajouter() {
         >
           <FormField
             control={form.control}
-            name="numInventaire"
+            name="num_inventaire"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Numéro d'inventaire</FormLabel>
                 <FormControl>
-                  <Input placeholder="12345" {...field} />
+                  <Input type="number" placeholder='12345' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
           <div className="flex flex-col gap-2.5">
-            <FormLabel>Catégorie</FormLabel>
-            <Combobox options={categories} noOptionText="Aucune catégorie" />
-          </div>
-          <div className="flex flex-col gap-2.5">
             <FormLabel>Pièce</FormLabel>
             <Card
               content="Aucune pièce"
               size="small"
-              link="/piece"
-              className="text-muted-foreground "
+              //link="/piece"
+              className="text-muted-foreground"
             />
           </div>
           <FormField
             control={form.control}
-            name="numCommande"
+            name="num_bon_commande"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Numéro de commande</FormLabel>
                 <FormControl>
                   <Input placeholder="05-201-1019" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="num_serie"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Numéro de série</FormLabel>
+                <FormControl>
+                  <Input placeholder="FUDGZ67328EYGH" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -121,12 +156,12 @@ export default function Ajouter() {
           />
           <FormField
             control={form.control}
-            name="codeFournisseur"
+            name="code_fournisseur"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Code fournisseur</FormLabel>
                 <FormControl>
-                  <Input placeholder="8573" {...field} />
+                  <Input type="number" placeholder="8573" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -134,7 +169,7 @@ export default function Ajouter() {
           />
           <FormField
             control={form.control}
-            name="numInventaire"
+            name="marque"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Marque</FormLabel>
