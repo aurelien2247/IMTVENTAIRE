@@ -1,25 +1,24 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Categorie from 'App/Models/Categorie'
 
-
 export default class CategorieController {
   /**
-   * Add a category 
+   * Add a category
    */
   public async add({ request, response }: HttpContextContract) {
     try {
-      const data = request.only(["nom"]);
+      const data = request.only(['nom'])
       if (!data.nom) {
-        return response.badRequest({ error: "Le champ 'nom' est requis." });
-        }
-        const newCategorie = await Categorie.create({
-            nom: data.nom
-        });
+        return response.badRequest({ error: "Le champ 'nom' est requis." })
+      }
+      const newCategorie = await Categorie.create({
+        nom: data.nom,
+      })
 
-        return response.created(newCategorie);
+      return response.created(newCategorie)
     } catch (error) {
-        console.error(error);
-        return response.internalServerError({ error: "Erreur lors de l'ajout d'une catégorie" });
+      console.error(error)
+      return response.internalServerError({ error: "Erreur lors de l'ajout d'une catégorie" })
     }
   }
 

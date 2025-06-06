@@ -33,21 +33,8 @@ import './swagger'
  *         description: Message de bienvenue
  */
 Route.get('/', async () => {
-  return { hello: 'world' }
+  return { IMT: 'ventaire' }
 })
-
-/**
- * @swagger
- * /zones:
- *   get:
- *     tags:
- *       - Zones
- *     description: Récupère la liste de toutes les zones avec leurs bâtiments
- *     responses:
- *       200:
- *         description: Liste des zones avec leurs bâtiments
- */
-Route.get('/zones', 'ZoneController.index')
 
 /**
  * @swagger

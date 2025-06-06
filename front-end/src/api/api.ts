@@ -17,6 +17,11 @@ export const fetchApi = async (endpoint: string, options: RequestInit = {}) => {
     },
     credentials: 'include',
   })
-  
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error);
+  }
+
   return response.json();
 } 

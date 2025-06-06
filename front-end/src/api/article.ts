@@ -7,13 +7,7 @@ import { fetchApi } from "./api";
  * @returns Les articles de la pièce
  */
 export const fetchArticles = async (pieceId: string): Promise<Article[]> => {
-  const response = await fetchApi(`/pieces/${pieceId}`);
-
-  if (!response.ok) {
-    throw new Error(response.error);
-  }
-
-  return response;
+  return await fetchApi(`/pieces/${pieceId}`);
 };
 
 /**
@@ -22,13 +16,7 @@ export const fetchArticles = async (pieceId: string): Promise<Article[]> => {
  * @returns L'article spécifique
  */
 export const fetchArticle = async (articleId: string): Promise<Article> => {
-  const response = await fetchApi(`/article/${articleId}`);
-
-  if (!response.ok) {
-    throw new Error(response.error);
-  }
-
-  return response;
+  return await fetchApi(`/article/${articleId}`);
 };
 
 /**
@@ -39,13 +27,7 @@ export const fetchArticle = async (articleId: string): Promise<Article> => {
 export const searchArticles = async (
   query: string
 ): Promise<{ articles: Article[]; rooms: Piece[] }> => {
-  const response = await fetchApi(`/search?query=${encodeURIComponent(query)}`);
-
-  if (!response.ok) {
-    throw new Error(response.error);
-  }
-
-  return response;
+  return await fetchApi(`/search?query=${encodeURIComponent(query)}`);
 };
 /**
  * Ajoute un nouvel article
@@ -73,37 +55,19 @@ export const addArticle = async (articleData: {
     categorie: parseInt(articleData.categorie, 10),
   };
 
-  const response = await fetchApi(`/articles`, {
+  return await fetchApi(`/articles`, {
     method: "POST",
     body: JSON.stringify(payload),
   });
-
-  if (!response.ok) {
-    throw new Error(response.error);
-  }
-
-  return response;
 };
 
 export const createCategory = async (label: string): Promise<Categorie> => {
-  const response = await fetchApi(`/categories`, {
+  return await fetchApi(`/categories`, {
     method: "POST",
     body: JSON.stringify({ nom: label }),
   });
-
-  if (!response.ok) {
-    throw new Error(response.error);
-  }
-
-  return response;
 };
 
 export const fetchCategories = async (): Promise<Categorie[]> => {
-  const response = await fetchApi(`/categories`);
-
-  if (!response.ok) {
-    throw new Error(response.error);
-  }
-
-  return response;
+  return await fetchApi(`/categories`);
 };
