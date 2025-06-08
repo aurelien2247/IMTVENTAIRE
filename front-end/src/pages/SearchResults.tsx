@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { searchArticles } from "@/api/article";
 import type { Article, Piece } from "@/types";
 import Header, { HeaderSkeleton } from "@/components/custom/Header";
 import { SearchBar } from "@/components/custom/SearchBar";
@@ -8,41 +6,12 @@ import ArticleCard, { ArticleCardSkeleton } from "@/components/custom/article/Ar
 import Card from "@/components/custom/Card";
 import NotFound from "./common/NotFound";
 import Error from "./common/Error";
+import { useSearch } from "@/hooks/common/useSearch";
 
 export default function SearchResults() {
   const [searchParams] = useSearchParams();
-  const query = searchParams.get("q") || "";
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [rooms, setRooms] = useState<Piece[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    const fetchResults = async () => {
-      if (!query) {
-        setArticles([]);
-        setRooms([]);
-        setIsLoading(false);
-        return;
-      }
-
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const results = await searchArticles(query);
-        setArticles(results.articles);
-        setRooms(results.rooms);
-      } catch (err) {
-        console.error("Error searching articles:", err);
-        setError(err instanceof Error ? err : new Error("Une erreur est survenue"));
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchResults();
-  }, [query]);
+  const queryParam = searchParams.get("q") || "";
+  const { query, articles, rooms, isLoading, error } = useSearch(queryParam);
 
   if (isLoading) {
     return (

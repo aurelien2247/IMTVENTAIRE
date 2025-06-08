@@ -1,9 +1,10 @@
 import { Search } from "lucide-react";
-import { useState, useEffect, type ComponentProps, FormEvent } from "react";
+import { type ComponentProps, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "../ui/input";
+import { useSearch } from "@/hooks/common/useSearch";
 
 interface Props extends ComponentProps<"form"> {
   label: string;
@@ -12,37 +13,20 @@ interface Props extends ComponentProps<"form"> {
 }
 
 export function SearchBar({ label, onSearch, defaultValue = "", ...props }: Props) {
-  const [query, setQuery] = useState(defaultValue);
-  const [debouncedQuery, setDebouncedQuery] = useState(defaultValue);
   const navigate = useNavigate();
-
-  // Debounce the search query
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedQuery(query);
-    }, 300);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [query]);
-
-  // Trigger search when debounced query changes
-  useEffect(() => {
-    if (debouncedQuery.trim()) {
-      if (onSearch) {
-        onSearch(debouncedQuery);
-      } else {
-        // Navigate to search results page if no custom handler is provided
-        navigate(`/search?q=${encodeURIComponent(debouncedQuery)}`);
-      }
-    }
-  }, [debouncedQuery, onSearch, navigate]);
+  const { query, setQuery } = useSearch(defaultValue);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    // Form submission is now just for handling Enter key press
-    // The actual search is triggered by the useEffect above
+
+    if (query.trim()) {
+      if (onSearch) {
+        onSearch(query);
+      } else {
+        // Navigate to search results page if no custom handler is provided
+        navigate(`/search?q=${encodeURIComponent(query)}`);
+      }
+    }
   };
 
   return (
