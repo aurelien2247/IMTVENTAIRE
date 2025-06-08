@@ -7,11 +7,5 @@ import { fetchApi } from "./api";
  * @returns Les étages du bâtiment
  */
 export const fetchEtages = async (batimentId: string): Promise<Etage[]> => {
-    const response = await fetchApi(`/batiments/${batimentId}`);
-  
-    if (!response.ok) {
-      throw new Error("Erreur lors de la récupération des étages");
-    }
-  
-    return response;
-  };
+  return await fetchApi(`/batiments/${batimentId}`);
+};

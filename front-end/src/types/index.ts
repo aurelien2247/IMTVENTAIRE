@@ -22,16 +22,6 @@ export interface Categorie {
 export interface Batiment {
   id: number;
   nom: string;
-  zone: Zone;
-}
-
-/**
- * Représente une zone
- */
-export interface Zone {
-  id: number;
-  nom: string;
-  batiments: Batiment[];
 }
 
 /**

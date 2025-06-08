@@ -7,13 +7,7 @@ import { fetchApi } from "./api";
  * @returns Les pièces de l'étage
  */
 export const fetchPieces = async (etageId: string): Promise<Piece[]> => {
-  const response = await fetchApi(`/etages/${etageId}`);
-
-  if (!response.ok) {
-    throw new Error("Erreur lors de la récupération des pièces");
-  }
-
-  return response;
+  return await fetchApi(`/etages/${etageId}`);
 };
 
 /**
@@ -22,11 +16,5 @@ export const fetchPieces = async (etageId: string): Promise<Piece[]> => {
  * @returns La pièce correspondante
  */
 export const fetchPieceByName = async (nom: string): Promise<Piece> => {
-  const response = await fetchApi(`/pieces/nom/${nom}`);
-
-  if (!response.ok) {
-    throw new Error("Erreur lors de la récupération de la pièce");
-  }
-
-  return response;
+  return await fetchApi(`/pieces/nom/${nom}`);
 };
