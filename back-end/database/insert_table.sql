@@ -4,20 +4,10 @@ drop table if exists etat;
 drop table if exists piece;
 drop table if exists etage;
 drop table if exists batiment;
-drop table if exists zone;
-
-create table zone (
-	id SERIAL PRIMARY KEY,
-    nom VARCHAR(100) NOT NULL
-);
 
 create table batiment (
 	id SERIAL PRIMARY KEY,
-    nom VARCHAR(100) NOT null,
-    id_zone INTEGER NOT NULL,
-    CONSTRAINT fk_zone
-        FOREIGN KEY (id_zone)
-        REFERENCES zone(id)
+    nom VARCHAR(100) NOT null
 );
 
 create table etage (

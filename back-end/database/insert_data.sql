@@ -1,15 +1,10 @@
--- Insertion des zones
-INSERT INTO zone (nom) VALUES ('École');
-INSERT INTO zone (nom) VALUES ('Logements');
-INSERT INTO zone (nom) VALUES ('Administration');
-
 -- Insertion des bâtiments
-INSERT INTO batiment (nom, id_zone) VALUES ('A', 1);
-INSERT INTO batiment (nom, id_zone) VALUES ('B', 1);
-INSERT INTO batiment (nom, id_zone) VALUES ('C', 1);
-INSERT INTO batiment (nom, id_zone) VALUES ('D', 1);
-INSERT INTO batiment (nom, id_zone) VALUES ('P', 2);
-INSERT INTO batiment (nom, id_zone) VALUES ('Admin', 3);
+INSERT INTO batiment (nom) VALUES ('A');
+INSERT INTO batiment (nom) VALUES ('B');
+INSERT INTO batiment (nom) VALUES ('C');
+INSERT INTO batiment (nom) VALUES ('D');
+INSERT INTO batiment (nom) VALUES ('P');
+INSERT INTO batiment (nom) VALUES ('Admin');
 
 -- Insertion des étages
 INSERT INTO etage (nom, id_batiment) VALUES ('-1', 1);

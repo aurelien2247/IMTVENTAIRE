@@ -33,21 +33,8 @@ import './swagger'
  *         description: Message de bienvenue
  */
 Route.get('/', async () => {
-  return { hello: 'world' }
+  return { IMT: 'ventaire' }
 })
-
-/**
- * @swagger
- * /zones:
- *   get:
- *     tags:
- *       - Zones
- *     description: Récupère la liste de toutes les zones avec leurs bâtiments
- *     responses:
- *       200:
- *         description: Liste des zones avec leurs bâtiments
- */
-Route.get('/zones', 'ZoneController.index')
 
 /**
  * @swagger
@@ -268,4 +255,26 @@ Route.get('/article/:num_inventaire', 'ArticleController.show')
 
 Route.post('/categories', 'CategorieController.add')
 Route.get('/categories', 'CategorieController.getAll')
+
+/**
+ * @swagger
+ * /search:
+ *   get:
+ *     tags:
+ *       - Recherche
+ *     description: Recherche des articles par numéro d'inventaire, nom de pièce, nom de catégorie, marque ou fournisseur
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         required: true
+ *         description: Terme de recherche (numéro d'inventaire, nom de pièce, nom de catégorie, marque ou fournisseur)
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Liste des articles et salles correspondant à la recherche
+ *       400:
+ *         description: Paramètre de recherche manquant
+ */
+Route.get('/search', 'ArticleController.search')
 Route.get('/etats', 'EtatController.getAll')

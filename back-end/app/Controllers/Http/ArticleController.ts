@@ -1,5 +1,7 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Article from 'App/Models/Article'
+import Piece from 'App/Models/Piece'
+import Database from '@ioc:Adonis/Lucid/Database'
 
 export default class ArticleController {
   /**
@@ -75,13 +77,20 @@ export default class ArticleController {
         'fournisseur',
         'code_fournisseur',
         'marque',
-        'etat'
+        'etat',
       ])
 
       // Validation basique
-      if (!articleData.num_inventaire || !articleData.categorie || !articleData.id_piece || 
-          !articleData.num_serie || !articleData.num_bon_commande || !articleData.fournisseur ||
-           !articleData.code_fournisseur || !articleData.marque || !articleData.etat) {
+      if (
+        !articleData.num_inventaire ||
+        !articleData.categorie ||
+        !articleData.id_piece ||
+        !articleData.num_serie ||
+        !articleData.num_bon_commande ||
+        !articleData.fournisseur ||
+        !articleData.marque ||
+        !articleData.etat
+      ) {
         return response.status(400).json({
           error: 'Tous les champs sont requis',
         })
@@ -134,7 +143,7 @@ export default class ArticleController {
         'fournisseur',
         'code_fournisseur',
         'marque',
-        'etat'
+        'etat',
       ])
 
       if (articleData.categorie) {
@@ -152,6 +161,82 @@ export default class ArticleController {
       console.error(error)
       return response.internalServerError({
         error: "Erreur lors de la mise à jour de l'article",
+      })
+    }
+  }
+
+  /**
+   * Search articles by inventory number, room name, category name, brand name, or supplier
+   */
+  public async search({ request, response }: HttpContextContract) {
+    try {
+      const { query } = request.qs()
+
+      if (!query) {
+        return response.badRequest({ error: 'Le paramètre de recherche est requis' })
+      }
+
+      // First, check if the query matches any room names
+      const rooms = await Piece.query()
+        .where('nom', 'ILIKE', `%${query}%`)
+        .preload('etage', (etageQuery) => {
+          etageQuery.preload('batiment')
+        })
+
+      // If we found rooms matching the query, only return those
+      if (rooms.length > 0) {
+        return response.ok({
+          articles: [],
+          rooms: rooms,
+        })
+      }
+
+      // If no rooms match, search for articles by category name
+      const categoriesQuery = await Database.from('categorie')
+        .where('nom', 'ILIKE', `%${query}%`)
+        .select('id')
+
+      if (categoriesQuery.length > 0) {
+        const categoryIds = categoriesQuery.map((cat) => cat.id)
+
+        const articlesByCategory = await Article.query()
+          .whereIn('categorie', categoryIds)
+          .preload('piece', (pieceQuery) => {
+            pieceQuery.preload('etage', (etageQuery) => {
+              etageQuery.preload('batiment')
+            })
+          })
+          .preload('categorieRelation')
+          .preload('etatRelation')
+
+        return response.ok({
+          articles: articlesByCategory,
+          rooms: [],
+        })
+      }
+
+      // If no categories match, search for articles by inventory number, brand name, supplier, or purchase order number
+      const articlesByInventoryOrBrandOrSupplier = await Article.query()
+        .where('num_inventaire', 'ILIKE', `%${query}%`)
+        .orWhere('marque', 'ILIKE', `%${query}%`)
+        .orWhere('fournisseur', 'ILIKE', `%${query}%`)
+        .orWhere('num_bon_commande', 'ILIKE', `%${query}%`)
+        .preload('piece', (pieceQuery) => {
+          pieceQuery.preload('etage', (etageQuery) => {
+            etageQuery.preload('batiment')
+          })
+        })
+        .preload('categorieRelation')
+        .preload('etatRelation')
+
+      return response.ok({
+        articles: articlesByInventoryOrBrandOrSupplier,
+        rooms: [],
+      })
+    } catch (error) {
+      console.error(error)
+      return response.internalServerError({
+        error: 'Erreur lors de la recherche des articles et des salles',
       })
     }
   }

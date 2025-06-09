@@ -8,6 +8,7 @@ import ListeEtages from './pages/inventaire/ListeEtages'
 import ListePieces from './pages/inventaire/ListePieces'
 import ListeArticles from './pages/inventaire/ListeArticles'
 import ModifierArticle from './pages/inventaire/ModifierArticle'
+import SearchResults from './pages/SearchResults'
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           </Route>
           <Route path="/" element={<Scanner />} />
           <Route path="/ajouter" element={<Ajouter />} />
+          <Route path="/search" element={<SearchResults />} />
         </Routes>
       </Layout>
       <NavBar />

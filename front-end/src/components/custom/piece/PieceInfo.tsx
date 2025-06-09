@@ -1,22 +1,23 @@
-import { usePieceByName } from "@/hooks/usePieces";
+import { usePieceByName } from "@/hooks/usePiece";
 import { useState, useEffect } from "react";
 import type { Article } from "@/types";
 import { useAtom } from "jotai";
 import { codeScannedAtom, scanModeAtom } from "@/lib/atoms";
-import { useArticle } from "@/hooks/useArticles";
+import { useArticle } from "@/hooks/useArticle";
 import ScanConfirmDialog from "@/pages/scanner/components/ScanConfirmDialog";
 import ArticleList, { ArticleListSkeleton } from "../article/ArticleList";
 import ScanMode from "@/pages/scanner/components/ScanMode";
+import Error from "@/pages/common/Error";
 
 export default function PieceInfo() {
   const [scanMode, setScanMode] = useAtom(scanModeAtom);
-  const [codeScanned] = useAtom(codeScannedAtom);
+  const [codeScanned, setCodeScanned] = useAtom(codeScannedAtom);
   const [articlesScanned, setArticlesScanned] = useState<Article[]>([]);
   const [openConfirmScan, setOpenConfirmScan] = useState(false);
-  const [changePiece, setChangePiece] = useState(true);
 
+  const changePiece = scanMode ? articlesScanned.length === 0 : true;
   const isPiece = !!codeScanned?.match(/[a-zA-Z]/);
-  console.log(codeScanned, isPiece, openConfirmScan);
+
   const { data: piece, isLoading: isLoadingPiece } = usePieceByName(
     codeScanned,
     isPiece && changePiece
@@ -24,19 +25,21 @@ export default function PieceInfo() {
   const { data: article } = useArticle(codeScanned, scanMode && !isPiece);
 
   useEffect(() => {
-    // if (codeScanned !== piece?.nom) {
-    //   setOpenConfirmScan(true);
-    // }
     if (scanMode && article) {
+      // setChangePiece(false);
       setArticlesScanned((articles) => [...articles, article]);
     } 
     if (codeScanned !== piece?.nom && scanMode && articlesScanned.length > 0) {
       setOpenConfirmScan(true);
     }
+    if (codeScanned !== piece?.nom) {
+      resetArticlesScanned()
+    }
   }, [codeScanned, scanMode, article]);
 
-  const saveScan = () => {
+  const saveScan = async () => {
     // TODO: Enregistrer les articles sauvegardées dans le back
+    console.log(articlesScanned);
   };
 
   const resetArticlesScanned = () => {
@@ -44,11 +47,11 @@ export default function PieceInfo() {
     setScanMode(false);
   };
 
-  const handleConfirmScan = (confirm: boolean) => {
+  const handleConfirmScan = async (confirm: boolean) => {
     if (confirm) {
-      saveScan();
+      await saveScan();
       resetArticlesScanned();
-      setChangePiece(true);
+      // setChangePiece(true);
     }
     setOpenConfirmScan(false);
   };
@@ -58,7 +61,9 @@ export default function PieceInfo() {
   }
 
   if (!piece) {
-    return null;
+    return (
+      <Error />
+    )
   }
 
   return (

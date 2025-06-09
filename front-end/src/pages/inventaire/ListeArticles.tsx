@@ -3,7 +3,7 @@ import { SearchBar } from "@/components/custom/SearchBar";
 import Header, { HeaderSkeleton } from "@/components/custom/Header";
 import ArticleCard, { ArticleCardSkeleton } from "@/components/custom/article/ArticleCard";
 import NotFound from "../common/NotFound";
-import { useArticles } from "@/hooks/useArticles";
+import { useArticles } from "@/hooks/useArticle";
 import Error from "../common/Error";
 
 export default function ListeArticles() {

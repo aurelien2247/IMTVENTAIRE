@@ -1,16 +1,17 @@
 import { Button } from "@/components/ui/button";
-import { useArticle } from "@/hooks/useArticles";
+import { useArticle } from "@/hooks/useArticle";
 import ArticleEtat, { ArticleEtatSkeleton } from "./ArticleEtat";
 import { useAtom } from "jotai";
 import { codeScannedAtom } from "@/lib/atoms";
 import { Skeleton } from "@/components/ui/skeleton";
+import Error from "@/pages/common/Error";
 
 export default function ArticleInfo() {
   const [codeScanned] = useAtom(codeScannedAtom);
   const { data: article } = useArticle(codeScanned);
 
   if (!article) {
-    return null;
+    return <Error />;
   }
 
   return (

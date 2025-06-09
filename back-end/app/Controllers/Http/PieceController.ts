@@ -65,7 +65,7 @@ export default class PieceController {
 
       return response.ok(piece)
     } catch (error) {
-      return response.internalServerError({ error: 'Erreur lors de la recherche de la pièce' })
+      return response.internalServerError({ error: error.message })
     }
   }
 }
