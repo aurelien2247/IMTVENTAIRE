@@ -10,10 +10,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Card from "@/components/custom/Card";
 import { toast } from "sonner";
 import { useParams } from "react-router-dom";
-import { EtatEnum } from "@/types";
 import { useEffect } from "react";
-import { API_BASE_URL } from "@/api/config";
-import { useArticle } from "@/hooks/useArticles";
+import { API_BASE_URL } from "@/api/api";
+import { useArticle } from "@/hooks/useArticle";
 import { EtatCombobox } from "@/components/ui/etat-combobox";
 
 const ModifierSchema = z.object({

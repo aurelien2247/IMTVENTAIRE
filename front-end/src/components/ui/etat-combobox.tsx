@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/popover";
 import { useEffect, useState } from "react";
 import { ChevronsUpDown } from "lucide-react";
-import { API_BASE_URL } from "@/api/config";
+import { API_BASE_URL } from "@/api/api";
 
 export type Status = {
   value: string;
