@@ -239,7 +239,7 @@ Route.post('/articles', 'ArticleController.store')
  *       400:
  *         description: Données invalides
  */
-Route.put('/articles/:num_inventaire', 'ArticleController.update')
+Route.put('/article/:num_inventaire', 'ArticleController.update')
 /**
  * @swagger
  * /article/{num_inventaire}:
@@ -268,3 +268,4 @@ Route.get('/article/:num_inventaire', 'ArticleController.show')
 
 Route.post('/categories', 'CategorieController.add')
 Route.get('/categories', 'CategorieController.getAll')
+Route.get('/etats', 'EtatController.getAll')

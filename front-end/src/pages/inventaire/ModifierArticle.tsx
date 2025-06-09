@@ -11,56 +11,92 @@ import Card from "@/components/custom/Card";
 import { toast } from "sonner";
 import { useParams } from "react-router-dom";
 import { EtatEnum } from "@/types";
+import { useEffect } from "react";
+import { API_BASE_URL } from "@/api/config";
+import { useArticle } from "@/hooks/useArticles";
+import { EtatCombobox } from "@/components/ui/etat-combobox";
 
 const ModifierSchema = z.object({
-  numInventaire: z.number(),
+  num_inventaire: z.string().regex(/^\d{5,}$/, { message: "Renseignez un nombre valide (5 chiffres min)" }),
+  num_serie: z.string().regex(/.+/, { message: "Renseignez le numéro de série" }),
   categorie: z.string(),
-  piece: z.string(),
-  numCommande: z.string(),
-  fournisseur: z.string(),
-  codeFournisseur: z.string(),
-  marque: z.string(),
+  etat: z.string(),
+  id_piece: z.string(),
+  num_bon_commande: z.string().regex(/.+/, { message: "Renseignez le numéro de commande" }),
+  fournisseur: z.string().regex(/.+/, { message: "Renseignez le nom du fournisseur" }),
+  code_fournisseur: z.string().regex(/^\d{4,}$/, { message: "Renseignez un code fournisseur valide (4 chiffres min)" }),
+  marque: z.string().regex(/.+/, { message: "Renseignez une marque valide" }),
 });
+
+type ModifierFormValues = z.infer<typeof ModifierSchema>;
 
 export default function ModifierArticle() {
   const { articleId } = useParams();
-  const form = useForm<z.infer<typeof ModifierSchema>>({
+  const { data: article, isLoading } = useArticle(articleId || null);
+
+  const form = useForm<ModifierFormValues>({
     resolver: zodResolver(ModifierSchema),
+    defaultValues: {
+      num_inventaire: "",
+      categorie: "",
+      etat: "",
+      id_piece: "",
+      num_bon_commande: "",
+      fournisseur: "",
+      code_fournisseur: "",
+      marque: "",
+      num_serie: "",
+    }
   });
 
-  function onSubmit(data: z.infer<typeof ModifierSchema>) {
-    toast("You submitted the following values: " + data);
+  useEffect(() => {
+    if (article) {
+      console.log(article)
+      form.reset({
+        num_inventaire: article.num_inventaire.toString(),
+        categorie: article.categorie.id.toString(),
+        etat: article.etat.id.toString(),
+        id_piece: article.piece.id.toString(),
+        num_bon_commande: article.num_bon_commande,
+        fournisseur: article.fournisseur,
+        code_fournisseur: article.code_fournisseur.toString(),
+        marque: article.marque,
+        num_serie: article.num_serie,
+      });
+    }
+  }, [article, form]);
+
+  const onSubmit = async (data: ModifierFormValues) => {
+    console.log(data);
+    try {
+      const response = await fetch(`${API_BASE_URL}/article/${articleId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...data,
+          num_inventaire: parseInt(data.num_inventaire),
+          categorie: parseInt(data.categorie),
+          etat: parseInt(data.etat),
+          id_piece: parseInt(data.id_piece),
+          code_fournisseur: parseInt(data.code_fournisseur),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la modification');
+      }
+
+      toast.success('Article modifié avec succès');
+    } catch (error) {
+      toast.error("Erreur lors de la modification de l'article");
+    }
+  };
+
+  if (isLoading) {
+    return <div>Chargement...</div>;
   }
-
-  const categories = [
-    {
-      value: "chaise",
-      label: "Chaise",
-    },
-    {
-      value: "table",
-      label: "Table",
-    },
-    {
-      value: "ordinateur",
-      label: "Ordinateur",
-    },
-    {
-      value: "souris",
-      label: "Souris",
-    },
-    {
-      value: "clavier",
-      label: "Clavier",
-    },
-  ];
-
-  const etats = Object.keys(EtatEnum)
-    .filter((key) => isNaN(Number(key)))
-    .map((key) => ({
-      value: key,
-      label: key,
-    }));
 
   return (
     <div className="container">
@@ -72,42 +108,90 @@ export default function ModifierArticle() {
         >
           <FormField
             control={form.control}
-            name="numInventaire"
+            name="num_inventaire"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Numéro d'inventaire</FormLabel>
                 <FormControl>
-                  <Input placeholder="12345" {...field} disabled />
+                  <Input {...field} disabled />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="categorie"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Catégorie</FormLabel>
+                <FormControl>
+                  <Combobox 
+                    initialStatus={article ? { 
+                      value: article.categorie.id.toString(), 
+                      label: article.categorie.nom 
+                    } : undefined}
+                    onSelectedStatusChange={(status) => {
+                      field.onChange(status?.value || "");
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
           <div className="flex flex-col gap-2.5">
-            <FormLabel>Catégorie</FormLabel>
-            <Combobox options={categories} noOptionText="Aucune catégorie" />
-          </div>
-          <div className="flex flex-col gap-2.5">
             <FormLabel>Pièce</FormLabel>
             <Card
               content="Aucune pièce"
               size="small"
               link="/piece"
-              className="text-muted-foreground "
+              className="text-muted-foreground"
             />
-          </div>
-          <div className="flex flex-col gap-2.5">
-            <FormLabel>Etat</FormLabel>
-            <Combobox options={etats} noOptionText="Aucun état" />
           </div>
           <FormField
             control={form.control}
-            name="numCommande"
+            name="etat"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>État</FormLabel>
+                <FormControl>
+                  <EtatCombobox 
+                    initialStatus={article ? { 
+                      value: article.etat.id.toString(), 
+                      label: article.etat.nom 
+                    } : undefined}
+                    onSelectedStatusChange={(status) => {
+                      field.onChange(status?.value || "");
+                    }}
+                    noOptionText="Aucun état"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="num_bon_commande"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Numéro de commande</FormLabel>
                 <FormControl>
                   <Input placeholder="05-201-1019" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="num_serie"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Numéro de série</FormLabel>
+                <FormControl>
+                  <Input placeholder="FUDGZ67328EYGH" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -128,7 +212,7 @@ export default function ModifierArticle() {
           />
           <FormField
             control={form.control}
-            name="codeFournisseur"
+            name="code_fournisseur"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Code fournisseur</FormLabel>
@@ -141,7 +225,7 @@ export default function ModifierArticle() {
           />
           <FormField
             control={form.control}
-            name="numInventaire"
+            name="marque"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Marque</FormLabel>
@@ -152,16 +236,6 @@ export default function ModifierArticle() {
               </FormItem>
             )}
           />
-          <div className="flex gap-4 justify-between *:text-sm">
-            <span>
-              <p className="font-bold">Dernier inventaire</p>
-              <p>02/03/2025</p>
-            </span>
-            <span>
-              <p className="font-bold">Crée le</p>
-              <p>13/01/2019</p>
-            </span>
-          </div>
           <Button type="submit" className="w-full">
             Modifier
           </Button>

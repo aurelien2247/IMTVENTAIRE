@@ -54,6 +54,9 @@ export interface Article {
   num_bon_commande: string;
   etat: Etat;
   piece: Piece;
+  fournisseur: string;
+  code_fournisseur: number;
+  marque: string;
 }
 
 export interface Etat {

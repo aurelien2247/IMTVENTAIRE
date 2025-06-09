@@ -18,21 +18,22 @@ import { useEffect, useState } from "react";
 import { ChevronsUpDown } from "lucide-react";
 import { createCategory, fetchCategories } from "@/api/article";
 
-type Status = {
+export type Status = {
   value: string;
   label: string;
 };
 
 interface ComboboxProps {
+  initialStatus?: Status;
   options?: Status[];
   noOptionText?: string;
   onSelectedStatusChange?: (status: Status | null) => void;
 };
 
-export function Combobox({ noOptionText = "Aucune option", onSelectedStatusChange }: ComboboxProps) {
+export function Combobox({ initialStatus, noOptionText = "Aucune option", onSelectedStatusChange }: ComboboxProps) {
   const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
-  const [selectedStatus, setSelectedStatus] = useState<Status | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<Status | null>(initialStatus?initialStatus:null);
   const [options, setOptions] = useState<Status[]>([]);
   const [loading, setLoading] = useState(true);
 

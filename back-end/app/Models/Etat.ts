@@ -1,4 +1,5 @@
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import Article from './Article'
 
 export default class Etat extends BaseModel {
   public static table = 'etat'
@@ -8,4 +9,9 @@ export default class Etat extends BaseModel {
 
   @column()
   public nom: string
+
+  @hasMany(() => Article, {
+    foreignKey: 'etat',
+  })
+  public articles: HasMany<typeof Article>
 }
