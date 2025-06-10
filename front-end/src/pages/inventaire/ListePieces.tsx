@@ -17,7 +17,7 @@ export default function ListePieces() {
     return (
       <div className="container">
         <HeaderSkeleton />
-        <SearchBar label="Rechercher" />
+        <SearchBar  />
         <div className="flex flex-col gap-2">
           {Array.from({ length: 10 }).map((_, index) => (
             <Card content={<div className="h-4 w-32 bg-muted-foreground/20 rounded" />} className="animate-pulse h-14" key={index} />
@@ -31,7 +31,7 @@ export default function ListePieces() {
     return (
       <div className="container">
         <Header title="Étage introuvable" />
-        <SearchBar label="Rechercher" />
+        <SearchBar  />
         <Error />
       </div>
     );
@@ -41,7 +41,7 @@ export default function ListePieces() {
     return (
       <div className="container">
         <Header title={headerTitle} />
-        <SearchBar label="Rechercher" />
+        <SearchBar  />
         <NotFound message="Aucune pièce trouvée" />
       </div>
     );
@@ -50,7 +50,7 @@ export default function ListePieces() {
   return (
     <div className="container">
       <Header title={headerTitle} />
-      <SearchBar label="Rechercher" />
+      <SearchBar  />
       <div className="flex flex-col gap-2">
         {pieces.map((piece) => (
           <Card

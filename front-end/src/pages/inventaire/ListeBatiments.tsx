@@ -13,7 +13,7 @@ export default function ListeBatiments() {
     return (
       <div className="container mx-auto">
         <Header title="Inventaire" />
-        <SearchBar label="Rechercher" />
+        <SearchBar  />
         <div className="flex flex-col gap-2">
           {Array.from({ length: 10 }).map((_, index) => (
             <Card
@@ -33,7 +33,7 @@ export default function ListeBatiments() {
     return (
       <div className="container mx-auto">
         <Header title="Inventaire" />
-        <SearchBar label="Rechercher" />
+        <SearchBar  />
         <Error />
       </div>
     );
@@ -43,7 +43,7 @@ export default function ListeBatiments() {
     return (
       <div className="container mx-auto">
         <Header title="Inventaire" />
-        <SearchBar label="Rechercher" />
+        <SearchBar  />
         <NotFound message="Aucun bâtiment trouvé" />
       </div>
     );
@@ -52,7 +52,7 @@ export default function ListeBatiments() {
   return (
     <div className="container mx-auto">
       <Header title="Inventaire" />
-      <SearchBar label="Rechercher" />
+      <SearchBar  />
       <div className="flex flex-col gap-2">
         {batiments.map((batiment: Batiment) => (
           <Card

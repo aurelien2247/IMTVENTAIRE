@@ -15,7 +15,7 @@ export default function ListeArticles() {
     return (
       <div className="container">
         <HeaderSkeleton />
-        <SearchBar label="Rechercher" />
+        <SearchBar  />
         <div className="flex flex-col gap-2">
           {Array.from({ length: 10 }).map((_, index) => (
             <ArticleCardSkeleton key={index} />
@@ -29,7 +29,7 @@ export default function ListeArticles() {
     return (
       <div className="container">
         <Header title="Salle introuvable" />
-        <SearchBar label="Rechercher" />
+        <SearchBar  />
         <Error />
       </div>
     );
@@ -39,7 +39,7 @@ export default function ListeArticles() {
     return (
       <div className="container">
         <Header title={headerTitle} />
-        <SearchBar label="Rechercher" />
+        <SearchBar  />
         <NotFound message="Aucun article trouvé" />
       </div>
     );
@@ -48,7 +48,7 @@ export default function ListeArticles() {
   return (
     <div className="container">
       <Header title={headerTitle} />
-      <SearchBar label="Rechercher" />
+      <SearchBar  />
       <div className="flex flex-col gap-2">
         {articles.map((article) => (
           <ArticleCard

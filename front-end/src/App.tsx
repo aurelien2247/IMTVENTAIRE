@@ -21,10 +21,10 @@ function App() {
             <Route path=":batimentId/:etageId" element={<ListePieces />} />
             <Route path=":batimentId/:etageId/:pieceId" element={<ListeArticles />} />
             <Route path=":batimentId/:etageId/:pieceId/:articleId" element={<ModifierArticle />} />
+            <Route path="search" element={<SearchResults />} />
           </Route>
           <Route path="/" element={<Scanner />} />
           <Route path="/ajouter" element={<Ajouter />} />
-          <Route path="/search" element={<SearchResults />} />
         </Routes>
       </Layout>
       <NavBar />

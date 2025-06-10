@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "../api.ts";
+import { fetchApi } from "../api.ts";
 import type { Article, Piece } from "@/types";
 
 export interface SearchResults {
@@ -11,17 +11,8 @@ export interface SearchResults {
  * @param query - Le terme de recherche
  * @returns Les articles et salles correspondant à la recherche
  */
-export const searchArticles = async (query: string): Promise<SearchResults> => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/search?query=${encodeURIComponent(query)}`);
-    
-    if (!response.ok) {
-      throw new Error("Erreur lors de la recherche des articles");
-    }
-    
-    return response.json();
-  } catch (error) {
-    console.error("Error searching articles:", error);
-    throw error;
-  }
+export const search = async (
+  query: string
+): Promise<{ articles: Article[]; rooms: Piece[] }> => {
+  return await fetchApi(`/search?query=${encodeURIComponent(query)}`);
 };
