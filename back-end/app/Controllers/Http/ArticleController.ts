@@ -48,7 +48,11 @@ export default class ArticleController {
     try {
       const article = await Article.query()
         .where('num_inventaire', params.num_inventaire)
-        .preload('piece')
+        .preload('piece', (pieceQuery) => {
+          pieceQuery.preload('etage', (etageQuery) => {
+            etageQuery.preload('batiment')
+          })
+        })
         .preload('categorieRelation')
         .preload('etatRelation')
         .first()
