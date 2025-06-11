@@ -1,20 +1,39 @@
-import type { Article } from "@/types";
+import type { Article, Piece } from "@/types";
+import { useNavigate } from "react-router-dom";
 import ArticleItem, { ArticleItemSkeleton } from "./ArticleItem";
 
 interface ArticleListProps {
   articles?: Article[];
+  piece?: Piece;
 }
 
-export default function ArticleList({ articles }: ArticleListProps) {
+export default function ArticleList({ articles, piece }: ArticleListProps) {
+  const navigate = useNavigate();
+
   if (!articles) {
     return null;
   }
+
+    const handleArticleClick = (article: Article) => {
+    if (!piece) return;
+    const batimentId = piece.etage.batiment.id;
+    const etageId = piece.etage.id;
+    const pieceId = piece.id;
+    const articleId = article.num_inventaire;
+    navigate(`/inventaire/${batimentId}/${etageId}/${pieceId}/${articleId}`);
+  };
 
   return (
     <div className="flex flex-col gap-6">
       <p className="text-muted-foreground">Articles dans la pièce</p>
       {articles.map((article) => (
-        <ArticleItem key={article.num_inventaire} article={article} />
+        <div
+          key={article.num_inventaire}
+          onClick={() => handleArticleClick(article)}
+          className="cursor-pointer hover:bg-muted/50 p-2 -m-2 rounded-md transition-colors"
+        >
+          <ArticleItem article={article} />
+        </div>
       ))}
     </div>
   );
