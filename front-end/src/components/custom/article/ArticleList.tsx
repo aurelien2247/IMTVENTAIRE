@@ -14,11 +14,10 @@ export default function ArticleList({ articles, piece }: ArticleListProps) {
     return null;
   }
 
-    const handleArticleClick = (article: Article) => {
-    if (!piece) return;
-    const batimentId = piece.etage.batiment.id;
-    const etageId = piece.etage.id;
-    const pieceId = piece.id;
+  const handleArticleClick = (article: Article) => {
+    const batimentId = article.piece.etage.batiment.id;
+    const etageId = article.piece.etage.id;
+    const pieceId = article.piece.id;
     const articleId = article.num_inventaire;
     navigate(`/inventaire/${batimentId}/${etageId}/${pieceId}/${articleId}`);
   };
@@ -32,7 +31,7 @@ export default function ArticleList({ articles, piece }: ArticleListProps) {
           onClick={() => handleArticleClick(article)}
           className="cursor-pointer hover:bg-muted/50 p-2 -m-2 rounded-md transition-colors"
         >
-          <ArticleItem article={article} />
+          <ArticleItem article={article} piece={piece} />
         </div>
       ))}
     </div>

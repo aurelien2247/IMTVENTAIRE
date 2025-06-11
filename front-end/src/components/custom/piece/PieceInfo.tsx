@@ -1,4 +1,4 @@
-import { usePieceByName, usePiece } from "@/hooks/usePiece";
+import { usePieceByName } from "@/hooks/usePiece";
 import { useState, useEffect } from "react";
 import type { Article } from "@/types";
 import { useAtom } from "jotai";
@@ -11,20 +11,16 @@ import Error from "@/pages/common/Error";
 
 export default function PieceInfo() {
   const [scanMode, setScanMode] = useAtom(scanModeAtom);
-  const [codeScanned] = useAtom(codeScannedAtom);
+  const [codeScanned, setCodeScanned] = useAtom(codeScannedAtom);
   const [articlesScanned, setArticlesScanned] = useState<Article[]>([]);
   const [openConfirmScan, setOpenConfirmScan] = useState(false);
 
   const changePiece = scanMode ? articlesScanned.length === 0 : true;
   const isPiece = !!codeScanned?.match(/[a-zA-Z]/);
 
-  const { data: partialPiece, isLoading: isLoadingPartialPiece } = usePieceByName(
+  const { data: piece, isLoading: isLoadingPiece } = usePieceByName(
     codeScanned,
     isPiece && changePiece
-  );
-  const { data: piece, isLoading: isLoadingFullPiece } = usePiece(
-    partialPiece?.id,
-    !!partialPiece
   );
   const { data: article } = useArticle(codeScanned, scanMode && !isPiece);
 
@@ -39,7 +35,7 @@ export default function PieceInfo() {
     if (codeScanned !== piece?.nom) {
       resetArticlesScanned()
     }
-  }, [codeScanned, scanMode, article, piece]);
+  }, [codeScanned, scanMode, article]);
 
   const saveScan = async () => {
     // TODO: Enregistrer les articles sauvegardées dans le back
@@ -60,7 +56,7 @@ export default function PieceInfo() {
     setOpenConfirmScan(false);
   };
 
-  if (isLoadingPartialPiece || isLoadingFullPiece) {
+  if (isLoadingPiece) {
     return <PieceInfoSkeleton />;
   }
 
