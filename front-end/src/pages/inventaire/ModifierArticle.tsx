@@ -8,23 +8,20 @@ import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Card from "@/components/custom/Card";
-import { toast } from "sonner";
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
-import { API_BASE_URL } from "@/api/api";
-import { useArticle } from "@/hooks/useArticle";
+import { useArticle, useUpdateArticle } from "@/hooks/useArticle";
 import { EtatCombobox } from "@/components/ui/etat-combobox";
 
 const ModifierSchema = z.object({
-  num_inventaire: z.string().regex(/^\d{5,}$/, { message: "Renseignez un nombre valide (5 chiffres min)" }),
-  num_serie: z.string().regex(/.+/, { message: "Renseignez le numéro de série" }),
+  num_inventaire: z.string().regex(/^\d{5,}$/, { message: "Veuillez renseigner un numéro d'inventaire valide (5 chiffres minimum)" }),
+  num_serie: z.string().regex(/.+/, { message: "Veuillez renseigner le numéro de série" }),
   categorie: z.string(),
   etat: z.string(),
   id_piece: z.string(),
-  num_bon_commande: z.string().regex(/.+/, { message: "Renseignez le numéro de commande" }),
-  fournisseur: z.string().regex(/.+/, { message: "Renseignez le nom du fournisseur" }),
-  code_fournisseur: z.string().regex(/^\d{4,}$/, { message: "Renseignez un code fournisseur valide (4 chiffres min)" }),
-  marque: z.string().regex(/.+/, { message: "Renseignez une marque valide" }),
+  num_bon_commande: z.string().regex(/.+/, { message: "Veuillez renseigner le numéro de commande" }),
+  fournisseur: z.string().regex(/.+/, { message: "Veuillez renseigner le nom du fournisseur" }),
+  code_fournisseur: z.string().optional(),
+  marque: z.string().regex(/.+/, { message: "Veuillez renseigner une marque valide" }),
 });
 
 type ModifierFormValues = z.infer<typeof ModifierSchema>;
@@ -32,70 +29,35 @@ type ModifierFormValues = z.infer<typeof ModifierSchema>;
 export default function ModifierArticle() {
   const { articleId } = useParams();
   const { data: article, isLoading } = useArticle(articleId || null);
+  const updateArticle = useUpdateArticle();
 
   const form = useForm<ModifierFormValues>({
     resolver: zodResolver(ModifierSchema),
-    defaultValues: {
-      num_inventaire: "",
-      categorie: "",
-      etat: "",
-      id_piece: "",
-      num_bon_commande: "",
-      fournisseur: "",
-      code_fournisseur: "",
-      marque: "",
-      num_serie: "",
-    }
+    values: article ? {
+      num_inventaire: article.num_inventaire.toString(),
+      categorie: article.categorie.id.toString(),
+      etat: article.etat.id.toString(),
+      id_piece: article.piece.id.toString(),
+      num_bon_commande: article.num_bon_commande,
+      fournisseur: article.fournisseur,
+      code_fournisseur: article.code_fournisseur?.toString() || "",
+      marque: article.marque,
+      num_serie: article.num_serie,
+    } : undefined
   });
 
-  useEffect(() => {
-    if (article) {
-      console.log(article)
-      form.reset({
-        num_inventaire: article.num_inventaire.toString(),
-        categorie: article.categorie.id.toString(),
-        etat: article.etat.id.toString(),
-        id_piece: article.piece.id.toString(),
-        num_bon_commande: article.num_bon_commande,
-        fournisseur: article.fournisseur,
-        code_fournisseur: article.code_fournisseur.toString(),
-        marque: article.marque,
-        num_serie: article.num_serie,
-      });
-    }
-  }, [article, form]);
-
   const onSubmit = async (data: ModifierFormValues) => {
-    console.log(data);
-    try {
-      const response = await fetch(`${API_BASE_URL}/article/${articleId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
+    if (!articleId) return;
+    
+    updateArticle.mutate(
+      { articleId, data },
+      {
+        onSuccess: () => {
+          form.reset();
         },
-        body: JSON.stringify({
-          ...data,
-          num_inventaire: parseInt(data.num_inventaire),
-          categorie: parseInt(data.categorie),
-          etat: parseInt(data.etat),
-          id_piece: parseInt(data.id_piece),
-          code_fournisseur: parseInt(data.code_fournisseur),
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Erreur lors de la modification');
       }
-
-      toast.success('Article modifié avec succès');
-    } catch (error) {
-      toast.error("Erreur lors de la modification de l'article");
-    }
+    );
   };
-
-  if (isLoading) {
-    return <div>Chargement...</div>;
-  }
 
   return (
     <div className="container">
@@ -107,6 +69,7 @@ export default function ModifierArticle() {
         >
           <FormField
             control={form.control}
+            disabled={isLoading}
             name="num_inventaire"
             render={({ field }) => (
               <FormItem>
@@ -121,17 +84,16 @@ export default function ModifierArticle() {
           <FormField
             control={form.control}
             name="categorie"
+            disabled={isLoading}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Catégorie</FormLabel>
                 <FormControl>
                   <Combobox 
-                    initialStatus={article ? { 
-                      value: article.categorie.id.toString(), 
-                      label: article.categorie.nom 
-                    } : undefined}
+                    disabled={isLoading}
+                    initialStatus={article?.categorie}
                     onSelectedStatusChange={(status) => {
-                      field.onChange(status?.value || "");
+                      field.onChange(status?.id || "");
                     }}
                   />
                 </FormControl>
@@ -146,6 +108,7 @@ export default function ModifierArticle() {
               size="small"
               link="/piece"
               className="text-muted-foreground"
+              disabled={isLoading}
             />
           </div>
           <FormField
@@ -156,12 +119,10 @@ export default function ModifierArticle() {
                 <FormLabel>État</FormLabel>
                 <FormControl>
                   <EtatCombobox 
-                    initialStatus={article ? { 
-                      value: article.etat.id.toString(), 
-                      label: article.etat.nom 
-                    } : undefined}
+                    disabled={isLoading}
+                    initialStatus={article?.etat}
                     onSelectedStatusChange={(status) => {
-                      field.onChange(status?.value || "");
+                      field.onChange(status?.id || "");
                     }}
                     noOptionText="Aucun état"
                   />
@@ -173,6 +134,7 @@ export default function ModifierArticle() {
           <FormField
             control={form.control}
             name="num_bon_commande"
+            disabled={isLoading}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Numéro de commande</FormLabel>
@@ -186,6 +148,7 @@ export default function ModifierArticle() {
           <FormField
             control={form.control}
             name="num_serie"
+            disabled={isLoading}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Numéro de série</FormLabel>
@@ -199,6 +162,7 @@ export default function ModifierArticle() {
           <FormField
             control={form.control}
             name="fournisseur"
+            disabled={isLoading}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Fournisseur</FormLabel>
@@ -212,6 +176,7 @@ export default function ModifierArticle() {
           <FormField
             control={form.control}
             name="code_fournisseur"
+            disabled={isLoading}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Code fournisseur</FormLabel>
@@ -225,6 +190,7 @@ export default function ModifierArticle() {
           <FormField
             control={form.control}
             name="marque"
+            disabled={isLoading}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Marque</FormLabel>
@@ -235,7 +201,7 @@ export default function ModifierArticle() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" disabled={isLoading}>
             Modifier
           </Button>
         </form>

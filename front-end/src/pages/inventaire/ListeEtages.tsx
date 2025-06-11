@@ -54,6 +54,7 @@ export default function ListeEtages() {
           <Card
             content={etage.nom}
             link={`/inventaire/${batimentId}/${etage.id}`}
+            key={etage.id}
           />
         ))}
       </div>

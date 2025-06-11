@@ -17,6 +17,9 @@ export function SearchBar({ label = "Rechercher", ...props }: Props) {
   const [query, setQuery] = useAtom(searchQueryAtom);
   const location = useLocation();
 
+  /**
+   * Si on n'est pas sur la page de recherche, on réinitialise la recherche
+   */
   useEffect(() => {
     if (!location.pathname.includes("/inventaire/search")) {
       setQuery("");
@@ -24,13 +27,11 @@ export function SearchBar({ label = "Rechercher", ...props }: Props) {
   }, [location.pathname, setQuery]);
 
   /**
-   * Dès que la recherche change
+   * Dès que l'on commence à taper, on redirige vers la page de recherche
    */
   useEffect(() => {
-    if (query) {
+    if (query.trim().length === 1) {
       redirectToSearch();
-    } else if (location.pathname.includes("/inventaire/search")) {
-      navigate("/inventaire", { replace: true });
     }
   }, [query, location.pathname, navigate]);
 
@@ -39,11 +40,9 @@ export function SearchBar({ label = "Rechercher", ...props }: Props) {
    */
   const redirectToSearch = () => {
     if (query.trim()) {
-      navigate(`/inventaire/search?q=${encodeURIComponent(query)}`, { replace: true });
+      navigate(`/inventaire/search?q=${encodeURIComponent(query)}`);
     } 
   };
-
-  
 
   return (
     <form {...props} className="relative" onSubmit={redirectToSearch}>
