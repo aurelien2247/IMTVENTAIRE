@@ -1,4 +1,4 @@
-import type { Article, Categorie } from "@/types";
+import type { Article, Categorie, Etat } from "@/types";
 import { fetchApi } from "./api";
 
 /**
@@ -60,4 +60,36 @@ export const createCategory = async (label: string): Promise<Categorie> => {
 
 export const fetchCategories = async (): Promise<Categorie[]> => {
   return await fetchApi(`/categories`);
+};
+
+export const updateArticle = async (articleId: string, articleData: {
+  num_inventaire: string;
+  num_serie: string;
+  categorie: string;
+  etat: string;
+  id_piece: string;
+  num_bon_commande: string;
+  fournisseur: string;
+  code_fournisseur?: string;
+  marque: string;
+}): Promise<Article> => {
+  const payload = {
+    ...articleData,
+    num_inventaire: parseInt(articleData.num_inventaire, 10),
+    code_fournisseur: articleData.code_fournisseur
+      ? parseInt(articleData.code_fournisseur, 10)
+      : undefined,
+    etat: parseInt(articleData.etat, 10),
+    id_piece: parseInt(articleData.id_piece, 10),
+    categorie: parseInt(articleData.categorie, 10),
+  };
+
+  return await fetchApi(`/article/${articleId}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+};
+
+export const fetchEtats = async (): Promise<Etat[]> => {
+  return await fetchApi(`/etats`);
 };

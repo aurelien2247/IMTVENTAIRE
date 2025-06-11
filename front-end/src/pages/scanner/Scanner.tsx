@@ -20,7 +20,6 @@ export default function Scanner() {
     [setCodeScanned]
   );
 
-  console.log(scanMode);
   const isPiece = scanMode || codeScanned?.match(/[a-zA-Z]/);
 
   return (

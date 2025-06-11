@@ -11,6 +11,9 @@ const cardVariants = cva(
         medium: "px-6 py-4",
         small: "px-4 py-3",
       },
+      disabled: {
+        true: "opacity-50 cursor-not-allowed",
+      },
     },
     defaultVariants: {
       size: "medium",
@@ -22,11 +25,12 @@ interface Props extends VariantProps<typeof cardVariants> {
   content: string | React.ReactNode;
   link?: string;
   className?: string;
+  disabled?: boolean;
 }
 
-export default function Card({ content, link, size, className }: Props) {
+export default function Card({ content, link, size, className, disabled }: Props) {
   return (
-    <Link to={link || ""} className={cn(cardVariants({ size, className }))}>
+    <Link to={disabled ? "" : link || ""} className={cn(cardVariants({ size, className, disabled }))}>
       <p
         className={cn(
           "font-semibold",
@@ -36,7 +40,7 @@ export default function Card({ content, link, size, className }: Props) {
       >
         {content}
       </p>
-      {link && <ChevronRight className="text-muted-foreground transition-transform group-hover:translate-x-1" />}
+      {link && !disabled && <ChevronRight className="text-muted-foreground transition-transform group-hover:translate-x-1" />}
     </Link>
   );
 }

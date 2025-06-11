@@ -13,49 +13,25 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ChevronsUpDown } from "lucide-react";
-import { API_BASE_URL } from "@/api/api";
-
-export type Status = {
-  value: string;
-  label: string;
-};
+import { useEtats } from "@/hooks/useArticle";
 
 interface EtatComboboxProps {
-  initialStatus?: Status;
+  initialStatus?: Etat;
   noOptionText?: string;
-  onSelectedStatusChange?: (status: Status | null) => void;
+  onSelectedStatusChange?: (status: Etat | null) => void;
+  disabled?: boolean;
 }
 
-export function EtatCombobox({ initialStatus, noOptionText = "Aucune option", onSelectedStatusChange }: EtatComboboxProps) {
+export function EtatCombobox({ initialStatus, noOptionText = "Aucune option", onSelectedStatusChange, disabled }: EtatComboboxProps) {
   const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
-  const [selectedStatus, setSelectedStatus] = useState<Status | null>(initialStatus || null);
-  const [options, setOptions] = useState<Status[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [selectedStatus, setSelectedStatus] = useState<Etat | null>(initialStatus || null);
 
-  useEffect(() => {
-    const loadOptions = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/etats`);
-        const data = await response.json();
-        const formatted = data.map((etat: Etat) => ({
-          label: etat.nom,
-          value: etat.id.toString(),
-        }));
-        setOptions(formatted);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { data: options = [] } = useEtats();
 
-    loadOptions();
-  }, []);
-
-  const handleSelect = (status: Status) => {
+  const handleSelect = (status: Etat) => {
     setSelectedStatus(status);
     onSelectedStatusChange?.(status);
     setOpen(false);
@@ -63,11 +39,11 @@ export function EtatCombobox({ initialStatus, noOptionText = "Aucune option", on
 
   if (isDesktop) {
     return (
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover open={open} onOpenChange={!disabled ? setOpen : undefined}>
         <PopoverTrigger>
-          <Button variant="outline" className="justify-between w-full" type="button">
+          <Button variant="outline" className="justify-between w-full" type="button" disabled={disabled}>
             {selectedStatus ? (
-              <>{selectedStatus.label}</>
+              <>{selectedStatus.nom}</>
             ) : (
               <>{noOptionText}</>
             )}
@@ -78,13 +54,13 @@ export function EtatCombobox({ initialStatus, noOptionText = "Aucune option", on
           <Command>
             <CommandList>
               <CommandGroup>
-                {options.map((status) => (
+                {options.map((etat: Etat) => (
                   <CommandItem
-                    key={status.value}
-                    value={status.value}
-                    onSelect={() => handleSelect(status)}
+                    key={etat.id}
+                    value={etat.id.toString()}
+                    onSelect={() => handleSelect(etat)}
                   >
-                    {status.label}
+                    {etat.nom}
                   </CommandItem>
                 ))}
               </CommandGroup>
@@ -96,10 +72,10 @@ export function EtatCombobox({ initialStatus, noOptionText = "Aucune option", on
   }
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
+    <Drawer open={open} onOpenChange={!disabled ? setOpen : undefined}>
       <DrawerTrigger asChild>
-        <Button variant="outline" className="justify-between">
-          {selectedStatus ? <>{selectedStatus.label}</> : <>{noOptionText}</>}
+        <Button variant="outline" className="justify-between" disabled={disabled}>
+          {selectedStatus ? <>{selectedStatus.nom}</> : <>{noOptionText}</>}
           <ChevronsUpDown />
         </Button>
       </DrawerTrigger>
@@ -108,13 +84,13 @@ export function EtatCombobox({ initialStatus, noOptionText = "Aucune option", on
           <Command>
             <CommandList>
               <CommandGroup>
-                {options.map((status) => (
+                {options.map((etat: Etat) => (
                   <CommandItem
-                    key={status.value}
-                    value={status.value}
-                    onSelect={() => handleSelect(status)}
+                    key={etat.id}
+                    value={etat.id.toString()}
+                    onSelect={() => handleSelect(etat)}
                   >
-                    {status.label}
+                    {etat.nom}
                   </CommandItem>
                 ))}
               </CommandGroup>

@@ -102,8 +102,7 @@ export default function Ajouter() {
                   <Combobox
                     noOptionText="Aucune catégorie"
                     onSelectedStatusChange={(status) => {
-                      console.log(status);
-                      field.onChange(status?.value || "");
+                      field.onChange(status?.id.toString() || "");
                     }}
                   />
                 </FormControl>

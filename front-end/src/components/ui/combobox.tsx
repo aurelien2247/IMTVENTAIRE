@@ -1,6 +1,5 @@
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
-import type { Categorie } from "@/types";
 import {
   Command,
   CommandGroup,
@@ -14,56 +13,34 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ChevronsUpDown } from "lucide-react";
-import { createCategory, fetchCategories } from "@/api/article";
+import { useAddCategorie, useCategories } from "@/hooks/useArticle";
+import type { Categorie } from "@/types";
 
-export type Status = {
-  value: string;
-  label: string;
-};
+export type Status = Categorie;
 
 interface ComboboxProps {
   initialStatus?: Status;
   options?: Status[];
   noOptionText?: string;
   onSelectedStatusChange?: (status: Status | null) => void;
+  disabled?: boolean;
 };
 
-export function Combobox({ initialStatus, noOptionText = "Aucune option", onSelectedStatusChange }: ComboboxProps) {
+export function Combobox({ initialStatus, noOptionText = "Aucune option", onSelectedStatusChange, disabled }: ComboboxProps) {
   const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
-  const [selectedStatus, setSelectedStatus] = useState<Status | null>(initialStatus?initialStatus:null);
-  const [options, setOptions] = useState<Status[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadOptions = async () => {
-      try {
-        const data = await fetchCategories();
-        const formatted = data.map((cat: Categorie) => ({
-          label: cat.nom,
-          value: cat.id.toString(),
-        }));
-
-      setOptions(formatted);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadOptions();
-  }, []);
+  const [selectedStatus, setSelectedStatus] = useState<Status | null>(initialStatus || null);
+  const { data: options = [] } = useCategories();
 
   if (isDesktop) {
     return (
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover open={open} onOpenChange={!disabled ? setOpen : undefined}>
         <PopoverTrigger>
-          <Button variant="outline" className="justify-between w-full" type="button">
+          <Button variant="outline" className="justify-between w-full" type="button" disabled={disabled}>
             {selectedStatus ? (
-              <>{selectedStatus.label}</>
+              <>{selectedStatus.nom}</>
             ) : (
               <>{noOptionText}</>
             )}
@@ -75,7 +52,6 @@ export function Combobox({ initialStatus, noOptionText = "Aucune option", onSele
             setOpen={setOpen} 
             setSelectedStatus={setSelectedStatus} 
             options={options} 
-            setOptions={setOptions} 
             noOptionText={noOptionText}
             onSelectedStatusChange={onSelectedStatusChange}
           />
@@ -85,10 +61,10 @@ export function Combobox({ initialStatus, noOptionText = "Aucune option", onSele
   }
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
+    <Drawer open={open} onOpenChange={!disabled ? setOpen : undefined}>
       <DrawerTrigger asChild>
-        <Button variant="outline" className="justify-between">
-          {selectedStatus ? <>{selectedStatus.label}</> : <>{noOptionText}</>}
+        <Button variant="outline" className="justify-between" disabled={disabled}>
+          {selectedStatus ? <>{selectedStatus.nom}</> : <>{noOptionText}</>}
           <ChevronsUpDown />
         </Button>
       </DrawerTrigger>
@@ -98,7 +74,6 @@ export function Combobox({ initialStatus, noOptionText = "Aucune option", onSele
             setOpen={setOpen} 
             setSelectedStatus={setSelectedStatus} 
             options={options} 
-            setOptions={setOptions} 
             noOptionText={noOptionText}
             onSelectedStatusChange={onSelectedStatusChange}
           />
@@ -112,7 +87,6 @@ interface StatusListProps {
   setOpen: (open: boolean) => void;
   setSelectedStatus: (status: Status | null) => void;
   options: Status[];
-  setOptions: (options: Status[]) => void;
   noOptionText: string;
   onSelectedStatusChange?: (status: Status | null) => void;
 }
@@ -120,12 +94,11 @@ interface StatusListProps {
 function StatusList({
   setOpen,
   setSelectedStatus,
-  setOptions,
   options,
   onSelectedStatusChange,
 }: StatusListProps) {
   const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
+  const createMutation = useAddCategorie();
 
   const handleSelect = (status: Status) => {
     setSelectedStatus(status);
@@ -134,26 +107,16 @@ function StatusList({
   };
 
   const inputAlreadyExists = options.some(
-    (status) => status.label.toLowerCase() === input.toLowerCase()
+    (status) => status.nom.toLowerCase() === input.toLowerCase()
   );
 
   const handleCreate = async () => {
     if (input.trim() === "") return;
-    setLoading(true);
-    try {
-      const categorie = await createCategory(input);
-      const newCategorie: Status = {
-        label: categorie.nom,
-        value: String(categorie.id),
-      };
-      setOptions([...options, newCategorie]);
-      handleSelect(newCategorie);
-    } catch (error) {
-      console.error("Erreur lors de la création :", error);
-      alert("Échec de la création du statut.");
-    } finally {
-      setLoading(false);
-    }
+    createMutation.mutate(input, {
+      onSuccess: (categorie) => {
+        handleSelect(categorie);
+      }
+    });
   };
 
   return (
@@ -163,11 +126,11 @@ function StatusList({
         <CommandGroup>
           {options.map((status) => (
             <CommandItem
-              key={status.value}
-              value={status.value}
+              key={status.id}
+              value={status.id.toString()}
               onSelect={() => handleSelect(status)}
             >
-              {status.label}
+              {status.nom}
             </CommandItem>
           ))}
 
@@ -177,7 +140,7 @@ function StatusList({
               onSelect={handleCreate}
               className="italic text-muted-foreground"
             >
-              {loading ? "Création..." : `Créer « ${input} »`}
+              {createMutation.isPending ? "Création..." : `Créer « ${input} »`}
             </CommandItem>
           )}
         </CommandGroup>
