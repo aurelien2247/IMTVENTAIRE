@@ -40,7 +40,7 @@ export default function SearchResults() {
   const setSearchQuery = useSetAtom(searchQueryAtom);
   const { articles, rooms, isLoading, error } = useSearch();
 
-  // Initialize search query from URL
+  // 
   useEffect(() => {
     setSearchQuery(queryParam);
   }, [queryParam, setSearchQuery]);
