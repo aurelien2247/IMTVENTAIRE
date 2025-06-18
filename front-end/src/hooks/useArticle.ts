@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchArticle, fetchArticles, addArticle, updateArticle } from "@/api/article";
+import { fetchArticle, fetchArticles, addArticle, updateArticle, fetchCategories, fetchEtats, createCategory } from "@/api/article";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export const useArticles = (pieceId: string | undefined) => {
   if (!pieceId) {
@@ -31,7 +32,10 @@ export const useAddArticle = () => {
   return useMutation({
     mutationFn: addArticle,
     onSuccess: () => {
-      toast.success("Article ajouté avec succès");
+      toast.success("Article ajouté avec succès", {
+        position: "top-center",
+        richColors: true
+      });
       // Invalider le cache des articles pour forcer un rechargement
       queryClient.invalidateQueries({ queryKey: ["articles"] });
     }
@@ -40,17 +44,49 @@ export const useAddArticle = () => {
 
 export const useUpdateArticle = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: ({ numInventaire, articleData }: { numInventaire: string; articleData: { id_piece: string } }) =>
-      updateArticle(numInventaire, articleData),
-    onSuccess: (_, variables) => {
-      toast.success("Article mis à jour avec succès");
-      queryClient.invalidateQueries({ queryKey: ["article", variables.numInventaire] });
+    mutationFn: ({ articleId, data }: { articleId: string; data: Parameters<typeof updateArticle>[1] }) => 
+      updateArticle(articleId, data),
+    onSuccess: () => {
+      toast.success("Article modifié avec succès", {
+        position: "top-center",
+        richColors: true
+      });
+      // Invalider le cache des articles pour forcer un rechargement
       queryClient.invalidateQueries({ queryKey: ["articles"] });
-    },
-    onError: () => {
-      toast.error("Erreur lors de la mise à jour de l'article");
-    },
+      queryClient.invalidateQueries({ queryKey: ["article"] });
+      navigate(-1);
+    }
+  });
+};
+
+export const useCategories = () => {
+  return useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+  });
+};
+
+export const useEtats = () => {
+  return useQuery({
+    queryKey: ["etats"],
+    queryFn: fetchEtats,
+  });
+};
+
+export const useAddCategorie = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createCategory,
+    onSuccess: () => {
+      toast.success("Catégorie ajoutée avec succès", {
+        position: "top-center",
+        richColors: true
+      });
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    }
   });
 };

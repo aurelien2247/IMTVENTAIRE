@@ -9,8 +9,11 @@ import ListeBatiments from "@/pages/inventaire/ListeBatiments";
 import ListeEtages from "@/pages/inventaire/ListeEtages";
 import ListePieces from "@/pages/inventaire/ListePieces";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 export default function ArticleInfo() {
+  const navigate = useNavigate();
   const [codeScanned] = useAtom(codeScannedAtom);
   const { data: article } = useArticle(codeScanned);
   const updateArticle = useUpdateArticle();
@@ -91,7 +94,23 @@ export default function ArticleInfo() {
         >
           Changer de pièce
         </Button>
-        <Button variant="secondary">Modifier</Button>
+        <Button 
+          variant="secondary"
+          onClick={() => {
+            const batimentId = article?.piece?.etage?.batiment?.id;
+            const etageId = article?.piece?.etage?.id;
+            const pieceId = article?.piece?.id;
+            const articleId = article.num_inventaire;
+
+            if (batimentId && etageId && pieceId && articleId) {
+              navigate(`/inventaire/${batimentId}/${etageId}/${pieceId}/${articleId}`);
+            } else {
+              alert("Erreur: Les informations de localisation de l'article sont incomplètes.");
+            }
+          }}
+        >
+          Modifier
+        </Button>
       </div>
     </div>
   );
