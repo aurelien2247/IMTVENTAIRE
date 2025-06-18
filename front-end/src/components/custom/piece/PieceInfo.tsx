@@ -8,6 +8,8 @@ import ScanConfirmDialog from "@/pages/scanner/components/ScanConfirmDialog";
 import ArticleList, { ArticleListSkeleton } from "../article/ArticleList";
 import ScanMode from "@/pages/scanner/components/ScanMode";
 import Error from "@/pages/common/Error";
+import ScanPieceButton from "./ScanPieceButton";
+import { toast } from "sonner";
 
 export default function PieceInfo() {
   const [scanMode, setScanMode] = useAtom(scanModeAtom);
@@ -25,21 +27,39 @@ export default function PieceInfo() {
   const { data: article } = useArticle(codeScanned, scanMode && !isPiece);
 
   useEffect(() => {
-    if (scanMode && article) {
-      // setChangePiece(false);
-      setArticlesScanned((articles) => [...articles, article]);
-    } 
-    if (codeScanned !== piece?.nom && scanMode && articlesScanned.length > 0) {
-      setOpenConfirmScan(true);
+      resetArticlesScanned();
+  }, [piece]);
+
+  useEffect(() => {
+    if (scanMode) {
+      if (article) {
+        setArticlesScanned((articles) => [...articles, article]);
+      }
+      if (codeScanned !== piece?.nom && articlesScanned.length > 0) {
+        setOpenConfirmScan(true);
+      }
     }
-    if (codeScanned !== piece?.nom) {
-      resetArticlesScanned()
-    }
-  }, [codeScanned, scanMode, article]);
+  }, [codeScanned, scanMode, article, piece]);
 
   const saveScan = async () => {
     // TODO: Enregistrer les articles sauvegardées dans le back
-    console.log(articlesScanned);
+    toast("Articles sauvegardés", {
+      description: (
+        <div className="flex flex-col gap-1">
+          {articlesScanned.map((article) => (
+            <div key={article.num_inventaire}>
+              <h3>{article.categorie.nom}</h3>
+            </div>
+          ))}
+        </div>
+      ),
+      position: "top-center",
+      richColors: true,
+    });
+    resetArticlesScanned();
+    if (codeScanned === piece?.nom) {
+      setCodeScanned(null);
+    }
   };
 
   const resetArticlesScanned = () => {
@@ -47,11 +67,19 @@ export default function PieceInfo() {
     setScanMode(false);
   };
 
+  const handleButtonScan = (startScan: boolean) => {
+    if (startScan) {
+      setScanMode(startScan);
+      return;
+    }
+    setOpenConfirmScan(true);
+  };
+
   const handleConfirmScan = async (confirm: boolean) => {
     if (confirm) {
       await saveScan();
-      resetArticlesScanned();
-      // setChangePiece(true);
+    } else {
+      setCodeScanned(piece?.nom || null);
     }
     setOpenConfirmScan(false);
   };
@@ -61,9 +89,7 @@ export default function PieceInfo() {
   }
 
   if (!piece) {
-    return (
-      <Error />
-    )
+    return <Error />;
   }
 
   return (
@@ -84,6 +110,7 @@ export default function PieceInfo() {
         <ArticleList articles={piece?.articles} />
       )}
       <ScanConfirmDialog open={openConfirmScan} onConfirm={handleConfirmScan} />
+      <ScanPieceButton onClick={handleButtonScan} />
     </div>
   );
 }

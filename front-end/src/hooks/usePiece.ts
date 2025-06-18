@@ -21,6 +21,8 @@ export const usePieceByName = (nom: string | null, enabled = true) => {
     queryKey: ["piece", "nom", nom],
     queryFn: () => fetchPieceByName(nom),
     enabled,
-    placeholderData: (previousData) => previousData
+    staleTime: 0,
+    gcTime: 0,
+    placeholderData: (previousData) => previousData,
   });
 };
