@@ -6,10 +6,16 @@ import { useEtages } from "@/hooks/useEtage";
 import NotFound from "../common/NotFound";
 import Error from "../common/Error";
 
-export default function ListeEtages() {
-  const { batimentId } = useParams();
+export default function ListeEtages({ batimentId: propBatimentId, onSelect, onBack }: { batimentId?: string, onSelect?: (id: string) => void, onBack?: () => void }) {
+  const params = useParams();
+  const routeBatimentId = params.batimentId;
+  const batimentId = propBatimentId || routeBatimentId;
+
   const { data: etages, isLoading, error } = useEtages(batimentId);
   const headerTitle = `Bâtiment ${etages?.[0]?.batiment.nom.toUpperCase()}`;
+
+  // Si onSelect n'est pas fourni, on est dans le mode route
+  const isRouteMode = !onSelect;
 
   if (isLoading) {
     return (
@@ -47,14 +53,15 @@ export default function ListeEtages() {
 
   return (
     <div className="container">
-      <Header title={headerTitle} />
+      <Header title={headerTitle} onBack={onBack} />
       <SearchBar  />
       <div className="flex flex-col gap-2">
         {etages.map((etage) => (
           <Card
             content={etage.nom}
-            link={`/inventaire/${batimentId}/${etage.id}`}
             key={etage.id}
+            onClick={onSelect ? () => onSelect(etage.id.toString()) : undefined}
+            link={!onSelect ? `/inventaire/${batimentId}/${etage.id}` : undefined}
           />
         ))}
       </div>

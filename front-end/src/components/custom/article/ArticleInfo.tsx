@@ -1,19 +1,53 @@
 import { Button } from "@/components/ui/button";
-import { useArticle } from "@/hooks/useArticle";
+import { useArticle, useUpdateArticle } from "@/hooks/useArticle";
 import ArticleEtat, { ArticleEtatSkeleton } from "./ArticleEtat";
 import { useAtom } from "jotai";
 import { codeScannedAtom } from "@/lib/atoms";
 import { Skeleton } from "@/components/ui/skeleton";
+import ListeBatiments from "@/pages/inventaire/ListeBatiments";
+import ListeEtages from "@/pages/inventaire/ListeEtages";
+import ListePieces from "@/pages/inventaire/ListePieces";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function ArticleInfo() {
   const navigate = useNavigate();
   const [codeScanned] = useAtom(codeScannedAtom);
   const { data: article } = useArticle(codeScanned);
+  const updateArticle = useUpdateArticle();
 
-  const batimentId = article?.piece?.etage?.batiment?.id;
-  const etageId = article?.piece?.etage?.id;
-  const pieceId = article?.piece?.id;
+  // Ajout de l'état pour le mode changement de pièce et la navigation
+  const [modeChangementPiece, setModeChangementPiece] = useState(false);
+  const [batimentId, setBatimentId] = useState<string | undefined>(undefined);
+  const [etageId, setEtageId] = useState<string | undefined>(undefined);
+  const [pieceId, setPieceId] = useState<string | undefined>(undefined);
+
+  // Callback pour sélectionner un bâtiment
+  const handleSelectBatiment = (id: string) => {
+    setBatimentId(id);
+    setEtageId(undefined);
+    setPieceId(undefined);
+  };
+  // Callback pour sélectionner un étage
+  const handleSelectEtage = (id: string) => {
+    setEtageId(id);
+    setPieceId(undefined);
+  };
+  // Callback pour sélectionner une pièce
+  const handleSelectPiece = (id: string) => {
+    setPieceId(id);
+    setModeChangementPiece(false); 
+    if (article) {
+      updateArticle.mutate({
+        numInventaire: article.num_inventaire,
+        articleData: { id_piece: id }
+      });
+    }
+  };
+
+  const articleBatimentId = article?.piece?.etage?.batiment?.id;
+  const articleEtageId = article?.piece?.etage?.id;
+  const articlePieceId = article?.piece?.id;
   const articleId = article?.num_inventaire;
 
   if (!article) {
@@ -21,11 +55,21 @@ export default function ArticleInfo() {
   }
 
   const handleRedirect = () => {
-    navigate(`/inventaire/${batimentId}/${etageId}/${pieceId}/${articleId}`);
+    navigate(`/inventaire/${articleBatimentId}/${articleEtageId}/${articlePieceId}/${articleId}`);
   };
+  if (modeChangementPiece) {
+    if (!batimentId) {
+      return <ListeBatiments onSelect={handleSelectBatiment} title="Déplacer vers..." />;
+    } else if (!etageId) {
+      return <ListeEtages batimentId={batimentId} onSelect={handleSelectEtage} onBack={() => setBatimentId(undefined)} />;
+    } else if (!pieceId) {
+      return <ListePieces batimentId={batimentId} etageId={etageId} onSelect={handleSelectPiece} onBack={() => setEtageId(undefined)} />;
+    }
+  }
 
   return (
     <div className="container flex flex-col gap-16">
+      <h2 className="text-2xl font-bold">Inventaire</h2>
       <div className="flex flex-col gap-6 min-w-0">
         <div className="flex flex-col gap-1">
           <span className="flex items-center gap-2">
@@ -50,7 +94,7 @@ export default function ArticleInfo() {
         <Button
           variant="secondary"
           onClick={handleRedirect}
-          disabled={!batimentId || !etageId || !pieceId || !articleId}
+          disabled={!articleBatimentId || !articleEtageId || !articlePieceId || !articleId}
         >
           Modifier
         </Button>
