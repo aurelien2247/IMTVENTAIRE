@@ -22,7 +22,7 @@ export default class PieceController {
       const piece = await Piece.find(params.id)
 
       if (!piece) {
-        return response.notFound({ message: 'Pièce non trouvée' })
+        return response.notFound({ error: 'Pièce non trouvée' })
       }
 
       return response.ok(piece)
@@ -60,7 +60,7 @@ export default class PieceController {
         .first()
 
       if (!piece) {
-        return response.notFound({ message: 'Pièce non trouvée' })
+        return response.notFound({ error: 'Pièce non trouvée' })
       }
 
       return response.ok(piece)
