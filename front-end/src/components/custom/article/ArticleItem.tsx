@@ -1,18 +1,44 @@
 import { Button } from "@/components/ui/button";
 import ArticleEtat, { ArticleEtatSkeleton } from "./ArticleEtat";
 import { cn } from "@/lib/utils";
-import type { Article } from "@/types";
+import type { Article, Piece } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useNavigate } from "react-router-dom";
 
 interface ArticleItemProps {
   article: Article;
   isScanned?: boolean;
+  piece?: Piece;
 }
 
 export default function ArticleItem({
   article,
   isScanned = true,
+  piece,
 }: ArticleItemProps) {
+  const navigate = useNavigate();
+
+  const handleModifierClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const pieceInfo = article.piece || piece;
+
+    if (!pieceInfo) {
+      alert("Erreur: Les informations de la pièce sont manquantes.");
+      return;
+    }
+
+    const batimentId = pieceInfo.etage.batiment.id;
+    const etageId = pieceInfo.etage.id;
+    const pieceId = pieceInfo.id;
+    const articleId = article.num_inventaire;
+
+    if (batimentId && etageId && pieceId && articleId) {
+      navigate(`/inventaire/${batimentId}/${etageId}/${pieceId}/${articleId}`);
+    } else {
+      alert("Erreur: Les informations de localisation de l'article sont incomplètes.");
+    }
+  };
+
   return (
     <div
       key={article.num_inventaire}
@@ -27,7 +53,7 @@ export default function ArticleItem({
           #{article.num_inventaire}
         </small>
       </div>
-      <Button variant="secondary">Modifier</Button>
+      <Button variant="secondary" onClick={handleModifierClick}>Modifier</Button>
     </div>
   );
 }

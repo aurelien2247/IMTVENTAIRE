@@ -107,7 +107,7 @@ export default function PieceInfo() {
       {scanMode && piece ? (
         <ScanMode piece={piece} articlesScanned={articlesScanned} />
       ) : (
-        <ArticleList articles={piece?.articles} />
+        <ArticleList articles={piece?.articles} piece={piece} />
       )}
       <ScanConfirmDialog open={openConfirmScan} onConfirm={handleConfirmScan} />
       <ScanPieceButton onClick={handleButtonScan} />

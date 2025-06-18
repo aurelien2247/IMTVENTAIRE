@@ -18,3 +18,12 @@ export const fetchPieces = async (etageId: string): Promise<Piece[]> => {
 export const fetchPieceByName = async (nom: string): Promise<Piece> => {
   return await fetchApi(`/pieces/nom/${nom}`);
 };
+
+/**
+ * Récupère une pièce par son ID
+ * @param id - L'identifiant de la pièce
+ * @returns La pièce correspondante
+ */
+export const fetchPiece = async (id: string): Promise<Piece> => {
+  return await fetchApi(`/pieces/${id}`);
+};

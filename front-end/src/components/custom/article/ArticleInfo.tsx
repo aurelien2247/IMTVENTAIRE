@@ -5,8 +5,11 @@ import { useAtom } from "jotai";
 import { codeScannedAtom } from "@/lib/atoms";
 import { Skeleton } from "@/components/ui/skeleton";
 import Error from "@/pages/common/Error";
+import { useNavigate } from "react-router-dom";
+
 
 export default function ArticleInfo() {
+  const navigate = useNavigate();
   const [codeScanned] = useAtom(codeScannedAtom);
   const { data: article } = useArticle(codeScanned);
 
@@ -37,7 +40,23 @@ export default function ArticleInfo() {
       </div>
       <div className="flex flex-col gap-2 flex-shrink-0">
         <Button>Changer de pièce</Button>
-        <Button variant="secondary">Modifier</Button>
+        <Button 
+          variant="secondary"
+          onClick={() => {
+            const batimentId = article?.piece?.etage?.batiment?.id;
+            const etageId = article?.piece?.etage?.id;
+            const pieceId = article?.piece?.id;
+            const articleId = article.num_inventaire;
+
+            if (batimentId && etageId && pieceId && articleId) {
+              navigate(`/inventaire/${batimentId}/${etageId}/${pieceId}/${articleId}`);
+            } else {
+              alert("Erreur: Les informations de localisation de l'article sont incomplètes.");
+            }
+          }}
+        >
+          Modifier
+        </Button>
       </div>
     </div>
   );
