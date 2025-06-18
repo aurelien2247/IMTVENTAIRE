@@ -58,7 +58,7 @@ export default class ArticleController {
         .first()
 
       if (!article) {
-        return response.notFound({ error: 'Article non trouvé' })
+        return response.notFound({})
       }
 
       return response.ok(article)

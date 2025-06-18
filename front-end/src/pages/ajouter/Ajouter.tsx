@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useSearchParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -47,10 +48,13 @@ const AjouterSchema = z.object({
 type AjouterFormValues = z.infer<typeof AjouterSchema>;
 
 export default function Ajouter() {
+  const [searchParams] = useSearchParams();
+  const numInventaireFromUrl = searchParams.get("num_inventaire") || "";
+  
   const form = useForm<AjouterFormValues>({
     resolver: zodResolver(AjouterSchema),
     defaultValues: {
-      num_inventaire: "",
+      num_inventaire: numInventaireFromUrl,
       categorie: "", // A gérer avec le merge de la feature catégorie
       etat: "1", // Neuf par défaut
       id_piece: "1", // A gérer avec le merge de la feature pièce
