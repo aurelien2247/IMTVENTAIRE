@@ -11,7 +11,7 @@ import Error from "@/pages/common/Error";
 
 export default function PieceInfo() {
   const [scanMode, setScanMode] = useAtom(scanModeAtom);
-  const [codeScanned, setCodeScanned] = useAtom(codeScannedAtom);
+  const [codeScanned] = useAtom(codeScannedAtom);
   const [articlesScanned, setArticlesScanned] = useState<Article[]>([]);
   const [openConfirmScan, setOpenConfirmScan] = useState(false);
 
@@ -38,7 +38,6 @@ export default function PieceInfo() {
   }, [codeScanned, scanMode, article]);
 
   const saveScan = async () => {
-    // TODO: Enregistrer les articles sauvegardées dans le back
     console.log(articlesScanned);
   };
 
