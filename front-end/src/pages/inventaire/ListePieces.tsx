@@ -6,12 +6,20 @@ import { usePieces } from "@/hooks/usePiece";
 import NotFound from "../common/NotFound";
 import Error from "../common/Error";
 
-export default function ListePieces() {
-  const { batimentId, etageId } = useParams();
+export default function ListePieces({ batimentId: propBatimentId, etageId: propEtageId, onSelect, onBack }: { batimentId?: string, etageId?: string, onSelect?: (id: string) => void, onBack?: () => void }) {
+  const params = useParams();
+  const routeBatimentId = params.batimentId;
+  const routeEtageId = params.etageId;
+  const batimentId = propBatimentId || routeBatimentId;
+  const etageId = propEtageId || routeEtageId;
+
   const { data: pieces, isLoading, error } = usePieces(etageId);
   const headerTitle = pieces?.[0]?.etage.nom.toUpperCase() 
     ? `Étage ${pieces[0].etage.nom.toUpperCase()}`
     : "Étage";
+
+  // Si onSelect n'est pas fourni, on est dans le mode route
+  const isRouteMode = !onSelect;
 
   if (isLoading) {
     return (
@@ -49,14 +57,15 @@ export default function ListePieces() {
 
   return (
     <div className="container">
-      <Header title={headerTitle} />
+      <Header title={headerTitle} onBack={onBack} />
       <SearchBar  />
       <div className="flex flex-col gap-2">
         {pieces.map((piece) => (
           <Card
             key={piece.id}
             content={piece.nom}
-            link={`/inventaire/${batimentId}/${etageId}/${piece.id}`}
+            onClick={onSelect ? () => onSelect(piece.id.toString()) : undefined}
+            link={!onSelect ? `/inventaire/${batimentId}/${etageId}/${piece.id}` : undefined}
           />
         ))}
       </div>

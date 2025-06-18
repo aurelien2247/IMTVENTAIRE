@@ -5,14 +5,19 @@ import type { Batiment } from "@/types";
 import NotFound from "../common/NotFound";
 import Error from "../common/Error";
 import { useBatiments } from "@/hooks/useBatiment";
+import { useParams } from "react-router-dom";
 
-export default function ListeBatiments() {
+export default function ListeBatiments({ onSelect, title }: { onSelect?: (id: string) => void, title?: string }) {
   const { data: batiments, isLoading, error } = useBatiments();
+  const params = useParams();
+
+  // Si onSelect n'est pas fourni, on est dans le mode route
+  const isRouteMode = !onSelect;
 
   if (isLoading) {
     return (
       <div className="container mx-auto">
-        <Header title="Inventaire" />
+        <Header title={title || "Inventaire"} />
         <SearchBar  />
         <div className="flex flex-col gap-2">
           {Array.from({ length: 10 }).map((_, index) => (
@@ -32,7 +37,7 @@ export default function ListeBatiments() {
   if (error) {
     return (
       <div className="container mx-auto">
-        <Header title="Inventaire" />
+        <Header title={title || "Inventaire"} />
         <SearchBar  />
         <Error />
       </div>
@@ -42,7 +47,7 @@ export default function ListeBatiments() {
   if (!batiments || batiments.length === 0) {
     return (
       <div className="container mx-auto">
-        <Header title="Inventaire" />
+        <Header title={title || "Inventaire"} />
         <SearchBar  />
         <NotFound message="Aucun bâtiment trouvé" />
       </div>
@@ -51,14 +56,15 @@ export default function ListeBatiments() {
 
   return (
     <div className="container mx-auto">
-      <Header title="Inventaire" />
+      <Header title={title || "Inventaire"} />
       <SearchBar  />
       <div className="flex flex-col gap-2">
         {batiments.map((batiment: Batiment) => (
           <Card
             key={batiment.id}
             content={`Bâtiment ${batiment.nom}`}
-            link={`/inventaire/${batiment.id}`}
+            onClick={onSelect ? () => onSelect(batiment.id.toString()) : undefined}
+            link={!onSelect ? `/inventaire/${batiment.id}` : undefined}
           />
         ))}
       </div>

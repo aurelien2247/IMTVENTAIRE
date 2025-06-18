@@ -22,11 +22,28 @@ interface Props extends VariantProps<typeof cardVariants> {
   content: string | React.ReactNode;
   link?: string;
   className?: string;
+  onClick?: () => void;
 }
 
-export default function Card({ content, link, size, className }: Props) {
+export default function Card({ content, link, size, className, onClick }: Props) {
+  const classes = cn(cardVariants({ size, className }));
+  if (onClick) {
+    return (
+      <div className={classes} onClick={onClick} role="button" tabIndex={0} style={{ cursor: 'pointer' }}>
+        <p
+          className={cn(
+            "font-semibold",
+            size === "medium" && "text-base",
+            size === "small" && "text-sm"
+          )}
+        >
+          {content}
+        </p>
+      </div>
+    );
+  }
   return (
-    <Link to={link || ""} className={cn(cardVariants({ size, className }))}>
+    <Link to={link || ""} className={classes}>
       <p
         className={cn(
           "font-semibold",

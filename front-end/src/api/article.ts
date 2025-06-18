@@ -61,3 +61,17 @@ export const createCategory = async (label: string): Promise<Categorie> => {
 export const fetchCategories = async (): Promise<Categorie[]> => {
   return await fetchApi(`/categories`);
 };
+
+export const updateArticle = async (numInventaire: string, articleData: {
+  id_piece: string;
+}): Promise<Article> => {
+  const payload = {
+    ...articleData,
+    id_piece: parseInt(articleData.id_piece, 10),
+  };
+
+  return await fetchApi(`/article/${numInventaire}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+};

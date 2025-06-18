@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchArticle, fetchArticles, addArticle } from "@/api/article";
+import { fetchArticle, fetchArticles, addArticle, updateArticle } from "@/api/article";
 import { toast } from "sonner";
 
 export const useArticles = (pieceId: string | undefined) => {
@@ -35,5 +35,22 @@ export const useAddArticle = () => {
       // Invalider le cache des articles pour forcer un rechargement
       queryClient.invalidateQueries({ queryKey: ["articles"] });
     }
+  });
+};
+
+export const useUpdateArticle = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ numInventaire, articleData }: { numInventaire: string; articleData: { id_piece: string } }) =>
+      updateArticle(numInventaire, articleData),
+    onSuccess: (_, variables) => {
+      toast.success("Article mis à jour avec succès");
+      queryClient.invalidateQueries({ queryKey: ["article", variables.numInventaire] });
+      queryClient.invalidateQueries({ queryKey: ["articles"] });
+    },
+    onError: () => {
+      toast.error("Erreur lors de la mise à jour de l'article");
+    },
   });
 };
