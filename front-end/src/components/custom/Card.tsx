@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 
 const cardVariants = cva(
-  "flex items-center justify-between gap-4 bg-muted rounded-2xl hover:bg-muted-foreground/10 transition-colors group pointer",
+  "flex items-center justify-between gap-4 bg-muted rounded-2xl hover:bg-muted-foreground/10 transition-colors group cursor-pointer",
   {
     variants: {
       size: {
