@@ -22,7 +22,7 @@ export default class EtageController {
       const etage = await Etage.find(params.id)
 
       if (!etage) {
-        return response.notFound({ message: 'Etage non trouvés' })
+        return response.notFound({ error: 'Etage non trouvés' })
       }
 
       return response.ok(etage)

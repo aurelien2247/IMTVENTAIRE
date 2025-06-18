@@ -7,7 +7,6 @@ import ArticleInfo from "@/components/custom/article/ArticleInfo";
 import PieceInfo from "@/components/custom/piece/PieceInfo";
 import { useAtom } from "jotai";
 import { codeScannedAtom, scanModeAtom } from "@/lib/atoms";
-import ScanPieceButton from "@/components/custom/piece/ScanPieceButton";
 
 export default function Scanner() {
   const [codeScanned, setCodeScanned] = useAtom(codeScannedAtom);
@@ -30,16 +29,7 @@ export default function Scanner() {
         className="w-full h-full object-cover"
       />
       <ScanRectangle />
-      <ScanDrawer>
-        {isPiece ? (
-          <>
-            <PieceInfo />
-            <ScanPieceButton />
-          </>
-        ) : (
-          <ArticleInfo />
-        )}
-      </ScanDrawer>
+      <ScanDrawer>{isPiece ? <PieceInfo /> : <ArticleInfo />}</ScanDrawer>
     </div>
   );
 }

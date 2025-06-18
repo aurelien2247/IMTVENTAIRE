@@ -6,15 +6,19 @@ import { CheckIcon, ScanIcon } from "lucide-react";
 import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 
-export default function ScanPieceButton() {
-  const [scanMode, setScanMode] = useAtom(scanModeAtom);
+interface ScanPieceButtonProps {
+  onClick: (startScan: boolean) => void;
+}
+
+export default function ScanPieceButton({ onClick }: ScanPieceButtonProps) {
+  const [scanMode] = useAtom(scanModeAtom);
   const defaultStyle =
     "fixed bottom-16 left-1/2 -translate-x-1/2 backdrop-blur-2xl z-[100] pointer-events-auto";
     
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>, startScan: boolean) => {
     event.preventDefault();
     event.stopPropagation();
-    setScanMode(startScan);
+    onClick(startScan);
   };
 
   const button = scanMode ? (

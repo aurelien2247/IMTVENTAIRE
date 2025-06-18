@@ -58,7 +58,7 @@ export default class ArticleController {
         .first()
 
       if (!article) {
-        return response.notFound({ message: 'Article non trouvé' })
+        return response.notFound({ error: 'Article non trouvé' })
       }
 
       return response.ok(article)
@@ -135,7 +135,7 @@ export default class ArticleController {
       const article = await Article.query().where('num_inventaire', params.num_inventaire).first()
 
       if (!article) {
-        return response.notFound({ message: 'Article non trouvé' })
+        return response.notFound({ error: 'Article non trouvé' })
       }
 
       const articleData = request.only([
