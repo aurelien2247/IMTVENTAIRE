@@ -19,6 +19,7 @@ import { Combobox } from "@/components/ui/combobox";
 import Header from "@/components/custom/Header";
 import { useAddArticle, useAddArticlesBatch } from "@/hooks/useArticle";
 import AjoutMultipleDialog from "@/components/custom/ajouterArticle/AjoutMultipleDialog";
+import ChoisirPiece from "@/components/custom/piece/ChoisirPiece";
 
 const AjouterSchema = z.object({
   num_inventaire: z
@@ -58,6 +59,7 @@ type AjouterFormValues = z.infer<typeof AjouterSchema>;
 export default function Ajouter() {
   const [showMultipleDialog, setShowMultipleDialog] = useState(false);
   const [pendingFormData, setPendingFormData] = useState<AjouterFormValues | null>(null);
+  const [modeChangementPiece, setModeChangementPiece] = useState(false);
   
   const form = useForm<AjouterFormValues>({
     resolver: zodResolver(AjouterSchema),
@@ -127,6 +129,10 @@ export default function Ajouter() {
         setPendingFormData(null);
       }
     });
+  }
+
+  if (modeChangementPiece) {
+    return <ChoisirPiece article={article} onClose={() => setModeChangementPiece(false)} />;
   }
 
   return (

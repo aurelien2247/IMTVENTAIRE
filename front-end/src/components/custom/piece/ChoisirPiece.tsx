@@ -6,12 +6,12 @@ import { useUpdateArticle } from "@/hooks/useArticle";
 import type { Article } from "@/types";
 import Header from "../Header";
 
-interface ChangerPieceProps {
+interface ChoisirPieceProps {
   article: Article;
   onClose: () => void;
 }
 
-export default function ChangerPiece({ article, onClose }: ChangerPieceProps) {
+export default function ChoisirPiece({ article, onClose }: ChoisirPieceProps) {
   const updateArticle = useUpdateArticle();
   const [batimentId, setBatimentId] = useState<string | undefined>(undefined);
   const [etageId, setEtageId] = useState<string | undefined>(undefined);
@@ -60,7 +60,7 @@ export default function ChangerPiece({ article, onClose }: ChangerPieceProps) {
 
   return (
     <div className="container flex flex-col gap-6">
-      <Header title="Changer de pièce" onBack={handleBack} />
+      <Header title="Choisir une pièce" onBack={handleBack} />
       <div>
         {step === 'batiment' && (
           <ListeBatiments onSelect={handleSelectBatiment} />

@@ -6,7 +6,7 @@ import { codeScannedAtom } from "@/lib/atoms";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import ChangerPiece from "../piece/ChangerPiece";
+import ChoisirPiece from "../piece/ChoisirPiece";
 
 export default function ArticleInfo() {
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ export default function ArticleInfo() {
   };
 
   if (modeChangementPiece) {
-    return <ChangerPiece article={article} onClose={() => setModeChangementPiece(false)} />;
+    return <ChoisirPiece article={article} onClose={() => setModeChangementPiece(false)} />;
   }
 
   return (
