@@ -6,16 +6,6 @@ export interface Etage {
   nom: string;
   batiment: Batiment;
 }
-
-/**
- * Représente une catégorie de bâtiment
- */
-export interface Categorie {
-  id: number;
-  nom: string;
-  batiments: Batiment[];
-}
-
 /**
  * Représente un bâtiment
  */

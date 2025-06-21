@@ -91,7 +91,7 @@ export default function ModifierArticle() {
                   <Combobox 
                     type="categorie"
                     disabled={isLoading}
-                    initialStatus={article?.categorie}
+                    status={article?.categorie}
                     onSelectedStatusChange={(status) => {
                       field.onChange(status?.id.toString() || "");
                     }}
@@ -122,7 +122,7 @@ export default function ModifierArticle() {
                   <Combobox 
                     type="etat"
                     disabled={isLoading}
-                    initialStatus={article?.etat}
+                    status={article?.etat}
                     onSelectedStatusChange={(status) => {
                       field.onChange(status?.id.toString() || "");
                     }}

@@ -13,7 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronsUpDown } from "lucide-react";
 import { useAddCategorie, useCategories, useEtats } from "@/hooks/useArticle";
 import type { Categorie, Etat } from "@/types";
@@ -24,7 +24,7 @@ type ComboboxType = "categorie" | "etat";
 
 interface ComboboxProps {
   type: ComboboxType;
-  initialStatus?: Status;
+  status?: Status;
   noOptionText?: string;
   onSelectedStatusChange?: (status: Status | null) => void;
   disabled?: boolean;
@@ -33,7 +33,7 @@ interface ComboboxProps {
 
 export function Combobox({ 
   type, 
-  initialStatus, 
+  status, 
   noOptionText = "Aucune option", 
   onSelectedStatusChange, 
   disabled,
@@ -41,8 +41,12 @@ export function Combobox({
 }: ComboboxProps) {
   const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
-  const [selectedStatus, setSelectedStatus] = useState<Status | null>(initialStatus || null);
-  
+  const [selectedStatus, setSelectedStatus] = useState<Status | null>(status || null);
+
+  useEffect(() => {
+    setSelectedStatus(status || null);
+  }, [status]);
+
   const { data: categories = [] } = useCategories();
   const { data: etats = [] } = useEtats();
   

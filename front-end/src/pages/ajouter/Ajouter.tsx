@@ -17,10 +17,11 @@ import { NumericInput } from "@/components/ui/numeric-input";
 import Card from "@/components/custom/Card";
 import { Combobox } from "@/components/ui/combobox";
 import Header from "@/components/custom/Header";
-import { useAddArticle, useAddArticlesBatch } from "@/hooks/useArticle";
+import { useAddArticle, useAddArticlesBatch, useCategories } from "@/hooks/useArticle";
 import AjoutMultipleDialog from "@/components/custom/ajouterArticle/AjoutMultipleDialog";
 import ChoisirPiece from "@/components/custom/piece/ChoisirPiece";
 import { usePiece } from "@/hooks/usePiece";
+import { cn } from "@/lib/utils";
 
 const AjouterSchema = z.object({
   num_inventaire: z.string().regex(/^\d{5,}$/, {
@@ -74,7 +75,13 @@ export default function Ajouter() {
 
   const addArticle = useAddArticle();
   const addArticlesBatch = useAddArticlesBatch();
-    const { data: piece } = usePiece(form.watch("id_piece"), form.watch("id_piece").length > 0);
+  const { data: piece } = usePiece(form.watch("id_piece"), form.watch("id_piece").length > 0);
+  const { data: categories = [] } = useCategories();
+
+  // Trouver la catégorie correspondante à l'identifiant stocké dans le formulaire
+  const selectedCategorie = categories.find(
+    (cat) => cat.id.toString() === form.watch("categorie")
+  );
 
   function onSubmit(data: AjouterFormValues) {
     const nbArticles = parseInt(data.nb_articles, 10);
@@ -143,7 +150,6 @@ export default function Ajouter() {
   }
 
   const formData = form.getValues();
-  console.log(formData);
 
   return (
     <div className="container gap-8">
@@ -187,6 +193,7 @@ export default function Ajouter() {
                 <FormLabel>Catégorie</FormLabel>
                 <FormControl>
                   <Combobox
+                    status={selectedCategorie}
                     type="categorie"
                     allowCreate={true}
                     noOptionText="Aucune catégorie"
@@ -205,6 +212,7 @@ export default function Ajouter() {
               content={piece?.nom || "Aucune pièce"}
               size="small"
               onClick={() => setModeChangementPiece(true)}
+              className={cn(piece?.nom ? "" : "text-muted-foreground")}
             />
           </div>
           <FormField
