@@ -10,44 +10,69 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Card from "@/components/custom/Card";
 import { useParams } from "react-router-dom";
 import { useArticle, useUpdateArticle } from "@/hooks/useArticle";
+import { cn } from "@/lib/utils";
+import { useState } from "react";
+import ChoisirPiece from "@/components/custom/piece/ChoisirPiece";
+import { usePiece } from "@/hooks/usePiece";
 
 const ModifierSchema = z.object({
-  num_inventaire: z.string().regex(/^\d{5,}$/, { message: "Veuillez renseigner un numéro d'inventaire valide (5 chiffres minimum)" }),
-  num_serie: z.string().regex(/.+/, { message: "Veuillez renseigner le numéro de série" }),
+  num_inventaire: z
+    .string()
+    .regex(/^\d{5,}$/, {
+      message:
+        "Veuillez renseigner un numéro d'inventaire valide (5 chiffres minimum)",
+    }),
+  num_serie: z
+    .string()
+    .regex(/.+/, { message: "Veuillez renseigner le numéro de série" }),
   categorie: z.string(),
   etat: z.string(),
   id_piece: z.string(),
-  num_bon_commande: z.string().regex(/.+/, { message: "Veuillez renseigner le numéro de commande" }),
-  fournisseur: z.string().regex(/.+/, { message: "Veuillez renseigner le nom du fournisseur" }),
+  num_bon_commande: z
+    .string()
+    .regex(/.+/, { message: "Veuillez renseigner le numéro de commande" }),
+  fournisseur: z
+    .string()
+    .regex(/.+/, { message: "Veuillez renseigner le nom du fournisseur" }),
   code_fournisseur: z.string().optional(),
-  marque: z.string().regex(/.+/, { message: "Veuillez renseigner une marque valide" }),
+  marque: z
+    .string()
+    .regex(/.+/, { message: "Veuillez renseigner une marque valide" }),
 });
 
 type ModifierFormValues = z.infer<typeof ModifierSchema>;
 
 export default function ModifierArticle() {
   const { articleId } = useParams();
+  
   const { data: article, isLoading } = useArticle(articleId || null);
+
   const updateArticle = useUpdateArticle();
+  const [modeChangementPiece, setModeChangementPiece] = useState(false);
 
   const form = useForm<ModifierFormValues>({
     resolver: zodResolver(ModifierSchema),
-    values: article ? {
-      num_inventaire: article.num_inventaire.toString(),
-      categorie: article.categorie.id.toString(),
-      etat: article.etat.id.toString(),
-      id_piece: article.piece.id.toString(),
-      num_bon_commande: article.num_bon_commande,
-      fournisseur: article.fournisseur,
-      code_fournisseur: article.code_fournisseur?.toString() || "",
-      marque: article.marque,
-      num_serie: article.num_serie,
-    } : undefined
+    values: article
+      ? {
+          num_inventaire: article.num_inventaire.toString(),
+          categorie: article.categorie.id.toString(),
+          etat: article.etat.id.toString(),
+          id_piece: article.piece.id.toString(),
+          num_bon_commande: article.num_bon_commande,
+          fournisseur: article.fournisseur,
+          code_fournisseur: article.code_fournisseur?.toString() || "",
+          marque: article.marque,
+          num_serie: article.num_serie,
+        }
+      : undefined,
   });
+
+  const { data: piece } = usePiece(form.watch("id_piece"), form.watch("id_piece").length > 0);
+
 
   const onSubmit = async (data: ModifierFormValues) => {
     if (!articleId) return;
-    
+
     updateArticle.mutate(
       { articleId, data },
       {
@@ -57,6 +82,20 @@ export default function ModifierArticle() {
       }
     );
   };
+
+  const handleSelectPiece = (pieceId: string) => {
+    form.setValue("id_piece", pieceId);
+    setModeChangementPiece(false);
+  };
+
+  if (modeChangementPiece) {
+    return (
+      <ChoisirPiece
+        onSelect={handleSelectPiece}
+        onClose={() => setModeChangementPiece(false)}
+      />
+    );
+  }
 
   return (
     <div className="container">
@@ -88,7 +127,7 @@ export default function ModifierArticle() {
               <FormItem>
                 <FormLabel>Catégorie</FormLabel>
                 <FormControl>
-                  <Combobox 
+                  <Combobox
                     type="categorie"
                     disabled={isLoading}
                     status={article?.categorie}
@@ -105,10 +144,10 @@ export default function ModifierArticle() {
           <div className="flex flex-col gap-2.5">
             <FormLabel>Pièce</FormLabel>
             <Card
-              content="Aucune pièce"
+              content={piece?.nom || "Aucune pièce"}
               size="small"
-              link="/piece"
-              className="text-muted-foreground"
+              onClick={() => setModeChangementPiece(true)}
+              className={cn(piece?.nom ? "" : "text-muted-foreground")}
               disabled={isLoading}
             />
           </div>
@@ -119,7 +158,7 @@ export default function ModifierArticle() {
               <FormItem>
                 <FormLabel>État</FormLabel>
                 <FormControl>
-                  <Combobox 
+                  <Combobox
                     type="etat"
                     disabled={isLoading}
                     status={article?.etat}
