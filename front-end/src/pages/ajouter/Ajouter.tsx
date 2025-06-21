@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useSearchParams } from "react-router-dom";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,10 +13,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { NumericInput } from "@/components/ui/numeric-input";
 import Card from "@/components/custom/Card";
 import { Combobox } from "@/components/ui/combobox";
 import Header from "@/components/custom/Header";
-import { useAddArticle } from "@/hooks/useArticle";
+import { useAddArticle, useAddArticlesBatch } from "@/hooks/useArticle";
+import AjoutMultipleDialog from "@/components/custom/ajouterArticle/AjoutMultipleDialog";
 
 const AjouterSchema = z.object({
   num_inventaire: z
@@ -24,6 +26,12 @@ const AjouterSchema = z.object({
     .regex(/^\d{5,}$/, {
       message:
         "Veuillez renseigner un numéro d'inventaire valide (5 chiffres minimum)",
+    }),
+  nb_articles: z
+    .string()
+    .regex(/^[1-9]\d*$/, {
+      message:
+        "Le nombre doit être supérieur à 0",
     }),
   num_serie: z
     .string()
@@ -48,13 +56,15 @@ const AjouterSchema = z.object({
 type AjouterFormValues = z.infer<typeof AjouterSchema>;
 
 export default function Ajouter() {
-  const [searchParams] = useSearchParams();
-  const numInventaireFromUrl = searchParams.get("num_inventaire") || "";
+  const [showMultipleDialog, setShowMultipleDialog] = useState(false);
+  const [pendingFormData, setPendingFormData] = useState<AjouterFormValues | null>(null);
   
   const form = useForm<AjouterFormValues>({
     resolver: zodResolver(AjouterSchema),
     defaultValues: {
-      num_inventaire: numInventaireFromUrl,
+      num_inventaire: "",
+      nb_articles: "1",
+      num_serie: "",
       categorie: "", // A gérer avec le merge de la feature catégorie
       etat: "1", // Neuf par défaut
       id_piece: "1", // A gérer avec le merge de la feature pièce
@@ -66,12 +76,51 @@ export default function Ajouter() {
   });
 
   const addArticle = useAddArticle();
+  const addArticlesBatch = useAddArticlesBatch();
 
   function onSubmit(data: AjouterFormValues) {
-    addArticle.mutate(data, {
+    const nbArticles = parseInt(data.nb_articles, 10);
+
+    if (nbArticles > 1) {
+      // Pour plusieurs articles, on affiche la confirmation
+      setPendingFormData(data);
+      setShowMultipleDialog(true);
+    } else {
+      // Pour un seul article, on crée directement
+      addArticle.mutate(data);
+    }
+  }
+
+  function handleMultipleConfirm(confirmed: boolean) {
+    setShowMultipleDialog(false);
+    
+    if (!confirmed || !pendingFormData) {
+      setPendingFormData(null);
+      return;
+    }
+
+    const numInventaireBase = parseInt(pendingFormData.num_inventaire);
+    const nbArticles = parseInt(pendingFormData.nb_articles);
+    
+    const articlesToCreate = [];
+    
+    for (let i = 0; i < nbArticles; i++) {
+      articlesToCreate.push({
+        ...pendingFormData,
+        num_inventaire: (numInventaireBase + i).toString(),
+        nb_articles: "1",
+      });
+    }
+
+    addArticlesBatch.mutate(articlesToCreate, {
       onSuccess: () => {
         form.reset();
+        setPendingFormData(null);
       },
+      onError: () => {
+        // Le hook gère déjà le toast d'erreur
+        setPendingFormData(null);
+      }
     });
   }
 
@@ -90,7 +139,20 @@ export default function Ajouter() {
               <FormItem>
                 <FormLabel>Numéro d'inventaire</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="12345" {...field} />
+                  <NumericInput placeholder="12345" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="nb_articles"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nombre d'articles à créer</FormLabel>
+                <FormControl>
+                  <NumericInput placeholder="1" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -193,6 +255,16 @@ export default function Ajouter() {
           </Button>
         </form>
       </Form>
+      {pendingFormData && (
+        <AjoutMultipleDialog
+          open={showMultipleDialog}
+          num_inventaire_from={parseInt(pendingFormData.num_inventaire)}
+          num_inventaire_to={parseInt(pendingFormData.num_inventaire) + parseInt(pendingFormData.nb_articles) - 1}
+          nb_articles={parseInt(pendingFormData.nb_articles)}
+          categorie={pendingFormData.categorie}
+          onConfirm={handleMultipleConfirm}
+        />
+      )}
     </div>
   );
 }

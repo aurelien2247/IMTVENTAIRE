@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchArticle, fetchArticles, addArticle, updateArticle, fetchCategories, fetchEtats, createCategory } from "@/api/article";
+import { fetchArticle, fetchArticles, addArticle, addArticlesBatch, updateArticle, fetchCategories, fetchEtats, createCategory } from "@/api/article";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
@@ -38,7 +38,36 @@ export const useAddArticle = () => {
       });
       // Invalider le cache des articles pour forcer un rechargement
       queryClient.invalidateQueries({ queryKey: ["articles"] });
-    }
+    },
+    onError: (error: Error) => {
+      toast.error("Erreur lors de l'ajout de l'article", {
+        description: error.message,
+        position: "top-center",
+        richColors: true,
+      });
+    },
+  });
+};
+
+export const useAddArticlesBatch = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: addArticlesBatch,
+    onSuccess: (data) => {
+      toast.success(`${data.length} articles ajoutés avec succès`, {
+        position: "top-center",
+        richColors: true
+      });
+      queryClient.invalidateQueries({ queryKey: ["articles"] });
+    },
+    onError: (error: Error) => {
+      toast.error("Erreur lors de l'ajout des articles", {
+        description: error.message,
+        position: "top-center",
+        richColors: true,
+      });
+    },
   });
 };
 
@@ -58,7 +87,14 @@ export const useUpdateArticle = () => {
       queryClient.invalidateQueries({ queryKey: ["articles"] });
       queryClient.invalidateQueries({ queryKey: ["article"] });
       navigate(-1);
-    }
+    },
+    onError: (error: Error) => {
+      toast.error("Erreur lors de la modification de l'article", {
+        description: error.message,
+        position: "top-center",
+        richColors: true,
+      });
+    },
   });
 };
 
@@ -87,6 +123,13 @@ export const useAddCategorie = () => {
         richColors: true
       });
       queryClient.invalidateQueries({ queryKey: ["categories"] });
-    }
+    },
+    onError: (error: Error) => {
+      toast.error("Erreur lors de l'ajout de la catégorie", {
+        description: error.message,
+        position: "top-center",
+        richColors: true,
+      });
+    },
   });
 };

@@ -93,7 +93,7 @@ export default function ModifierArticle() {
                     disabled={isLoading}
                     initialStatus={article?.categorie}
                     onSelectedStatusChange={(status) => {
-                      field.onChange(status?.id || "");
+                      field.onChange(status?.id.toString() || "");
                     }}
                   />
                 </FormControl>
@@ -122,7 +122,7 @@ export default function ModifierArticle() {
                     disabled={isLoading}
                     initialStatus={article?.etat}
                     onSelectedStatusChange={(status) => {
-                      field.onChange(status?.id || "");
+                      field.onChange(status?.id.toString() || "");
                     }}
                     noOptionText="Aucun état"
                   />

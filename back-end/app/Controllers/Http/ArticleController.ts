@@ -122,8 +122,62 @@ export default class ArticleController {
     } catch (error) {
       console.error(error)
       return response.status(500).json({
-        error: "Erreur lors de la création de l'article",
+        error: error.detail
       })
+    }
+  }
+
+  /**
+   * Store a batch of new articles within a transaction
+   */
+  public async storeBatch({ request, response }: HttpContextContract) {
+    const articlesData = request.input('articles');
+    if (!Array.isArray(articlesData) || articlesData.length === 0) {
+      return response.badRequest({ error: 'Le tableau articles est requis et ne doit pas être vide.' });
+    }
+
+    const trx = await Database.transaction();
+
+    try {
+      const createdArticles: Article[] = [];
+
+      for (const data of articlesData) {
+        // Validation (peut être améliorée avec Adonis Validator)
+        if (
+          !data.num_inventaire || !data.categorie || !data.id_piece || !data.num_serie ||
+          !data.num_bon_commande || !data.fournisseur || !data.marque || !data.etat
+        ) {
+          throw new Error(`Données manquantes pour l'article ${data.num_inventaire || '(inconnu)'}. Tous les champs sont requis.`);
+        }
+
+        const article = new Article();
+        article.useTransaction(trx);
+        
+        article.fill({
+          num_inventaire: data.num_inventaire,
+          categorie: Number(data.categorie),
+          id_piece: Number(data.id_piece),
+          num_serie: data.num_serie,
+          num_bon_commande: data.num_bon_commande,
+          fournisseur: data.fournisseur,
+          code_fournisseur: data.code_fournisseur,
+          marque: data.marque,
+          etat: data.etat,
+        });
+
+        await article.save();
+        createdArticles.push(article);
+      }
+
+      await trx.commit();
+      return response.created(createdArticles);
+    } catch (error) {
+      await trx.rollback();
+      console.error(error);
+      return response.status(500).json({
+        message: 'Erreur lors de la création multiple, la transaction a été annulée (rollback).',
+        error: error.detail,
+      });
     }
   }
 

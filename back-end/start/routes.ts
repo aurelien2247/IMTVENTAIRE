@@ -173,6 +173,7 @@ Route.get('/pieces/nom/:nom', 'PieceController.getByName')
  */
 Route.get('/articles', 'ArticleController.index')
 Route.post('/articles', 'ArticleController.store')
+Route.post('/articles/batch', 'ArticleController.storeBatch')
 
 /**
  * @swagger

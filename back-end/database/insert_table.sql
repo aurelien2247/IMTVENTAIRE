@@ -41,7 +41,7 @@ create table etat (
 );
 
 create table article (
-	num_inventaire VARCHAR(10) PRIMARY KEY,
+	num_inventaire VARCHAR(20) PRIMARY KEY,
     categorie INTEGER,
     etat INTEGER not null,
     id_piece INTEGER,
