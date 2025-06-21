@@ -25,9 +25,9 @@ const ModifierSchema = z.object({
   num_serie: z
     .string()
     .regex(/.+/, { message: "Veuillez renseigner le numéro de série" }),
-  categorie: z.string(),
-  etat: z.string(),
-  id_piece: z.string(),
+  categorie: z.string().min(1, { message: "Veuillez sélectionner une catégorie" }),
+  etat: z.string().min(1, { message: "Veuillez sélectionner un état" }),
+  id_piece: z.string().min(1, { message: "Veuillez sélectionner une pièce" }),
   num_bon_commande: z
     .string()
     .regex(/.+/, { message: "Veuillez renseigner le numéro de commande" }),
@@ -67,7 +67,7 @@ export default function ModifierArticle() {
       : undefined,
   });
 
-  const { data: piece } = usePiece(form.watch("id_piece"), form.watch("id_piece").length > 0);
+  const { data: piece } = usePiece(form.watch("id_piece"), form.watch("id_piece")?.length > 0);
 
 
   const onSubmit = async (data: ModifierFormValues) => {
@@ -84,7 +84,7 @@ export default function ModifierArticle() {
   };
 
   const handleSelectPiece = (pieceId: string) => {
-    form.setValue("id_piece", pieceId);
+    form.setValue("id_piece", pieceId, { shouldDirty: true });
     setModeChangementPiece(false);
   };
 
@@ -242,7 +242,7 @@ export default function ModifierArticle() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button type="submit" className="w-full" disabled={isLoading || !form.formState.isDirty || !form.formState.isValid}>
             Modifier
           </Button>
         </form>

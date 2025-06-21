@@ -100,7 +100,7 @@ export default function Ajouter() {
   }
 
   function handleSelectPiece(pieceId: string) {
-    form.setValue("id_piece", pieceId);
+    form.setValue("id_piece", pieceId, { shouldValidate: true });
     setModeChangementPiece(false);
   }
 
@@ -280,7 +280,7 @@ export default function Ajouter() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" disabled={!form.formState.isValid}>
             Ajouter
           </Button>
         </form>
