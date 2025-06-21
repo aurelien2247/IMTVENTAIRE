@@ -8,7 +8,7 @@ import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Card from "@/components/custom/Card";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useArticle, useUpdateArticle } from "@/hooks/useArticle";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -44,6 +44,7 @@ type ModifierFormValues = z.infer<typeof ModifierSchema>;
 
 export default function ModifierArticle() {
   const { articleId } = useParams();
+  const navigate = useNavigate();
   
   const { data: article, isLoading } = useArticle(articleId || null);
 
@@ -77,7 +78,7 @@ export default function ModifierArticle() {
       { articleId, data },
       {
         onSuccess: () => {
-          form.reset();
+          navigate(-1);
         },
       }
     );
