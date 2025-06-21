@@ -5,19 +5,22 @@ import type { Batiment } from "@/types";
 import NotFound from "../common/NotFound";
 import Error from "../common/Error";
 import { useBatiments } from "@/hooks/useBatiment";
-import { useParams } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
-export default function ListeBatiments({ onSelect, title }: { onSelect?: (id: string) => void, title?: string }) {
+interface ListeBatimentsProps {
+  onSelect?: (id: string) => void;
+  title?: string;
+}
+
+export default function ListeBatiments({ onSelect, title = "Inventaire" }: ListeBatimentsProps) {
   const { data: batiments, isLoading, error } = useBatiments();
-  const params = useParams();
 
-  // Si onSelect n'est pas fourni, on est dans le mode route
-  const isRouteMode = !onSelect;
+  const style = cn(!onSelect && "container mx-auto", "flex flex-col gap-6");
 
   if (isLoading) {
     return (
-      <div className="container mx-auto">
-        <Header title={title || "Inventaire"} />
+      <div className={style}>
+        {!onSelect && <Header title={title} />}
         <SearchBar  />
         <div className="flex flex-col gap-2">
           {Array.from({ length: 10 }).map((_, index) => (
@@ -36,8 +39,8 @@ export default function ListeBatiments({ onSelect, title }: { onSelect?: (id: st
 
   if (error) {
     return (
-      <div className="container mx-auto">
-        <Header title={title || "Inventaire"} />
+      <div className={style}>
+        {!onSelect && <Header title={title} />}
         <SearchBar  />
         <Error />
       </div>
@@ -46,8 +49,8 @@ export default function ListeBatiments({ onSelect, title }: { onSelect?: (id: st
 
   if (!batiments || batiments.length === 0) {
     return (
-      <div className="container mx-auto">
-        <Header title={title || "Inventaire"} />
+      <div className={style}>
+        {!onSelect && <Header title={title} />}
         <SearchBar  />
         <NotFound message="Aucun bâtiment trouvé" />
       </div>
@@ -55,8 +58,8 @@ export default function ListeBatiments({ onSelect, title }: { onSelect?: (id: st
   }
 
   return (
-    <div className="container mx-auto">
-      <Header title={title || "Inventaire"} />
+    <div className={style}>
+      {!onSelect && <Header title={title} />}
       <SearchBar  />
       <div className="flex flex-col gap-2">
         {batiments.map((batiment: Batiment) => (

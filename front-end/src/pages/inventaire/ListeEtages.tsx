@@ -5,8 +5,15 @@ import Header, { HeaderSkeleton } from "@/components/custom/Header";
 import { useEtages } from "@/hooks/useEtage";
 import NotFound from "../common/NotFound";
 import Error from "../common/Error";
+import { cn } from "@/lib/utils";
 
-export default function ListeEtages({ batimentId: propBatimentId, onSelect, onBack }: { batimentId?: string, onSelect?: (id: string) => void, onBack?: () => void }) {
+interface ListeEtagesProps {
+  batimentId?: string;
+  onSelect?: (id: string) => void;
+  onBack?: () => void;
+}
+
+export default function ListeEtages({ batimentId: propBatimentId, onSelect, onBack }: ListeEtagesProps) {
   const params = useParams();
   const routeBatimentId = params.batimentId;
   const batimentId = propBatimentId || routeBatimentId;
@@ -14,13 +21,12 @@ export default function ListeEtages({ batimentId: propBatimentId, onSelect, onBa
   const { data: etages, isLoading, error } = useEtages(batimentId);
   const headerTitle = `Bâtiment ${etages?.[0]?.batiment.nom.toUpperCase()}`;
 
-  // Si onSelect n'est pas fourni, on est dans le mode route
-  const isRouteMode = !onSelect;
+  const style = cn(!onSelect && "container mx-auto", "flex flex-col gap-6");
 
   if (isLoading) {
     return (
-      <div className="container">
-        <HeaderSkeleton />
+      <div className={style}>
+        {!onSelect && <HeaderSkeleton />}
         <SearchBar  />
         <div className="flex flex-col gap-2">
           {Array.from({ length: 10 }).map((_, index) => (
@@ -33,8 +39,8 @@ export default function ListeEtages({ batimentId: propBatimentId, onSelect, onBa
 
   if (error) {
     return (
-      <div className="container">
-        <Header title="Bâtiment introuvable" />
+      <div className={style}>
+        {!onSelect && <Header title="Bâtiment introuvable" />}
         <SearchBar  />
         <Error />
       </div>
@@ -43,8 +49,8 @@ export default function ListeEtages({ batimentId: propBatimentId, onSelect, onBa
 
   if (!etages || etages.length === 0) {
     return (
-      <div className="container">
-        <Header title={headerTitle} />
+      <div className={style}>
+        {!onSelect && <Header title={headerTitle} />}
         <SearchBar  />
         <NotFound message="Aucun étage trouvé" />
       </div>
@@ -52,8 +58,8 @@ export default function ListeEtages({ batimentId: propBatimentId, onSelect, onBa
   }
 
   return (
-    <div className="container">
-      <Header title={headerTitle} onBack={onBack} />
+    <div className={style}>
+      {!onSelect && <Header title={headerTitle} onBack={onBack} />}
       <SearchBar  />
       <div className="flex flex-col gap-2">
         {etages.map((etage) => (
