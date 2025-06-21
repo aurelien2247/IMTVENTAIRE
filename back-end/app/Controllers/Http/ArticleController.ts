@@ -120,10 +120,7 @@ export default class ArticleController {
 
       return response.created(article)
     } catch (error) {
-      console.error(error)
-      return response.status(500).json({
-        error: error.detail
-      })
+      return response.internalServerError({ error: "Erreur lors de la création de l'article" })
     }
   }
 
@@ -131,28 +128,38 @@ export default class ArticleController {
    * Store a batch of new articles within a transaction
    */
   public async storeBatch({ request, response }: HttpContextContract) {
-    const articlesData = request.input('articles');
+    const articlesData = request.input('articles')
     if (!Array.isArray(articlesData) || articlesData.length === 0) {
-      return response.badRequest({ error: 'Le tableau articles est requis et ne doit pas être vide.' });
+      return response.badRequest({
+        error: 'Impossible de créer des articles vides',
+      })
     }
 
-    const trx = await Database.transaction();
+    const transaction = await Database.transaction()
 
     try {
-      const createdArticles: Article[] = [];
+      const createdArticles: Article[] = []
 
       for (const data of articlesData) {
         // Validation (peut être améliorée avec Adonis Validator)
         if (
-          !data.num_inventaire || !data.categorie || !data.id_piece || !data.num_serie ||
-          !data.num_bon_commande || !data.fournisseur || !data.marque || !data.etat
+          !data.num_inventaire ||
+          !data.categorie ||
+          !data.id_piece ||
+          !data.num_serie ||
+          !data.num_bon_commande ||
+          !data.fournisseur ||
+          !data.marque ||
+          !data.etat
         ) {
-          throw new Error(`Données manquantes pour l'article ${data.num_inventaire || '(inconnu)'}. Tous les champs sont requis.`);
+          return response.badRequest({
+            error: `Données manquantes pour l'article ${data.num_inventaire || '(inconnu)'}. Tous les champs sont requis.`,
+          })
         }
 
-        const article = new Article();
-        article.useTransaction(trx);
-        
+        const article = new Article()
+        article.useTransaction(transaction)
+
         article.fill({
           num_inventaire: data.num_inventaire,
           categorie: Number(data.categorie),
@@ -163,21 +170,20 @@ export default class ArticleController {
           code_fournisseur: data.code_fournisseur,
           marque: data.marque,
           etat: data.etat,
-        });
+        })
 
-        await article.save();
-        createdArticles.push(article);
+        await article.save()
+        createdArticles.push(article)
       }
 
-      await trx.commit();
-      return response.created(createdArticles);
+      await transaction.commit()
+      return response.created(createdArticles)
     } catch (error) {
-      await trx.rollback();
-      console.error(error);
-      return response.status(500).json({
-        message: 'Erreur lors de la création multiple, la transaction a été annulée (rollback).',
-        error: error.detail,
-      });
+      await transaction.rollback()
+      return response.internalServerError({
+        error:
+          "Une erreur est survenue lors de la création des articles, aucun article n'a été créé",
+      })
     }
   }
 
