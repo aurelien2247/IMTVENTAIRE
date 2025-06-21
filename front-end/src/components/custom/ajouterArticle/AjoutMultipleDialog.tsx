@@ -3,8 +3,8 @@ import { Button } from '@/components/ui/button';
 
 interface AjoutMultipleDialog {
   open: boolean;
-  num_inventaire_from: number;
-  num_inventaire_to: number;
+  num_inventaire_from: string;
+  num_inventaire_to: string;
   nb_articles: number;
   categorie: string;
   onConfirm: (confirm: boolean) => void;

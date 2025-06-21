@@ -91,6 +91,10 @@ export default function Ajouter() {
     }
   }
 
+  function padWithZeros(num: number, length: number) {
+    return num.toString().padStart(length, '0');
+  }
+
   function handleMultipleConfirm(confirmed: boolean) {
     setShowMultipleDialog(false);
     
@@ -99,15 +103,16 @@ export default function Ajouter() {
       return;
     }
 
-    const numInventaireBase = parseInt(pendingFormData.num_inventaire);
-    const nbArticles = parseInt(pendingFormData.nb_articles);
+    const numInventaireBase = parseInt(pendingFormData.num_inventaire, 10);
+    const numInventaireLength = pendingFormData.num_inventaire.length;
+    const nbArticles = parseInt(pendingFormData.nb_articles, 10);
     
     const articlesToCreate = [];
     
     for (let i = 0; i < nbArticles; i++) {
       articlesToCreate.push({
         ...pendingFormData,
-        num_inventaire: (numInventaireBase + i).toString(),
+        num_inventaire: padWithZeros(numInventaireBase + i, numInventaireLength),
         nb_articles: "1",
       });
     }
@@ -258,8 +263,11 @@ export default function Ajouter() {
       {pendingFormData && (
         <AjoutMultipleDialog
           open={showMultipleDialog}
-          num_inventaire_from={parseInt(pendingFormData.num_inventaire)}
-          num_inventaire_to={parseInt(pendingFormData.num_inventaire) + parseInt(pendingFormData.nb_articles) - 1}
+          num_inventaire_from={pendingFormData.num_inventaire}
+          num_inventaire_to={padWithZeros(
+            parseInt(pendingFormData.num_inventaire, 10) + parseInt(pendingFormData.nb_articles, 10) - 1,
+            pendingFormData.num_inventaire.length
+          )}
           nb_articles={parseInt(pendingFormData.nb_articles)}
           categorie={pendingFormData.categorie}
           onConfirm={handleMultipleConfirm}
