@@ -20,20 +20,16 @@ import Header from "@/components/custom/Header";
 import { useAddArticle, useAddArticlesBatch } from "@/hooks/useArticle";
 import AjoutMultipleDialog from "@/components/custom/ajouterArticle/AjoutMultipleDialog";
 import ChoisirPiece from "@/components/custom/piece/ChoisirPiece";
+import { usePiece } from "@/hooks/usePiece";
 
 const AjouterSchema = z.object({
-  num_inventaire: z
-    .string()
-    .regex(/^\d{5,}$/, {
-      message:
-        "Veuillez renseigner un numéro d'inventaire valide (5 chiffres minimum)",
-    }),
-  nb_articles: z
-    .string()
-    .regex(/^[1-9]\d*$/, {
-      message:
-        "Le nombre doit être supérieur à 0",
-    }),
+  num_inventaire: z.string().regex(/^\d{5,}$/, {
+    message:
+      "Veuillez renseigner un numéro d'inventaire valide (5 chiffres minimum)",
+  }),
+  nb_articles: z.string().regex(/^[1-9]\d*$/, {
+    message: "Le nombre doit être supérieur à 0",
+  }),
   num_serie: z
     .string()
     .regex(/.+/, { message: "Veuillez renseigner le numéro de série" }),
@@ -58,18 +54,17 @@ type AjouterFormValues = z.infer<typeof AjouterSchema>;
 
 export default function Ajouter() {
   const [showMultipleDialog, setShowMultipleDialog] = useState(false);
-  const [pendingFormData, setPendingFormData] = useState<AjouterFormValues | null>(null);
   const [modeChangementPiece, setModeChangementPiece] = useState(false);
-  
+
   const form = useForm<AjouterFormValues>({
     resolver: zodResolver(AjouterSchema),
     defaultValues: {
       num_inventaire: "",
       nb_articles: "1",
       num_serie: "",
-      categorie: "", // A gérer avec le merge de la feature catégorie
-      etat: "1", // Neuf par défaut
-      id_piece: "1", // A gérer avec le merge de la feature pièce
+      categorie: "",
+      etat: "1",
+      id_piece: "",
       num_bon_commande: "",
       fournisseur: "",
       code_fournisseur: "",
@@ -79,42 +74,54 @@ export default function Ajouter() {
 
   const addArticle = useAddArticle();
   const addArticlesBatch = useAddArticlesBatch();
+    const { data: piece } = usePiece(form.watch("id_piece"), form.watch("id_piece").length > 0);
 
   function onSubmit(data: AjouterFormValues) {
     const nbArticles = parseInt(data.nb_articles, 10);
 
     if (nbArticles > 1) {
       // Pour plusieurs articles, on affiche la confirmation
-      setPendingFormData(data);
       setShowMultipleDialog(true);
     } else {
       // Pour un seul article, on crée directement
-      addArticle.mutate(data);
+      addArticle.mutate(data, {
+        onSuccess: () => {
+          form.reset();
+        },
+      });
     }
   }
 
+  function handleSelectPiece(pieceId: string) {
+    form.setValue("id_piece", pieceId);
+    setModeChangementPiece(false);
+  }
+
   function padWithZeros(num: number, length: number) {
-    return num.toString().padStart(length, '0');
+    return num.toString().padStart(length, "0");
   }
 
   function handleMultipleConfirm(confirmed: boolean) {
     setShowMultipleDialog(false);
-    
-    if (!confirmed || !pendingFormData) {
-      setPendingFormData(null);
+
+    if (!confirmed) {
       return;
     }
 
-    const numInventaireBase = parseInt(pendingFormData.num_inventaire, 10);
-    const numInventaireLength = pendingFormData.num_inventaire.length;
-    const nbArticles = parseInt(pendingFormData.nb_articles, 10);
-    
+    const formData = form.getValues();
+    const numInventaireBase = parseInt(formData.num_inventaire, 10);
+    const numInventaireLength = formData.num_inventaire.length;
+    const nbArticles = parseInt(formData.nb_articles, 10);
+
     const articlesToCreate = [];
-    
+
     for (let i = 0; i < nbArticles; i++) {
       articlesToCreate.push({
-        ...pendingFormData,
-        num_inventaire: padWithZeros(numInventaireBase + i, numInventaireLength),
+        ...formData,
+        num_inventaire: padWithZeros(
+          numInventaireBase + i,
+          numInventaireLength
+        ),
         nb_articles: "1",
       });
     }
@@ -122,18 +129,21 @@ export default function Ajouter() {
     addArticlesBatch.mutate(articlesToCreate, {
       onSuccess: () => {
         form.reset();
-        setPendingFormData(null);
       },
-      onError: () => {
-        // Le hook gère déjà le toast d'erreur
-        setPendingFormData(null);
-      }
     });
   }
 
   if (modeChangementPiece) {
-    return <ChoisirPiece article={article} onClose={() => setModeChangementPiece(false)} />;
+    return (
+      <ChoisirPiece
+        onSelect={handleSelectPiece}
+        onClose={() => setModeChangementPiece(false)}
+      />
+    );
   }
+
+  const formData = form.getValues();
+  console.log(formData);
 
   return (
     <div className="container gap-8">
@@ -177,6 +187,8 @@ export default function Ajouter() {
                 <FormLabel>Catégorie</FormLabel>
                 <FormControl>
                   <Combobox
+                    type="categorie"
+                    allowCreate={true}
                     noOptionText="Aucune catégorie"
                     onSelectedStatusChange={(status) => {
                       field.onChange(status?.id.toString() || "");
@@ -190,10 +202,9 @@ export default function Ajouter() {
           <div className="flex flex-col gap-2.5">
             <FormLabel>Pièce</FormLabel>
             <Card
-              content="Aucune pièce"
+              content={piece?.nom || "Aucune pièce"}
               size="small"
-              //link="/piece"
-              className="text-muted-foreground"
+              onClick={() => setModeChangementPiece(true)}
             />
           </div>
           <FormField
@@ -266,19 +277,18 @@ export default function Ajouter() {
           </Button>
         </form>
       </Form>
-      {pendingFormData && (
-        <AjoutMultipleDialog
-          open={showMultipleDialog}
-          num_inventaire_from={pendingFormData.num_inventaire}
-          num_inventaire_to={padWithZeros(
-            parseInt(pendingFormData.num_inventaire, 10) + parseInt(pendingFormData.nb_articles, 10) - 1,
-            pendingFormData.num_inventaire.length
-          )}
-          nb_articles={parseInt(pendingFormData.nb_articles)}
-          categorie={pendingFormData.categorie}
-          onConfirm={handleMultipleConfirm}
-        />
-      )}
+      <AjoutMultipleDialog
+        open={showMultipleDialog}
+        num_inventaire_from={formData.num_inventaire}
+        num_inventaire_to={padWithZeros(
+          parseInt(formData.num_inventaire, 10) +
+            parseInt(formData.nb_articles, 10) -
+            1,
+          formData.num_inventaire.length
+        )}
+        nb_articles={parseInt(formData.nb_articles)}
+        onConfirm={handleMultipleConfirm}
+      />
     </div>
   );
 }

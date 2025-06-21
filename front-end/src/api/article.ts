@@ -7,7 +7,7 @@ import { fetchApi } from "./api";
  * @returns Les articles de la pièce
  */
 export const fetchArticles = async (pieceId: string): Promise<Article[]> => {
-  return await fetchApi(`/pieces/${pieceId}`);
+  return await fetchApi(`/pieces/articles/${pieceId}`);
 };
 
 /**

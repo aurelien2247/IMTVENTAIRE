@@ -10,7 +10,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Card from "@/components/custom/Card";
 import { useParams } from "react-router-dom";
 import { useArticle, useUpdateArticle } from "@/hooks/useArticle";
-import { EtatCombobox } from "@/components/ui/etat-combobox";
 
 const ModifierSchema = z.object({
   num_inventaire: z.string().regex(/^\d{5,}$/, { message: "Veuillez renseigner un numéro d'inventaire valide (5 chiffres minimum)" }),
@@ -90,11 +89,13 @@ export default function ModifierArticle() {
                 <FormLabel>Catégorie</FormLabel>
                 <FormControl>
                   <Combobox 
+                    type="categorie"
                     disabled={isLoading}
                     initialStatus={article?.categorie}
                     onSelectedStatusChange={(status) => {
                       field.onChange(status?.id.toString() || "");
                     }}
+                    allowCreate={true}
                   />
                 </FormControl>
                 <FormMessage />
@@ -118,7 +119,8 @@ export default function ModifierArticle() {
               <FormItem>
                 <FormLabel>État</FormLabel>
                 <FormControl>
-                  <EtatCombobox 
+                  <Combobox 
+                    type="etat"
                     disabled={isLoading}
                     initialStatus={article?.etat}
                     onSelectedStatusChange={(status) => {

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useArticle } from "@/hooks/useArticle";
+import { useArticle, useUpdateArticle } from "@/hooks/useArticle";
 import ArticleEtat, { ArticleEtatSkeleton } from "./ArticleEtat";
 import { useAtom } from "jotai";
 import { codeScannedAtom } from "@/lib/atoms";
@@ -10,6 +10,7 @@ import ChoisirPiece from "../piece/ChoisirPiece";
 
 export default function ArticleInfo() {
   const navigate = useNavigate();
+  const updateArticle = useUpdateArticle();
   const [codeScanned] = useAtom(codeScannedAtom);
   const { data: article } = useArticle(codeScanned);
   const [modeChangementPiece, setModeChangementPiece] = useState(false);
@@ -19,16 +20,35 @@ export default function ArticleInfo() {
   const pieceId = article?.piece?.id;
   const articleId = article?.num_inventaire;
 
-  if (!article) {
-    return <ArticleInfoNotFound />;
-  }
+
+  const handleSelectPiece = (pieceId: string) => {
+    updateArticle.mutate({
+      articleId: articleId || "",
+      data: {
+        id_piece: pieceId,
+        num_inventaire: article?.num_inventaire || "",
+        num_serie: article?.num_serie || "",
+        categorie: article?.categorie.id.toString() || "",
+        etat: article?.etat.id.toString() || "",
+        num_bon_commande: article?.num_bon_commande || "",
+        fournisseur: article?.fournisseur || "",
+        code_fournisseur: article?.code_fournisseur?.toString() || "",
+        marque: article?.marque || "",
+      },
+    });
+    setModeChangementPiece(false);
+  };
 
   const handleRedirect = () => {
     navigate(`/inventaire/${batimentId}/${etageId}/${pieceId}/${articleId}`);
   };
 
+  if (!article) {
+    return <ArticleInfoNotFound />;
+  }
+
   if (modeChangementPiece) {
-    return <ChoisirPiece article={article} onClose={() => setModeChangementPiece(false)} />;
+    return <ChoisirPiece onSelect={handleSelectPiece} onClose={() => setModeChangementPiece(false)} />;
   }
 
   return (

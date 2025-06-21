@@ -6,11 +6,10 @@ interface AjoutMultipleDialog {
   num_inventaire_from: string;
   num_inventaire_to: string;
   nb_articles: number;
-  categorie: string;
   onConfirm: (confirm: boolean) => void;
 }
 
-export default function AjoutMultipleDialog({ open, nb_articles,num_inventaire_from,num_inventaire_to, categorie, onConfirm }: AjoutMultipleDialog) {
+export default function AjoutMultipleDialog({ open, nb_articles,num_inventaire_from,num_inventaire_to, onConfirm }: AjoutMultipleDialog) {
   return (
     <AlertDialog open={open} onOpenChange={onConfirm}>
       <AlertDialogContent>

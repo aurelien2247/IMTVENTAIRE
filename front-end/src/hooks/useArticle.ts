@@ -39,13 +39,6 @@ export const useAddArticle = () => {
       // Invalider le cache des articles pour forcer un rechargement
       queryClient.invalidateQueries({ queryKey: ["articles"] });
     },
-    onError: (error: Error) => {
-      toast.error("Erreur lors de l'ajout de l'article", {
-        description: error.message,
-        position: "top-center",
-        richColors: true,
-      });
-    },
   });
 };
 
@@ -60,13 +53,6 @@ export const useAddArticlesBatch = () => {
         richColors: true
       });
       queryClient.invalidateQueries({ queryKey: ["articles"] });
-    },
-    onError: (error: Error) => {
-      toast.error("Erreur lors de l'ajout des articles", {
-        description: error.message,
-        position: "top-center",
-        richColors: true,
-      });
     },
   });
 };
@@ -87,13 +73,6 @@ export const useUpdateArticle = () => {
       queryClient.invalidateQueries({ queryKey: ["articles"] });
       queryClient.invalidateQueries({ queryKey: ["article"] });
       navigate(-1);
-    },
-    onError: (error: Error) => {
-      toast.error("Erreur lors de la modification de l'article", {
-        description: error.message,
-        position: "top-center",
-        richColors: true,
-      });
     },
   });
 };
@@ -123,13 +102,6 @@ export const useAddCategorie = () => {
         richColors: true
       });
       queryClient.invalidateQueries({ queryKey: ["categories"] });
-    },
-    onError: (error: Error) => {
-      toast.error("Erreur lors de l'ajout de la catégorie", {
-        description: error.message,
-        position: "top-center",
-        richColors: true,
-      });
     },
   });
 };
