@@ -17,7 +17,7 @@ export default function ListeArticles() {
 
   if (isLoadingArticles || isLoadingPieces) {
     return (
-      <div className="container mx-auto">
+      <div className="container">
         <HeaderSkeleton />
         <SearchBar />
         <div className="flex flex-col gap-2">
@@ -31,7 +31,7 @@ export default function ListeArticles() {
 
   if (errorArticles || errorPieces) {
     return (
-      <div className="container mx-auto">
+      <div className="container">
         <Header title="Salle introuvable" />
         <SearchBar />
         <Error />
@@ -41,7 +41,7 @@ export default function ListeArticles() {
 
   if (!articles || articles.length === 0) {
     return (
-      <div className="container mx-auto">
+      <div className="container">
         <Header title={headerTitle} />
         <SearchBar />
         <NotFound message="Aucun article trouvé" />
@@ -50,7 +50,7 @@ export default function ListeArticles() {
   }
 
   return (
-    <div className="container mx-auto">
+    <div className="container">
       <Header title={headerTitle} />
       <SearchBar />
       <div className="flex flex-col gap-2">

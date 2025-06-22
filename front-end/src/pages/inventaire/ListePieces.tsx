@@ -26,7 +26,7 @@ export default function ListePieces({ batimentId: propBatimentId, etageId: propE
     ? `Étage ${pieces[0].etage.nom.toUpperCase()}`
     : "Étage";
 
-  const style = cn(!onSelect && "container mx-auto", "flex flex-col gap-6");
+  const style = cn(!onSelect && "container", "flex flex-col gap-6");
 
 
   if (isLoading) {

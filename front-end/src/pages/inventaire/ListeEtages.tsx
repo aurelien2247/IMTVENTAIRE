@@ -21,7 +21,7 @@ export default function ListeEtages({ batimentId: propBatimentId, onSelect, onBa
   const { data: etages, isLoading, error } = useEtages(batimentId);
   const headerTitle = `Bâtiment ${etages?.[0]?.batiment.nom.toUpperCase()}`;
 
-  const style = cn(!onSelect && "container mx-auto", "flex flex-col gap-6");
+  const style = cn(!onSelect && "container", "flex flex-col gap-6");
 
   if (isLoading) {
     return (

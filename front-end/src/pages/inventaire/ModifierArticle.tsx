@@ -99,7 +99,7 @@ export default function ModifierArticle() {
   }
 
   return (
-    <div className="container mx-auto">
+    <div className="container">
       <Header title="Modifier article" />
       <Form {...form}>
         <form
