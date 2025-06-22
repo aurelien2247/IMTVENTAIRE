@@ -152,7 +152,7 @@ export default function Ajouter() {
   const formData = form.getValues();
 
   return (
-    <div className="container gap-8">
+    <div className="container mx-auto gap-8">
       <Header title="Ajouter" />
       <Form {...form}>
         <form
