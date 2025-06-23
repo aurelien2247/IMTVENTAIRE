@@ -7,6 +7,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ChoisirPiece from "../piece/ChoisirPiece";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+import { History } from "lucide-react";
 
 export default function ArticleInfo() {
   const navigate = useNavigate();
@@ -51,10 +54,16 @@ export default function ArticleInfo() {
     <div className="container flex flex-col gap-16">
       <div className="flex flex-col gap-6 min-w-0">
         <div className="flex flex-col gap-1">
-          <span className="flex items-center gap-2">
-            <ArticleEtat etat={article.etat} />
-            <h1>{article.categorie.nom}</h1>
-          </span>
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-2">
+              <ArticleEtat etat={article.etat} />
+              <h1>{article.categorie.nom}</h1>
+            </span>
+            <span className="flex items-center gap-1 text-xs text-muted-foreground">
+              <History className="h-3 w-3" />
+              {format(new Date(article.date_modification), "dd/MM/yyyy HH:mm", { locale: fr })}
+            </span>
+          </div>
           <p className="text-muted-foreground">{!article.piece || article.piece.id == null ? "Aucune pièce" : article.piece.nom}</p>
         </div>
         <div className="flex gap-8 flex-wrap">

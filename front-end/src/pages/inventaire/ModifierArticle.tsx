@@ -14,6 +14,8 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import ChoisirPiece from "@/components/custom/piece/ChoisirPiece";
 import { usePiece } from "@/hooks/usePiece";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
 const ModifierSchema = z.object({
   num_inventaire: z
@@ -99,6 +101,14 @@ export default function ModifierArticle() {
   return (
     <div className="container">
       <Header title="Modifier article" />
+      {article && (
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-3 text-xs text-muted-foreground mb-2">
+          <span>Créé le <strong>{format(new Date(article.date_creation), "dd/MM/yyyy à HH:mm", { locale: fr })}</strong></span>
+          <span className="flex items-center gap-1">
+            Dernière modification le <strong>{format(new Date(article.date_modification), "dd/MM/yyyy à HH:mm", { locale: fr })}</strong>
+          </span>
+        </div>
+      )}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

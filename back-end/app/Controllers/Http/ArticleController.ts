@@ -81,7 +81,7 @@ export default class ArticleController {
         'fournisseur',
         'code_fournisseur',
         'marque',
-        'etat',
+        'etat'
       ])
 
       // Validation basique

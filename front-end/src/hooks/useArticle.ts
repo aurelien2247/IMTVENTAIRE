@@ -2,6 +2,19 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchArticle, fetchArticles, addArticle, addArticlesBatch, updateArticle, fetchCategories, fetchEtats, createCategory } from "@/api/article";
 import { toast } from "sonner";
 
+// Type pour la création d'un article (sans les dates qui sont gérées par la BDD)
+type CreateArticleData = {
+  num_inventaire: string;
+  categorie: string;
+  id_piece: string;
+  num_serie: string;
+  num_bon_commande: string;
+  fournisseur: string;
+  code_fournisseur?: string;
+  marque: string;
+  etat: string;
+};
+
 export const useArticles = (pieceId: string | undefined) => {
   if (!pieceId) {
     throw new Error("La pièce est introuvable");
@@ -28,14 +41,13 @@ export const useArticle = (idArticle: string | null, enabled = true) => {
 export const useAddArticle = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useMutation<any, Error, CreateArticleData>({
     mutationFn: addArticle,
     onSuccess: () => {
       toast.success("Article ajouté avec succès", {
         position: "top-center",
         richColors: true
       });
-      // Invalider le cache des articles pour forcer un rechargement
       queryClient.invalidateQueries({ queryKey: ["articles"] });
     },
   });
@@ -44,7 +56,7 @@ export const useAddArticle = () => {
 export const useAddArticlesBatch = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useMutation<any, Error, CreateArticleData[]>({
     mutationFn: addArticlesBatch,
     onSuccess: (data) => {
       toast.success(`${data.length} articles ajoutés avec succès`, {

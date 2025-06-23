@@ -48,7 +48,7 @@ const AjouterSchema = z.object({
   code_fournisseur: z.string().optional(),
   marque: z
     .string()
-    .regex(/.+/, { message: "Veuillez renseigner une marque valide" }),
+    .regex(/.+/, { message: "Veuillez renseigner une marque valide" })
 });
 
 type AjouterFormValues = z.infer<typeof AjouterSchema>;
@@ -69,7 +69,7 @@ export default function Ajouter() {
       num_bon_commande: "",
       fournisseur: "",
       code_fournisseur: "",
-      marque: "",
+      marque: ""
     },
   });
 
@@ -85,13 +85,26 @@ export default function Ajouter() {
 
   function onSubmit(data: AjouterFormValues) {
     const nbArticles = parseInt(data.nb_articles, 10);
+    
+    // On ne passe pas les dates à l'API
+    const submitData = {
+      num_inventaire: data.num_inventaire,
+      categorie: data.categorie,
+      id_piece: data.id_piece,
+      num_serie: data.num_serie,
+      num_bon_commande: data.num_bon_commande,
+      fournisseur: data.fournisseur,
+      code_fournisseur: data.code_fournisseur,
+      marque: data.marque,
+      etat: data.etat
+    };
 
     if (nbArticles > 1) {
       // Pour plusieurs articles, on affiche la confirmation
       setShowMultipleDialog(true);
     } else {
       // Pour un seul article, on crée directement
-      addArticle.mutate(data, {
+      addArticle.mutate(submitData, {
         onSuccess: () => {
           form.reset();
         },

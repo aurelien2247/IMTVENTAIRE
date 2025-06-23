@@ -1,6 +1,19 @@
 import type { Article, Categorie, Etat } from "@/types";
 import { fetchApi } from "./api";
 
+// Type pour la création/modification d'un article (sans les dates qui sont gérées par la BDD)
+type ArticleData = {
+  num_inventaire: string;
+  num_serie: string;
+  categorie: string;
+  etat: string;
+  id_piece: string;
+  num_bon_commande: string;
+  fournisseur: string;
+  code_fournisseur?: string;
+  marque: string;
+};
+
 /**
  * Récupère les articles d'une pièce
  * @param pieceId - L'identifiant de la pièce
@@ -24,17 +37,7 @@ export const fetchArticle = async (articleId: string): Promise<Article> => {
  * @param articleData - Les données de l'article à ajouter
  * @returns L'article créé
  */
-export const addArticle = async (articleData: {
-  num_inventaire: string;
-  num_serie: string;
-  categorie: string;
-  etat: string;
-  id_piece: string;
-  num_bon_commande: string;
-  fournisseur: string;
-  code_fournisseur?: string;
-  marque: string;
-}): Promise<Article> => {
+export const addArticle = async (articleData: ArticleData): Promise<Article> => {
   const payload = {
     ...articleData,
     code_fournisseur: articleData.code_fournisseur
@@ -51,7 +54,7 @@ export const addArticle = async (articleData: {
   });
 };
 
-export const addArticlesBatch = async (articles: any[]): Promise<Article[]> => {
+export const addArticlesBatch = async (articles: ArticleData[]): Promise<Article[]> => {
   const articlesWithParsedInts = articles.map(article => ({
     ...article,
     code_fournisseur: article.code_fournisseur
@@ -79,17 +82,7 @@ export const fetchCategories = async (): Promise<Categorie[]> => {
   return await fetchApi(`/categories`);
 };
 
-export const updateArticle = async (articleId: string, articleData: {
-  num_inventaire: string;
-  num_serie: string;
-  categorie: string;
-  etat: string;
-  id_piece: string;
-  num_bon_commande: string;
-  fournisseur: string;
-  code_fournisseur?: string;
-  marque: string;
-}) => {
+export const updateArticle = async (articleId: string, articleData: ArticleData) => {
   const payload = {
     ...articleData,
     num_inventaire: parseInt(articleData.num_inventaire, 10),

@@ -37,6 +37,8 @@ export interface Article {
   fournisseur: string;
   code_fournisseur: number;
   marque: string;
+  date_creation: string;
+  date_modification: string;
 }
 
 export interface Etat {
