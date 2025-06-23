@@ -48,7 +48,7 @@ create table article (
     num_serie VARCHAR(100),
     num_bon_commande VARCHAR(100),
     fournisseur VARCHAR(100),
-    code_fournisseur INTEGER,
+    code_fournisseur BIGINT,
     marque VARCHAR(100),
     CONSTRAINT fk_piece
         FOREIGN KEY (id_piece)
