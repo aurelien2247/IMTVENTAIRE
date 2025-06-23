@@ -10,7 +10,7 @@ import ListeArticles from './pages/inventaire/ListeArticles'
 import ModifierArticle from './pages/inventaire/ModifierArticle'
 import SearchResults from './pages/SearchResults'
 
-function App() {
+export default function App() {
   return (
     <>
       <Layout>
@@ -31,5 +31,3 @@ function App() {
     </>
   )
 }
-
-export default App
