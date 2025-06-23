@@ -40,7 +40,6 @@ export default function SearchResults() {
   const setSearchQuery = useSetAtom(searchQueryAtom);
   const { articles, rooms, isLoading, error } = useSearch();
 
-  // 
   useEffect(() => {
     setSearchQuery(queryParam);
   }, [queryParam, setSearchQuery]);
@@ -103,9 +102,7 @@ export default function SearchResults() {
                 <motion.div key={room.id} variants={itemVariants}>
                   <Card
                     content={room.nom}
-                    link={`/inventaire/${room.etage?.batiment?.id || ""}/${
-                      room.etage?.id || ""
-                    }/${room.id}`}
+                    link={`/inventaire/${room.etage?.batiment?.id}/${room.etage?.id}/${room.id}`}
                   />
                 </motion.div>
               ))}
@@ -124,11 +121,7 @@ export default function SearchResults() {
                 <motion.div key={article.num_inventaire} variants={itemVariants}>
                   <ArticleCard
                     article={article}
-                    link={`/inventaire/${
-                      article.piece?.etage?.batiment?.id || ""
-                    }/${article.piece?.etage?.id || ""}/${
-                      article.piece?.id || ""
-                    }/${article.num_inventaire}`}
+                    link={`/inventaire/${article.num_inventaire}/modifier`}
                   />
                 </motion.div>
               ))}

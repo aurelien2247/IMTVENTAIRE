@@ -18,11 +18,7 @@ export default function ArticleInfo() {
   const { data: article } = useArticle(codeScanned);
   const [modeChangementPiece, setModeChangementPiece] = useState(false);
 
-  const batimentId = article?.piece?.etage?.batiment?.id;
-  const etageId = article?.piece?.etage?.id;
-  const pieceId = article?.piece?.id;
   const articleId = article?.num_inventaire;
-
 
   const handleSelectPiece = (pieceId: string) => {
     updateArticle.mutate({
@@ -47,7 +43,12 @@ export default function ArticleInfo() {
   }
 
   if (modeChangementPiece) {
-    return <ChoisirPiece onSelect={handleSelectPiece} onClose={() => setModeChangementPiece(false)} />;
+    return (
+      <ChoisirPiece
+        onSelect={handleSelectPiece}
+        onClose={() => setModeChangementPiece(false)}
+      />
+    );
   }
 
   return (
@@ -78,22 +79,13 @@ export default function ArticleInfo() {
         </div>
       </div>
       <div className="flex flex-col gap-2 flex-shrink-0">
-        <Button onClick={() => setModeChangementPiece(true)}>Changer de pièce</Button>
+        <Button onClick={() => setModeChangementPiece(true)}>
+          Changer de pièce
+        </Button>
         <Button
           variant="secondary"
-          onClick={() => {
-            const articleId = article.num_inventaire;
-            const piece = article.piece;
-            if (piece && piece.etage && piece.etage.batiment) {
-              const batimentId = piece.etage.batiment.id;
-              const etageId = piece.etage.id;
-              const pieceId = piece.id;
-              navigate(`/inventaire/${batimentId}/${etageId}/${pieceId}/${articleId}`);
-            } else {
-              navigate(`/inventaire/${articleId}/modifier`);
-            }
-          }}
-          disabled={!batimentId || !etageId || !pieceId || !articleId}
+          onClick={() => navigate(`/inventaire/${articleId}/modifier`)}
+          disabled={!articleId}
         >
           Modifier
         </Button>

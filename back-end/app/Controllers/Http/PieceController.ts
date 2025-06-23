@@ -1,4 +1,5 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Article from 'App/Models/Article'
 import Piece from 'App/Models/Piece'
 
 export default class PieceController {
@@ -66,6 +67,25 @@ export default class PieceController {
       return response.ok(piece)
     } catch (error) {
       return response.internalServerError({ error: error.message })
+    }
+  }
+
+  public async saveScan({ params, request, response }: HttpContextContract) {
+    try {
+      const piece = await Piece.find(params.id)
+      const articlesId = request.body() as string[]
+
+      const articles = await Article.query().whereIn('num_inventaire', articlesId)
+
+      if (!piece) {
+        return response.notFound({ error: 'Pièce non trouvée' })
+      }
+
+      await piece.related('articles').saveMany(articles)
+
+      return response.ok({ message: 'Articles sauvegardés avec succès' })
+    } catch (error) {
+      return response.internalServerError({ error: 'Erreur lors de la sauvegarde du scan' })
     }
   }
 }

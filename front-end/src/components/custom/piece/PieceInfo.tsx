@@ -1,4 +1,4 @@
-import { usePieceByName } from "@/hooks/usePiece";
+import { usePieceByName, useSaveScan } from "@/hooks/usePiece";
 import { useState, useEffect } from "react";
 import type { Article } from "@/types";
 import { useAtom } from "jotai";
@@ -9,7 +9,6 @@ import ArticleList, { ArticleListSkeleton } from "../article/ArticleList";
 import ScanMode from "@/pages/scanner/components/ScanMode";
 import Error from "@/pages/common/Error";
 import ScanPieceButton from "./ScanPieceButton";
-import { toast } from "sonner";
 
 export default function PieceInfo() {
   const [scanMode, setScanMode] = useAtom(scanModeAtom);
@@ -25,9 +24,13 @@ export default function PieceInfo() {
     isPiece && changePiece
   );
   const { data: article } = useArticle(codeScanned, scanMode && !isPiece);
+  const { mutate: saveScanMutate } = useSaveScan(
+    piece?.id.toString() || "",
+    articlesScanned.map((article) => article.num_inventaire)
+  );
 
   useEffect(() => {
-      resetArticlesScanned();
+    resetArticlesScanned();
   }, [piece]);
 
   useEffect(() => {
@@ -42,24 +45,11 @@ export default function PieceInfo() {
   }, [codeScanned, scanMode, article, piece]);
 
   const saveScan = async () => {
-    // TODO: Enregistrer les articles sauvegardées dans le back
-    toast("Articles sauvegardés", {
-      description: (
-        <div className="flex flex-col gap-1">
-          {articlesScanned.map((article) => (
-            <div key={article.num_inventaire}>
-              <h3>{article.categorie.nom}</h3>
-            </div>
-          ))}
-        </div>
-      ),
-      position: "top-center",
-      richColors: true,
-    });
+    saveScanMutate();
     resetArticlesScanned();
-    if (codeScanned === piece?.nom) {
+    // if (codeScanned === piece?.nom) {
       setCodeScanned(null);
-    }
+    // }
   };
 
   const resetArticlesScanned = () => {
@@ -107,7 +97,7 @@ export default function PieceInfo() {
       {scanMode && piece ? (
         <ScanMode piece={piece} articlesScanned={articlesScanned} />
       ) : (
-        <ArticleList articles={piece?.articles} piece={piece} />
+        <ArticleList articles={piece?.articles} />
       )}
       <ScanConfirmDialog open={openConfirmScan} onConfirm={handleConfirmScan} />
       <ScanPieceButton onClick={handleButtonScan} />

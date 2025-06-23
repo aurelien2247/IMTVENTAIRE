@@ -15,7 +15,7 @@ interface ListeBatimentsProps {
 export default function ListeBatiments({ onSelect, title = "Inventaire" }: ListeBatimentsProps) {
   const { data: batiments, isLoading, error } = useBatiments();
 
-  const style = cn(!onSelect && "container mx-auto", "flex flex-col gap-6");
+  const style = cn(!onSelect && "container", "flex flex-col gap-6");
 
   if (isLoading) {
     return (

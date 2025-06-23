@@ -27,3 +27,10 @@ export const fetchPieceByName = async (nom: string): Promise<Piece> => {
 export const fetchPiece = async (id: string): Promise<Piece> => {
   return await fetchApi(`/pieces/${id}`);
 };
+
+export const saveScan = async (pieceId: string, articlesId: string[]) => {
+  return await fetchApi(`/pieces/${pieceId}/scan`, {
+    method: 'POST',
+    body: JSON.stringify(articlesId),
+  });
+};

@@ -1,8 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchPiece, fetchPieces, fetchPieceByName } from "@/api/piece";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  fetchPiece,
+  fetchPieces,
+  fetchPieceByName,
+  saveScan,
+} from "@/api/piece";
+import { toast } from "sonner";
 
 export const usePiece = (pieceId: string | undefined, enabled = true) => {
-
   return useQuery({
     queryKey: ["piece", pieceId],
     queryFn: () => fetchPiece(pieceId ?? ""),
@@ -33,5 +38,17 @@ export const usePieceByName = (nom: string | null, enabled = true) => {
     staleTime: 0,
     gcTime: 0,
     placeholderData: (previousData) => previousData,
+  });
+};
+
+export const useSaveScan = (pieceId: string, articlesId: string[]) => {
+  return useMutation({
+    mutationFn: () => saveScan(pieceId, articlesId),
+    onSuccess: () => {
+      toast.success("Articles sauvegardés avec succès", {
+        richColors: true,
+        position: "top-center",
+      });
+    },
   });
 };
