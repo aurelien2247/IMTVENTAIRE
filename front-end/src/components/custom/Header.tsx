@@ -1,5 +1,5 @@
 import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Skeleton } from "../ui/skeleton";
 
 interface Props {
@@ -30,9 +30,20 @@ interface BackButtonProps {
 }
 
 export function BackButton({ onBack }: BackButtonProps) {
-  return onBack || window.location.pathname.split("/").filter(Boolean).length > 1 ? (
-    <Link to={!onBack ? ".." : ""} relative="path" className="hover:opacity-70 transition-opacity" onClick={onBack}>
-      <ArrowLeft />
-    </Link>
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    } else {
+      navigate(-1);
+    }
+  };
+  return onBack ||
+    window.location.pathname.split("/").filter(Boolean).length > 1 ? (
+    <ArrowLeft
+      onClick={handleBack}
+      className="hover:opacity-70 transition-opacity cursor-pointer"
+    />
   ) : null;
 }

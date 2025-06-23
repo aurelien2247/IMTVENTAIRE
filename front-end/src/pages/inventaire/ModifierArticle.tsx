@@ -18,16 +18,16 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
 const ModifierSchema = z.object({
-  num_inventaire: z
-    .string()
-    .regex(/^\d{5,}$/, {
-      message:
-        "Veuillez renseigner un numéro d'inventaire valide (5 chiffres minimum)",
-    }),
+  num_inventaire: z.string().regex(/^\d{5,}$/, {
+    message:
+      "Veuillez renseigner un numéro d'inventaire valide (5 chiffres minimum)",
+  }),
   num_serie: z
     .string()
     .regex(/.+/, { message: "Veuillez renseigner le numéro de série" }),
-  categorie: z.string().min(1, { message: "Veuillez sélectionner une catégorie" }),
+  categorie: z
+    .string()
+    .min(1, { message: "Veuillez sélectionner une catégorie" }),
   etat: z.string().min(1, { message: "Veuillez sélectionner un état" }),
   id_piece: z.string().min(1, { message: "Veuillez sélectionner une pièce" }),
   num_bon_commande: z
@@ -47,7 +47,7 @@ type ModifierFormValues = z.infer<typeof ModifierSchema>;
 export default function ModifierArticle() {
   const { articleId } = useParams();
   const navigate = useNavigate();
-  
+
   const { data: article, isLoading } = useArticle(articleId || null);
 
   const updateArticle = useUpdateArticle();
@@ -55,21 +55,28 @@ export default function ModifierArticle() {
 
   const form = useForm<ModifierFormValues>({
     resolver: zodResolver(ModifierSchema),
-    values: article ? {
-      num_inventaire: article.num_inventaire.toString(),
-      categorie: article.categorie.id.toString(),
-      etat: article.etat.id.toString(),
-      id_piece: article.piece?.id != null ? article.piece.id.toString() : "Aucune pièce",
-      num_bon_commande: article.num_bon_commande,
-      fournisseur: article.fournisseur,
-      code_fournisseur: article.code_fournisseur?.toString() || "",
-      marque: article.marque,
-      num_serie: article.num_serie,
-    } : undefined
+    values: article
+      ? {
+          num_inventaire: article.num_inventaire.toString(),
+          categorie: article.categorie.id.toString(),
+          etat: article.etat.id.toString(),
+          id_piece:
+            article.piece?.id != null
+              ? article.piece.id.toString()
+              : "Aucune pièce",
+          num_bon_commande: article.num_bon_commande,
+          fournisseur: article.fournisseur,
+          code_fournisseur: article.code_fournisseur?.toString() || "",
+          marque: article.marque,
+          num_serie: article.num_serie,
+        }
+      : undefined,
   });
 
-  const { data: piece } = usePiece(form.watch("id_piece"), form.watch("id_piece")?.length > 0);
-
+  const { data: piece } = usePiece(
+    form.watch("id_piece"),
+    form.watch("id_piece")?.length > 0
+  );
 
   const onSubmit = async (data: ModifierFormValues) => {
     if (!articleId) return;
@@ -85,7 +92,7 @@ export default function ModifierArticle() {
   };
 
   const handleSelectPiece = (pieceId: string) => {
-    form.setValue("id_piece", pieceId, { shouldDirty: true});
+    form.setValue("id_piece", pieceId, { shouldDirty: true });
     setModeChangementPiece(false);
   };
 
@@ -145,7 +152,11 @@ export default function ModifierArticle() {
           <div className="flex flex-col gap-2.5">
             <FormLabel>Pièce</FormLabel>
             <Card
-              content={!article?.piece || article?.piece?.id == null ? "Aucune pièce" : article.piece.nom}
+              content={
+                !article?.piece || article?.piece?.id == null
+                  ? "Aucune pièce"
+                  : article.piece.nom
+              }
               size="small"
               onClick={() => setModeChangementPiece(true)}
               className={cn(piece?.nom ? "" : "text-muted-foreground")}
@@ -244,16 +255,32 @@ export default function ModifierArticle() {
             )}
           />
           <div className="w-full flex justify-between gap-4">
-            <span>
-              <p className="font-bold">Dernière modification</p>
-              <p>{format(new Date(article?.date_modification || ""), "dd/MM/yyyy", { locale: fr })}</p>
-            </span>
-            <span>
-              <p className="font-bold">Créé le</p>
-              <p>{format(new Date(article?.date_creation || ""), "dd/MM/yyyy", { locale: fr })}</p>
-            </span>
+            {article?.date_modification && (
+              <span>
+                <p className="font-bold">Dernière modification</p>
+                <p>
+                  {format(new Date(article.date_modification), "dd/MM/yyyy", {
+                    locale: fr,
+                  })}
+                </p>
+              </span>
+            )}
+            {article?.date_creation && (
+              <span>
+                <p className="font-bold">Créé le</p>
+                <p>
+                  {format(new Date(article.date_creation), "dd/MM/yyyy", {
+                    locale: fr,
+                  })}
+                </p>
+              </span>
+            )}
           </div>
-          <Button type="submit" className="w-full" disabled={isLoading || !form.formState.isDirty}>
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={isLoading || !form.formState.isDirty}
+          >
             Modifier
           </Button>
         </form>
