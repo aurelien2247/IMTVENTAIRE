@@ -8,7 +8,7 @@ import { usePieces } from "@/hooks/usePiece";
 import Error from "../common/Error";
 
 export default function ListeArticles() {
-  const { batimentId, etageId, pieceId } = useParams();
+  const { etageId, pieceId } = useParams();
   const { data: articles, isLoading: isLoadingArticles, error: errorArticles } = useArticles(pieceId);
   const { data: pieces, isLoading: isLoadingPieces, error: errorPieces } = usePieces(etageId);
 
@@ -58,7 +58,7 @@ export default function ListeArticles() {
           <ArticleCard
             key={article.num_inventaire}
             article={article}
-            link={`/inventaire/${batimentId}/${etageId}/${pieceId}/${article.num_inventaire}`}
+            link={`/inventaire/${article.num_inventaire}/modifier`}
           />
         ))}
       </div>

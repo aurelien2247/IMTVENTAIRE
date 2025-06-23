@@ -14,29 +14,13 @@ interface ArticleItemProps {
 export default function ArticleItem({
   article,
   isScanned = true,
-  piece,
 }: ArticleItemProps) {
   const navigate = useNavigate();
 
   const handleModifierClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const pieceInfo = article.piece || piece;
 
-    if (!pieceInfo) {
-      alert("Erreur: Les informations de la pièce sont manquantes.");
-      return;
-    }
-
-    const batimentId = pieceInfo.etage.batiment.id;
-    const etageId = pieceInfo.etage.id;
-    const pieceId = pieceInfo.id;
-    const articleId = article.num_inventaire;
-
-    if (batimentId && etageId && pieceId && articleId) {
-      navigate(`/inventaire/${batimentId}/${etageId}/${pieceId}/${articleId}`);
-    } else {
-      alert("Erreur: Les informations de localisation de l'article sont incomplètes.");
-    }
+    navigate(`/inventaire/${article.num_inventaire}/modifier`);
   };
 
   return (
@@ -53,16 +37,20 @@ export default function ArticleItem({
           #{article.num_inventaire}
         </small>
       </div>
-      <Button variant="secondary" onClick={handleModifierClick}>Modifier</Button>
+      <Button
+        variant="secondary"
+        onClick={handleModifierClick}
+        disabled={!article.num_inventaire}
+      >
+        Modifier
+      </Button>
     </div>
   );
 }
 
 export function ArticleItemSkeleton() {
   return (
-    <div
-      className="flex justify-between gap-4 items-center"
-    >
+    <div className="flex justify-between gap-4 items-center">
       <div>
         <span className="flex items-center gap-2">
           <ArticleEtatSkeleton />
@@ -72,7 +60,9 @@ export function ArticleItemSkeleton() {
           #<Skeleton className="h-3.5 w-24" />
         </small>
       </div>
-      <Button variant="secondary" disabled>Modifier</Button>
+      <Button variant="secondary" disabled>
+        Modifier
+      </Button>
     </div>
   );
 }
