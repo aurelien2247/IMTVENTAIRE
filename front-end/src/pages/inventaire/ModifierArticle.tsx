@@ -85,7 +85,7 @@ export default function ModifierArticle() {
   };
 
   const handleSelectPiece = (pieceId: string) => {
-    form.setValue("id_piece", pieceId, { shouldDirty: true });
+    form.setValue("id_piece", pieceId, { shouldDirty: true});
     setModeChangementPiece(false);
   };
 
@@ -243,7 +243,7 @@ export default function ModifierArticle() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full" disabled={isLoading || !form.formState.isDirty || !form.formState.isValid}>
+          <Button type="submit" className="w-full" disabled={isLoading || !form.formState.isDirty}>
             Modifier
           </Button>
         </form>

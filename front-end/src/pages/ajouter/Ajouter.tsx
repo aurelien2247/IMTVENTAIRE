@@ -280,7 +280,7 @@ export default function Ajouter() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full" disabled={!form.formState.isValid}>
+          <Button type="submit" className="w-full" >
             Ajouter
           </Button>
         </form>
