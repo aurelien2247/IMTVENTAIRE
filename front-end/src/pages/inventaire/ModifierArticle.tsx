@@ -101,14 +101,6 @@ export default function ModifierArticle() {
   return (
     <div className="container">
       <Header title="Modifier article" />
-      {article && (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-3 text-xs text-muted-foreground mb-2">
-          <span>Créé le <strong>{format(new Date(article.date_creation), "dd/MM/yyyy à HH:mm", { locale: fr })}</strong></span>
-          <span className="flex items-center gap-1">
-            Dernière modification le <strong>{format(new Date(article.date_modification), "dd/MM/yyyy à HH:mm", { locale: fr })}</strong>
-          </span>
-        </div>
-      )}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -251,6 +243,16 @@ export default function ModifierArticle() {
               </FormItem>
             )}
           />
+          <div className="w-full flex justify-between gap-4">
+            <span>
+              <p className="font-bold">Dernière modification</p>
+              <p>{format(new Date(article?.date_modification || ""), "dd/MM/yyyy", { locale: fr })}</p>
+            </span>
+            <span>
+              <p className="font-bold">Créé le</p>
+              <p>{format(new Date(article?.date_creation || ""), "dd/MM/yyyy", { locale: fr })}</p>
+            </span>
+          </div>
           <Button type="submit" className="w-full" disabled={isLoading || !form.formState.isDirty}>
             Modifier
           </Button>

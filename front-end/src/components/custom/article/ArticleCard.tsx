@@ -1,9 +1,6 @@
 import type { Article } from "@/types";
 import Card from "../Card";
 import ArticleEtat from "./ArticleEtat";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
-import { History } from "lucide-react";
 
 interface Props {
   article: Article;
@@ -11,8 +8,6 @@ interface Props {
 }
 
 export default function ArticleCard({ article, link }: Props) {
-  // Formatage de la date de modification uniquement
-  const dateModification = format(new Date(article.date_modification), "dd/MM/yyyy", { locale: fr });
 
   const content = (
     <div className="flex flex-col gap-4">
@@ -22,10 +17,6 @@ export default function ArticleCard({ article, link }: Props) {
             <ArticleEtat etat={article.etat} />
             <p>{article.categorie.nom}</p>
           </div>
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <History className="h-3 w-3" />
-            <p>{dateModification}</p>
-          </div>
         </div>
         <p className="text-sm text-muted-foreground">
           #{article.num_inventaire}
@@ -34,12 +25,12 @@ export default function ArticleCard({ article, link }: Props) {
       <div className="flex gap-4">
         <span>
           <p className="text-sm">Numéro de série</p>
-          <p className="text-sm text-muted-foreground">{article.num_serie}</p>
+          <p className="text-sm text-muted-foreground">{article.num_serie || "Non renseigné"}</p>
         </span>
         <span>
           <p className="text-sm">N° de commande</p>
           <p className="text-sm text-muted-foreground">
-            {article.num_bon_commande}
+            {article.num_bon_commande || "Non renseigné"}
           </p>
         </span>
       </div>

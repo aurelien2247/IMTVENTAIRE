@@ -3,7 +3,6 @@ drop table if exists categorie;
 drop table if exists etat;
 drop table if exists piece;
 drop table if exists etage;
-TRUNCATE batiment RESTART IDENTITY CASCADE;
 drop table if exists batiment;
 
 
