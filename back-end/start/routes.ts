@@ -137,6 +137,42 @@ Route.get('/pieces/:id', 'PieceController.show')
 
 /**
  * @swagger
+ * /pieces/{id}/scan:
+ *   post:
+ *     tags:
+ *       - Pièces
+ *     description: Sauvegarde les articles dans une pièce
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Identifiant de la pièce
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
+ *             items:
+ *               type: object
+ *               properties:
+ *                 num_inventaire:
+ *                   type: string
+ *                   description: Numéro d'inventaire de l'article
+ *     responses:
+ *       200:
+ *         description: Articles sauvegardés avec succès
+ *       404:
+ *         description: Pièce non trouvée
+ *       500:
+ *         description: Erreur lors de la sauvegarde du scan
+ */
+Route.post('/pieces/:id/scan', 'PieceController.saveScan')
+
+/**
+ * @swagger
  * /pieces/{nom}:
  *   get:
  *     tags:

@@ -17,7 +17,7 @@ interface ScanModeProps {
 
 export default function ScanMode({ piece, articlesScanned }: ScanModeProps) {
   /**
-   * On récupère les articles qui n'ont pas été scannés
+   * Récupère les articles qui n'ont pas été scannés
    * On filtre les articles scannés par rapport aux articles de la pièce
    */
   const articlesToScan =
