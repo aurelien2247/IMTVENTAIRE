@@ -1,14 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchPiece, fetchPieces, fetchPieceByName } from "@/api/piece";
 
-export const usePiece = (pieceId: string | undefined) => {
-  if (!pieceId) {
-    throw new Error("L'identifiant de la pièce est manquant");
-  }
+export const usePiece = (pieceId: string | undefined, enabled = true) => {
 
   return useQuery({
     queryKey: ["piece", pieceId],
-    queryFn: () => fetchPiece(pieceId),
+    queryFn: () => fetchPiece(pieceId ?? ""),
+    enabled,
   });
 };
 

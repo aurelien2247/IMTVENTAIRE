@@ -4,66 +4,51 @@ import ArticleEtat, { ArticleEtatSkeleton } from "./ArticleEtat";
 import { useAtom } from "jotai";
 import { codeScannedAtom } from "@/lib/atoms";
 import { Skeleton } from "@/components/ui/skeleton";
-import Error from "@/pages/common/Error";
-import ListeBatiments from "@/pages/inventaire/ListeBatiments";
-import ListeEtages from "@/pages/inventaire/ListeEtages";
-import ListePieces from "@/pages/inventaire/ListePieces";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useState } from "react";
+import ChoisirPiece from "../piece/ChoisirPiece";
 
 export default function ArticleInfo() {
   const navigate = useNavigate();
+  const updateArticle = useUpdateArticle();
   const [codeScanned] = useAtom(codeScannedAtom);
   const { data: article } = useArticle(codeScanned);
-  const updateArticle = useUpdateArticle();
-
-  // Ajout de l'état pour le mode changement de pièce et la navigation
   const [modeChangementPiece, setModeChangementPiece] = useState(false);
-  const [batimentId, setBatimentId] = useState<string | undefined>(undefined);
-  const [etageId, setEtageId] = useState<string | undefined>(undefined);
-  const [pieceId, setPieceId] = useState<string | undefined>(undefined);
 
-  // Callback pour sélectionner un bâtiment
-  const handleSelectBatiment = (id: string) => {
-    setBatimentId(id);
-    setEtageId(undefined);
-    setPieceId(undefined);
-  };
-  // Callback pour sélectionner un étage
-  const handleSelectEtage = (id: string) => {
-    setEtageId(id);
-    setPieceId(undefined);
-  };
-  // Callback pour sélectionner une pièce
-  const handleSelectPiece = (id: string) => {
-    setPieceId(id);
-    setModeChangementPiece(false); 
-    if (article) {
-      updateArticle.mutate({
-        numInventaire: article.num_inventaire,
-        articleData: { id_piece: id }
-      });
-    }
+  const batimentId = article?.piece?.etage?.batiment?.id;
+  const etageId = article?.piece?.etage?.id;
+  const pieceId = article?.piece?.id;
+  const articleId = article?.num_inventaire;
+
+
+  const handleSelectPiece = (pieceId: string) => {
+    updateArticle.mutate({
+      articleId: articleId || "",
+      data: {
+        id_piece: pieceId,
+        num_inventaire: article?.num_inventaire || "",
+        num_serie: article?.num_serie || "",
+        categorie: article?.categorie.id.toString() || "",
+        etat: article?.etat.id.toString() || "",
+        num_bon_commande: article?.num_bon_commande || "",
+        fournisseur: article?.fournisseur || "",
+        code_fournisseur: article?.code_fournisseur?.toString() || "",
+        marque: article?.marque || "",
+      },
+    });
+    setModeChangementPiece(false);
   };
 
   if (!article) {
-    return <Error />;
+    return <ArticleInfoNotFound />;
   }
 
   if (modeChangementPiece) {
-    if (!batimentId) {
-      return <ListeBatiments onSelect={handleSelectBatiment} title="Déplacer vers..." />;
-    } else if (!etageId) {
-      return <ListeEtages batimentId={batimentId} onSelect={handleSelectEtage} onBack={() => setBatimentId(undefined)} />;
-    } else if (!pieceId) {
-      return <ListePieces batimentId={batimentId} etageId={etageId} onSelect={handleSelectPiece} onBack={() => setEtageId(undefined)} />;
-    }
+    return <ChoisirPiece onSelect={handleSelectPiece} onClose={() => setModeChangementPiece(false)} />;
   }
 
   return (
     <div className="container flex flex-col gap-16">
-      <h2 className="text-2xl font-bold">Inventaire</h2>
       <div className="flex flex-col gap-6 min-w-0">
         <div className="flex flex-col gap-1">
           <span className="flex items-center gap-2">
@@ -84,17 +69,8 @@ export default function ArticleInfo() {
         </div>
       </div>
       <div className="flex flex-col gap-2 flex-shrink-0">
+        <Button onClick={() => setModeChangementPiece(true)}>Changer de pièce</Button>
         <Button
-          onClick={() => {
-            setModeChangementPiece(true);
-            setBatimentId(undefined);
-            setEtageId(undefined);
-            setPieceId(undefined);
-          }}
-        >
-          Changer de pièce
-        </Button>
-        <Button 
           variant="secondary"
           onClick={() => {
             const articleId = article.num_inventaire;
@@ -108,6 +84,7 @@ export default function ArticleInfo() {
               navigate(`/inventaire/${articleId}/modifier`);
             }
           }}
+          disabled={!batimentId || !etageId || !pieceId || !articleId}
         >
           Modifier
         </Button>
@@ -123,24 +100,77 @@ export function ArticleInfoSkeleton() {
         <div className="flex flex-col gap-1">
           <span className="flex items-center gap-2">
             <ArticleEtatSkeleton />
-            <h1><Skeleton className="h-8 w-48 bg-muted animate-pulse rounded" /></h1>
+            <h1>
+              <Skeleton className="h-8 w-48 bg-muted animate-pulse rounded" />
+            </h1>
           </span>
-          <p className="text-muted-foreground"><Skeleton className="h-4 w-48 bg-muted animate-pulse rounded" /></p>
+          <p className="text-muted-foreground">
+            <Skeleton className="h-4 w-48 bg-muted animate-pulse rounded" />
+          </p>
         </div>
         <div className="flex gap-8 flex-wrap">
           <span className="min-w-0">
-            <p className="font-bold truncate w-full"><Skeleton className="h-4 w-24 bg-muted animate-pulse rounded" /></p>
-            <p><Skeleton className="h-4 w-24 bg-muted animate-pulse rounded" /></p>
+            <p className="font-bold truncate w-full">
+              <Skeleton className="h-4 w-24 bg-muted animate-pulse rounded" />
+            </p>
+            <p>
+              <Skeleton className="h-4 w-24 bg-muted animate-pulse rounded" />
+            </p>
           </span>
           <span className="min-w-0">
-            <p className="font-bold truncate w-full"><Skeleton className="h-4 w-24 bg-muted animate-pulse rounded" /></p>
-            <p><Skeleton className="h-4 w-24 bg-muted animate-pulse rounded" /></p>
+            <p className="font-bold truncate w-full">
+              <Skeleton className="h-4 w-24 bg-muted animate-pulse rounded" />
+            </p>
+            <p>
+              <Skeleton className="h-4 w-24 bg-muted animate-pulse rounded" />
+            </p>
           </span>
         </div>
       </div>
       <div className="flex flex-col gap-2 flex-shrink-0">
-        <Button disabled><Skeleton className="h-10 w-full bg-muted animate-pulse rounded" /></Button>
-        <Button variant="secondary" disabled><Skeleton className="h-10 w-full bg-muted animate-pulse rounded" /></Button>
+        <Button disabled>
+          <Skeleton className="h-10 w-full bg-muted animate-pulse rounded" />
+        </Button>
+        <Button variant="secondary" disabled>
+          <Skeleton className="h-10 w-full bg-muted animate-pulse rounded" />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function ArticleInfoNotFound() {
+  const navigate = useNavigate();
+  const [codeScanned, setCodeScanned] = useAtom(codeScannedAtom);
+
+  const handleRedirect = () => {
+    navigate(`/ajouter?num_inventaire=${codeScanned}`);
+  };
+
+  return (
+    <div className="container flex flex-col gap-8">
+      <div className="flex flex-col gap-6 min-w-0">
+        <div className="flex flex-col gap-1">
+          <span className="flex items-center gap-2">
+            <h1>Article non trouvé</h1>
+          </span>
+          <p className="text-muted-foreground">
+            Cet article n'existe pas dans la base de données
+          </p>
+        </div>
+      </div>
+      <div className="flex flex-col gap-2 flex-shrink-0">
+        <Button variant="default" onClick={handleRedirect}>
+          Créer un nouvel article
+        </Button>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            setCodeScanned(null);
+          }}
+        >
+          Annuler
+        </Button>
       </div>
     </div>
   );

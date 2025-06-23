@@ -5,8 +5,16 @@ import Header, { HeaderSkeleton } from "@/components/custom/Header";
 import { usePieces } from "@/hooks/usePiece";
 import NotFound from "../common/NotFound";
 import Error from "../common/Error";
+import { cn } from "@/lib/utils";
 
-export default function ListePieces({ batimentId: propBatimentId, etageId: propEtageId, onSelect, onBack }: { batimentId?: string, etageId?: string, onSelect?: (id: string) => void, onBack?: () => void }) {
+interface ListePiecesProps {
+  batimentId?: string;
+  etageId?: string;
+  onSelect?: (id: string) => void;
+  onBack?: () => void;
+} 
+
+export default function ListePieces({ batimentId: propBatimentId, etageId: propEtageId, onSelect, onBack }: ListePiecesProps) {
   const params = useParams();
   const routeBatimentId = params.batimentId;
   const routeEtageId = params.etageId;
@@ -18,13 +26,13 @@ export default function ListePieces({ batimentId: propBatimentId, etageId: propE
     ? `Étage ${pieces[0].etage.nom.toUpperCase()}`
     : "Étage";
 
-  // Si onSelect n'est pas fourni, on est dans le mode route
-  const isRouteMode = !onSelect;
+  const style = cn(!onSelect && "container", "flex flex-col gap-6");
+
 
   if (isLoading) {
     return (
-      <div className="container">
-        <HeaderSkeleton />
+      <div className={style}>
+        {!onSelect && <HeaderSkeleton />}
         <SearchBar  />
         <div className="flex flex-col gap-2">
           {Array.from({ length: 10 }).map((_, index) => (
@@ -37,8 +45,8 @@ export default function ListePieces({ batimentId: propBatimentId, etageId: propE
 
   if (error) {
     return (
-      <div className="container">
-        <Header title="Étage introuvable" />
+      <div className={style}>
+        {!onSelect && <Header title="Étage introuvable" />}
         <SearchBar  />
         <Error />
       </div>
@@ -47,8 +55,8 @@ export default function ListePieces({ batimentId: propBatimentId, etageId: propE
 
   if (!pieces || pieces.length === 0) {
     return (
-      <div className="container">
-        <Header title={headerTitle} />
+      <div className={style}>
+        {!onSelect && <Header title={headerTitle} />}
         <SearchBar  />
         <NotFound message="Aucune pièce trouvée" />
       </div>
@@ -56,8 +64,8 @@ export default function ListePieces({ batimentId: propBatimentId, etageId: propE
   }
 
   return (
-    <div className="container">
-      <Header title={headerTitle} onBack={onBack} />
+    <div className={style}>
+      {!onSelect && <Header title={headerTitle} onBack={onBack} />}
       <SearchBar  />
       <div className="flex flex-col gap-2">
         {pieces.map((piece) => (

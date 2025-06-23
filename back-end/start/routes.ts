@@ -107,7 +107,33 @@ Route.get('/etages/:id_etage', 'PieceController.getByEtage')
  *       200:
  *         description: Liste des articles de la pièce
  */
-Route.get('/pieces/:id', 'ArticleController.getByPiece')
+Route.get('/pieces/articles/:id', 'ArticleController.getByPiece')
+
+/**
+ * @swagger
+ * /pieces/{id}:
+ *   get:
+ *     tags:
+ *       - Pièces
+ *     description: Récupère une pièce spécifique
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Identifiant de la pièce
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Pièce trouvée
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Piece'
+ *       404:
+ *         description: Pièce non trouvée
+ */
+Route.get('/pieces/:id', 'PieceController.show')
 
 /**
  * @swagger
@@ -173,6 +199,7 @@ Route.get('/pieces/nom/:nom', 'PieceController.getByName')
  */
 Route.get('/articles', 'ArticleController.index')
 Route.post('/articles', 'ArticleController.store')
+Route.post('/articles/batch', 'ArticleController.storeBatch')
 
 /**
  * @swagger

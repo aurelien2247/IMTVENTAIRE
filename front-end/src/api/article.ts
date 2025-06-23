@@ -7,7 +7,7 @@ import { fetchApi } from "./api";
  * @returns Les articles de la pièce
  */
 export const fetchArticles = async (pieceId: string): Promise<Article[]> => {
-  return await fetchApi(`/pieces/${pieceId}`);
+  return await fetchApi(`/pieces/articles/${pieceId}`);
 };
 
 /**
@@ -51,6 +51,23 @@ export const addArticle = async (articleData: {
   });
 };
 
+export const addArticlesBatch = async (articles: any[]): Promise<Article[]> => {
+  const articlesWithParsedInts = articles.map(article => ({
+    ...article,
+    code_fournisseur: article.code_fournisseur
+      ? parseInt(article.code_fournisseur, 10)
+      : undefined,
+    etat: parseInt(article.etat, 10),
+    id_piece: parseInt(article.id_piece, 10),
+    categorie: parseInt(article.categorie, 10),
+  }));
+
+  return await fetchApi(`/articles/batch`, {
+    method: "POST",
+    body: JSON.stringify({ articles: articlesWithParsedInts }),
+  });
+};
+
 export const createCategory = async (label: string): Promise<Categorie> => {
   return await fetchApi(`/categories`, {
     method: "POST",
@@ -72,7 +89,7 @@ export const updateArticle = async (articleId: string, articleData: {
   fournisseur: string;
   code_fournisseur?: string;
   marque: string;
-}): Promise<Article> => {
+}) => {
   const payload = {
     ...articleData,
     num_inventaire: parseInt(articleData.num_inventaire, 10),

@@ -8,28 +8,48 @@ import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Card from "@/components/custom/Card";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useArticle, useUpdateArticle } from "@/hooks/useArticle";
-import { EtatCombobox } from "@/components/ui/etat-combobox";
+import { cn } from "@/lib/utils";
+import { useState } from "react";
+import ChoisirPiece from "@/components/custom/piece/ChoisirPiece";
+import { usePiece } from "@/hooks/usePiece";
 
 const ModifierSchema = z.object({
-  num_inventaire: z.string().regex(/^\d{5,}$/, { message: "Veuillez renseigner un numéro d'inventaire valide (5 chiffres minimum)" }),
-  num_serie: z.string().regex(/.+/, { message: "Veuillez renseigner le numéro de série" }),
-  categorie: z.string(),
-  etat: z.string(),
-  id_piece: z.string(),
-  num_bon_commande: z.string().regex(/.+/, { message: "Veuillez renseigner le numéro de commande" }),
-  fournisseur: z.string().regex(/.+/, { message: "Veuillez renseigner le nom du fournisseur" }),
+  num_inventaire: z
+    .string()
+    .regex(/^\d{5,}$/, {
+      message:
+        "Veuillez renseigner un numéro d'inventaire valide (5 chiffres minimum)",
+    }),
+  num_serie: z
+    .string()
+    .regex(/.+/, { message: "Veuillez renseigner le numéro de série" }),
+  categorie: z.string().min(1, { message: "Veuillez sélectionner une catégorie" }),
+  etat: z.string().min(1, { message: "Veuillez sélectionner un état" }),
+  id_piece: z.string().min(1, { message: "Veuillez sélectionner une pièce" }),
+  num_bon_commande: z
+    .string()
+    .regex(/.+/, { message: "Veuillez renseigner le numéro de commande" }),
+  fournisseur: z
+    .string()
+    .regex(/.+/, { message: "Veuillez renseigner le nom du fournisseur" }),
   code_fournisseur: z.string().optional(),
-  marque: z.string().regex(/.+/, { message: "Veuillez renseigner une marque valide" }),
+  marque: z
+    .string()
+    .regex(/.+/, { message: "Veuillez renseigner une marque valide" }),
 });
 
 type ModifierFormValues = z.infer<typeof ModifierSchema>;
 
 export default function ModifierArticle() {
   const { articleId } = useParams();
+  const navigate = useNavigate();
+  
   const { data: article, isLoading } = useArticle(articleId || null);
+
   const updateArticle = useUpdateArticle();
+  const [modeChangementPiece, setModeChangementPiece] = useState(false);
 
   const form = useForm<ModifierFormValues>({
     resolver: zodResolver(ModifierSchema),
@@ -46,18 +66,35 @@ export default function ModifierArticle() {
     } : undefined
   });
 
+  const { data: piece } = usePiece(form.watch("id_piece"), form.watch("id_piece")?.length > 0);
+
+
   const onSubmit = async (data: ModifierFormValues) => {
     if (!articleId) return;
-    
+
     updateArticle.mutate(
       { articleId, data },
       {
         onSuccess: () => {
-          form.reset();
+          navigate(-1);
         },
       }
     );
   };
+
+  const handleSelectPiece = (pieceId: string) => {
+    form.setValue("id_piece", pieceId, { shouldDirty: true });
+    setModeChangementPiece(false);
+  };
+
+  if (modeChangementPiece) {
+    return (
+      <ChoisirPiece
+        onSelect={handleSelectPiece}
+        onClose={() => setModeChangementPiece(false)}
+      />
+    );
+  }
 
   return (
     <div className="container">
@@ -89,12 +126,14 @@ export default function ModifierArticle() {
               <FormItem>
                 <FormLabel>Catégorie</FormLabel>
                 <FormControl>
-                  <Combobox 
+                  <Combobox
+                    type="categorie"
                     disabled={isLoading}
-                    initialStatus={article?.categorie}
+                    status={article?.categorie}
                     onSelectedStatusChange={(status) => {
-                      field.onChange(status?.id || "");
+                      field.onChange(status?.id.toString() || "");
                     }}
+                    allowCreate={true}
                   />
                 </FormControl>
                 <FormMessage />
@@ -106,8 +145,8 @@ export default function ModifierArticle() {
             <Card
               content={!article?.piece || article?.piece?.id == null ? "Aucune pièce" : article.piece.nom}
               size="small"
-              link="/piece"
-              className="text-muted-foreground"
+              onClick={() => setModeChangementPiece(true)}
+              className={cn(piece?.nom ? "" : "text-muted-foreground")}
               disabled={isLoading}
             />
           </div>
@@ -118,9 +157,10 @@ export default function ModifierArticle() {
               <FormItem>
                 <FormLabel>État</FormLabel>
                 <FormControl>
-                  <EtatCombobox 
+                  <Combobox
+                    type="etat"
                     disabled={isLoading}
-                    initialStatus={article?.etat}
+                    status={article?.etat}
                     onSelectedStatusChange={(status) => {
                       field.onChange(status?.id.toString() || "");
                     }}
@@ -201,7 +241,7 @@ export default function ModifierArticle() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button type="submit" className="w-full" disabled={isLoading || !form.formState.isDirty || !form.formState.isValid}>
             Modifier
           </Button>
         </form>

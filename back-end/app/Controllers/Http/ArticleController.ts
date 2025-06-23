@@ -58,7 +58,7 @@ export default class ArticleController {
         .first()
 
       if (!article) {
-        return response.notFound({ error: 'Article non trouvé' })
+        return response.notFound({})
       }
 
       return response.ok(article)
@@ -120,9 +120,69 @@ export default class ArticleController {
 
       return response.created(article)
     } catch (error) {
-      console.error(error)
-      return response.status(500).json({
-        error: "Erreur lors de la création de l'article",
+      return response.internalServerError({ error: "Erreur lors de la création de l'article" })
+    }
+  }
+
+  /**
+   * Store a batch of new articles within a transaction
+   */
+  public async storeBatch({ request, response }: HttpContextContract) {
+    const articlesData = request.input('articles')
+    if (!Array.isArray(articlesData) || articlesData.length === 0) {
+      return response.badRequest({
+        error: 'Impossible de créer des articles vides',
+      })
+    }
+
+    const transaction = await Database.transaction()
+
+    try {
+      const createdArticles: Article[] = []
+
+      for (const data of articlesData) {
+        // Validation (peut être améliorée avec Adonis Validator)
+        if (
+          !data.num_inventaire ||
+          !data.categorie ||
+          !data.id_piece ||
+          !data.num_serie ||
+          !data.num_bon_commande ||
+          !data.fournisseur ||
+          !data.marque ||
+          !data.etat
+        ) {
+          return response.badRequest({
+            error: `Données manquantes pour l'article ${data.num_inventaire || '(inconnu)'}. Tous les champs sont requis.`,
+          })
+        }
+
+        const article = new Article()
+        article.useTransaction(transaction)
+
+        article.fill({
+          num_inventaire: data.num_inventaire,
+          categorie: Number(data.categorie),
+          id_piece: Number(data.id_piece),
+          num_serie: data.num_serie,
+          num_bon_commande: data.num_bon_commande,
+          fournisseur: data.fournisseur,
+          code_fournisseur: data.code_fournisseur,
+          marque: data.marque,
+          etat: data.etat,
+        })
+
+        await article.save()
+        createdArticles.push(article)
+      }
+
+      await transaction.commit()
+      return response.created(createdArticles)
+    } catch (error) {
+      await transaction.rollback()
+      return response.internalServerError({
+        error:
+          "Une erreur est survenue lors de la création des articles, aucun article n'a été créé",
       })
     }
   }

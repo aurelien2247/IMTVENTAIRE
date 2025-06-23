@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchArticle, fetchArticles, addArticle, updateArticle, fetchCategories, fetchEtats, createCategory } from "@/api/article";
+import { fetchArticle, fetchArticles, addArticle, addArticlesBatch, updateArticle, fetchCategories, fetchEtats, createCategory } from "@/api/article";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
 
 export const useArticles = (pieceId: string | undefined) => {
   if (!pieceId) {
@@ -38,13 +37,27 @@ export const useAddArticle = () => {
       });
       // Invalider le cache des articles pour forcer un rechargement
       queryClient.invalidateQueries({ queryKey: ["articles"] });
-    }
+    },
+  });
+};
+
+export const useAddArticlesBatch = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: addArticlesBatch,
+    onSuccess: (data) => {
+      toast.success(`${data.length} articles ajoutés avec succès`, {
+        position: "top-center",
+        richColors: true
+      });
+      queryClient.invalidateQueries({ queryKey: ["articles"] });
+    },
   });
 };
 
 export const useUpdateArticle = () => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: ({ articleId, data }: { articleId: string; data: Parameters<typeof updateArticle>[1] }) => 
@@ -57,8 +70,7 @@ export const useUpdateArticle = () => {
       // Invalider le cache des articles pour forcer un rechargement
       queryClient.invalidateQueries({ queryKey: ["articles"] });
       queryClient.invalidateQueries({ queryKey: ["article"] });
-      navigate(-1);
-    }
+    },
   });
 };
 
@@ -87,6 +99,6 @@ export const useAddCategorie = () => {
         richColors: true
       });
       queryClient.invalidateQueries({ queryKey: ["categories"] });
-    }
+    },
   });
 };

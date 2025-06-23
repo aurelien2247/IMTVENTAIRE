@@ -13,7 +13,10 @@ import { toast, Toaster } from "sonner";
 const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (error) => {
-      toast.error(error.message ?? "Une erreur est survenue", {
+      if (!error.message) {
+        return;
+      }
+      toast.error(error.message, {
         position: "top-center",
         richColors: true
       });

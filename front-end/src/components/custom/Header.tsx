@@ -31,7 +31,7 @@ interface BackButtonProps {
 
 export function BackButton({ onBack }: BackButtonProps) {
   return onBack || window.location.pathname.split("/").filter(Boolean).length > 1 ? (
-    <Link to=".." relative="path" className="hover:opacity-70 transition-opacity" onClick={onBack}>
+    <Link to={!onBack ? ".." : ""} relative="path" className="hover:opacity-70 transition-opacity" onClick={onBack}>
       <ArrowLeft />
     </Link>
   ) : null;
