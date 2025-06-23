@@ -37,7 +37,10 @@ export default class PieceController {
    */
   public async getByEtage({ params, response }: HttpContextContract) {
     try {
-      const pieces = await Piece.query().where('id_etage', params.id_etage).preload('etage')
+      const pieces = await Piece.query()
+        .where('id_etage', params.id_etage)
+        .preload('etage')
+        .orderBy('nom', 'asc')
 
       return response.ok(pieces)
     } catch (error) {

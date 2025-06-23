@@ -39,6 +39,7 @@ export default class EtageController {
       const etages = await Etage.query()
         .where('id_batiment', params.id_batiment)
         .preload('batiment')
+        .orderByRaw(`CASE WHEN nom = 'Rez-de-chaussée' THEN 0 ELSE 1 END, nom ASC`)
 
       return response.ok(etages)
     } catch (error) {

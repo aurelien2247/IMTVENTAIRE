@@ -10,12 +10,15 @@ export default class ArticleController {
   public async index({ response }: HttpContextContract) {
     try {
       const articles = await Article.query()
+        .join('categorie', 'article.categorie', 'categorie.id')
         .preload('piece', (pieceQuery) => {
           pieceQuery.preload('etage', (etageQuery) => {
             etageQuery.preload('batiment')
           })
         })
         .preload('categorieRelation')
+        .orderBy('categorie.nom', 'asc')
+        .select('article.*')
       return response.ok(articles)
     } catch (error) {
       return response.internalServerError({ error: 'Erreur lors de la recherche des articles' })
@@ -29,9 +32,12 @@ export default class ArticleController {
     try {
       const articles = await Article.query()
         .where('id_piece', params.id)
+        .join('categorie', 'article.categorie', 'categorie.id')
         .preload('piece')
         .preload('categorieRelation')
         .preload('etatRelation')
+        .orderBy('categorie.nom', 'asc')
+        .select('article.*')
 
       return response.ok(articles)
     } catch (error) {
@@ -48,6 +54,7 @@ export default class ArticleController {
     try {
       const article = await Article.query()
         .where('num_inventaire', params.num_inventaire)
+        .join('categorie', 'article.categorie', 'categorie.id')
         .preload('piece', (pieceQuery) => {
           pieceQuery.preload('etage', (etageQuery) => {
             etageQuery.preload('batiment')
@@ -81,7 +88,7 @@ export default class ArticleController {
         'fournisseur',
         'code_fournisseur',
         'marque',
-        'etat'
+        'etat',
       ])
 
       // Validation basique
@@ -225,7 +232,7 @@ export default class ArticleController {
         articleData.etat !== article.etat &&
         (articleData.etat === 4 || articleData.etat === 5)
       ) {
-        articleData.id_piece = null;
+        articleData.id_piece = null
       }
 
       article.merge(articleData)
@@ -276,6 +283,7 @@ export default class ArticleController {
 
         const articlesByCategory = await Article.query()
           .whereIn('categorie', categoryIds)
+          .join('categorie', 'article.categorie', 'categorie.id')
           .preload('piece', (pieceQuery) => {
             pieceQuery.preload('etage', (etageQuery) => {
               etageQuery.preload('batiment')
@@ -283,6 +291,8 @@ export default class ArticleController {
           })
           .preload('categorieRelation')
           .preload('etatRelation')
+          .orderBy('categorie.nom', 'asc')
+          .select('article.*')
 
         return response.ok({
           articles: articlesByCategory,
@@ -296,6 +306,7 @@ export default class ArticleController {
         .orWhere('marque', 'ILIKE', `%${query}%`)
         .orWhere('fournisseur', 'ILIKE', `%${query}%`)
         .orWhere('num_bon_commande', 'ILIKE', `%${query}%`)
+        .join('categorie', 'article.categorie', 'categorie.id')
         .preload('piece', (pieceQuery) => {
           pieceQuery.preload('etage', (etageQuery) => {
             etageQuery.preload('batiment')
@@ -303,6 +314,8 @@ export default class ArticleController {
         })
         .preload('categorieRelation')
         .preload('etatRelation')
+        .orderBy('categorie.nom', 'asc')
+        .select('article.*')
 
       return response.ok({
         articles: articlesByInventoryOrBrandOrSupplier,
