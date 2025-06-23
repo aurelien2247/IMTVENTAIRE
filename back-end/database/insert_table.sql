@@ -3,7 +3,9 @@ drop table if exists categorie;
 drop table if exists etat;
 drop table if exists piece;
 drop table if exists etage;
+TRUNCATE batiment RESTART IDENTITY CASCADE;
 drop table if exists batiment;
+
 
 create table batiment (
 	id SERIAL PRIMARY KEY,
@@ -48,8 +50,10 @@ create table article (
     num_serie VARCHAR(100),
     num_bon_commande VARCHAR(100),
     fournisseur VARCHAR(100),
-    code_fournisseur INTEGER,
+    code_fournisseur BIGINT,
     marque VARCHAR(100),
+    date_creation TIMESTAMP DEFAULT NOW(),
+    date_modification TIMESTAMP DEFAULT NOW(),
     CONSTRAINT fk_piece
         FOREIGN KEY (id_piece)
         REFERENCES piece(id),
@@ -60,3 +64,17 @@ create table article (
         FOREIGN KEY (etat)
         REFERENCES etat(id)
 );
+
+-- Trigger pour mettre à jour automatiquement date_modification
+CREATE OR REPLACE FUNCTION maj_date_modification_article()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.date_modification = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_maj_date_modif_article
+BEFORE UPDATE ON article
+FOR EACH ROW
+EXECUTE FUNCTION maj_date_modification_article();
