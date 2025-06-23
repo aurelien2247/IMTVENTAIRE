@@ -24,10 +24,13 @@ export default function ArticleEtat({ etat }: ArticleEtatProps) {
   };
 
   return (
-    <div
-      className={`w-1.5 aspect-square rounded-full ${getEtatColor(etat)}`}
-      title={EtatEnum[etat.id]}
-    />
+    <div className="flex items-center gap-2">
+      <div
+        className={`w-4 h-4 rounded-full shadow ${getEtatColor(etat)}`}
+        title={EtatEnum[etat.id]}
+        aria-label={etat.nom}
+      />
+    </div>
   );
 }
 
