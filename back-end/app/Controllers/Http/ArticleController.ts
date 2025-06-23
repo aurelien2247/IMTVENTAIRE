@@ -156,6 +156,17 @@ export default class ArticleController {
       if (articleData.id_piece) {
         articleData.id_piece = parseInt(articleData.id_piece)
       }
+      if (articleData.etat) {
+        articleData.etat = parseInt(articleData.etat)
+      }
+
+      if (
+        articleData.etat &&
+        articleData.etat !== article.etat &&
+        (articleData.etat === 4 || articleData.etat === 5)
+      ) {
+        articleData.id_piece = null;
+      }
 
       article.merge(articleData)
       await article.save()

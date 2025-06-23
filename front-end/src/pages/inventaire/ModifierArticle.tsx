@@ -37,7 +37,7 @@ export default function ModifierArticle() {
       num_inventaire: article.num_inventaire.toString(),
       categorie: article.categorie.id.toString(),
       etat: article.etat.id.toString(),
-      id_piece: article.piece.id.toString(),
+      id_piece: article.piece?.id != null ? article.piece.id.toString() : "Aucune pièce",
       num_bon_commande: article.num_bon_commande,
       fournisseur: article.fournisseur,
       code_fournisseur: article.code_fournisseur?.toString() || "",
@@ -104,7 +104,7 @@ export default function ModifierArticle() {
           <div className="flex flex-col gap-2.5">
             <FormLabel>Pièce</FormLabel>
             <Card
-              content="Aucune pièce"
+              content={!article?.piece || article?.piece?.id == null ? "Aucune pièce" : article.piece.nom}
               size="small"
               link="/piece"
               className="text-muted-foreground"
@@ -122,7 +122,7 @@ export default function ModifierArticle() {
                     disabled={isLoading}
                     initialStatus={article?.etat}
                     onSelectedStatusChange={(status) => {
-                      field.onChange(status?.id || "");
+                      field.onChange(status?.id.toString() || "");
                     }}
                     noOptionText="Aucun état"
                   />
