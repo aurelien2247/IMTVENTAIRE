@@ -21,6 +21,7 @@ function App() {
             <Route path=":batimentId/:etageId" element={<ListePieces />} />
             <Route path=":batimentId/:etageId/:pieceId" element={<ListeArticles />} />
             <Route path=":batimentId/:etageId/:pieceId/:articleId" element={<ModifierArticle />} />
+            <Route path=":articleId/modifier" element={<ModifierArticle />} />
             <Route path="search" element={<SearchResults />} />
           </Route>
           <Route path="/" element={<Scanner />} />

@@ -53,19 +53,17 @@ export default function ModifierArticle() {
 
   const form = useForm<ModifierFormValues>({
     resolver: zodResolver(ModifierSchema),
-    values: article
-      ? {
-          num_inventaire: article.num_inventaire.toString(),
-          categorie: article.categorie.id.toString(),
-          etat: article.etat.id.toString(),
-          id_piece: article.piece.id.toString(),
-          num_bon_commande: article.num_bon_commande,
-          fournisseur: article.fournisseur,
-          code_fournisseur: article.code_fournisseur?.toString() || "",
-          marque: article.marque,
-          num_serie: article.num_serie,
-        }
-      : undefined,
+    values: article ? {
+      num_inventaire: article.num_inventaire.toString(),
+      categorie: article.categorie.id.toString(),
+      etat: article.etat.id.toString(),
+      id_piece: article.piece?.id != null ? article.piece.id.toString() : "Aucune pièce",
+      num_bon_commande: article.num_bon_commande,
+      fournisseur: article.fournisseur,
+      code_fournisseur: article.code_fournisseur?.toString() || "",
+      marque: article.marque,
+      num_serie: article.num_serie,
+    } : undefined
   });
 
   const { data: piece } = usePiece(form.watch("id_piece"), form.watch("id_piece")?.length > 0);
@@ -145,7 +143,7 @@ export default function ModifierArticle() {
           <div className="flex flex-col gap-2.5">
             <FormLabel>Pièce</FormLabel>
             <Card
-              content={piece?.nom || "Aucune pièce"}
+              content={!article?.piece || article?.piece?.id == null ? "Aucune pièce" : article.piece.nom}
               size="small"
               onClick={() => setModeChangementPiece(true)}
               className={cn(piece?.nom ? "" : "text-muted-foreground")}
