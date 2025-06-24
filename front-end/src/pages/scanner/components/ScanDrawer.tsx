@@ -33,7 +33,7 @@ export function ScanDrawer({ children }: ScanDrawerProps) {
   if (isDesktop) {
     return (
       <Dialog open={isOpen} onOpenChange={closeDrawer}>
-        <DialogContent className="sm:max-w-[425px] *:p-4">
+        <DialogContent className="sm:max-w-[425px] *:p-4 max-h-[80vh] overflow-y-auto">
           <DialogTitle className="sr-only">Informations</DialogTitle>
           <DialogDescription className="sr-only">
             {codeScanned}
@@ -52,7 +52,7 @@ export function ScanDrawer({ children }: ScanDrawerProps) {
       activeSnapPoint={snap}
       setActiveSnapPoint={setSnap}
     >
-      <DrawerContent className="h-screen *:pt-4">{children}</DrawerContent>
+      <DrawerContent className="h-screen *:pt-4 overflow-y-auto">{children}</DrawerContent>
     </Drawer>
   );
 }
