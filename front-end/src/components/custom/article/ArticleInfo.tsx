@@ -74,7 +74,7 @@ export default function ArticleInfo() {
           </span>
           <span className="min-w-0">
             <p className="font-bold truncate w-full">N° de commande</p>
-            <p>{article.num_serie}</p>
+            <p>{article.num_bon_commande}</p>
           </span>
         </div>
       </div>

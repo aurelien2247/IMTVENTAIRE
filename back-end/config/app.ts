@@ -11,7 +11,6 @@ import type { ServerConfig } from '@ioc:Adonis/Core/Server'
 import type { LoggerConfig } from '@ioc:Adonis/Core/Logger'
 import type { ProfilerConfig } from '@ioc:Adonis/Core/Profiler'
 import type { ValidatorConfig } from '@ioc:Adonis/Core/Validator'
-import fs from 'fs'
 
 /*
 |--------------------------------------------------------------------------
@@ -128,11 +127,6 @@ export const http: ServerConfig = {
   |
   */
   forceContentNegotiationTo: 'application/json',
-
-  https: {
-    key: fs.readFileSync(Env.get('SSL_KEY', 'cert.key')),
-    cert: fs.readFileSync(Env.get('SSL_CERT', 'cert.crt')),
-  },
 }
 
 /*
@@ -247,7 +241,4 @@ export const validator: ValidatorConfig = {}
 | List of providers to register in the application
 |
 */
-export const providers = [
-  '@adonisjs/core',
-  '@adonisjs/lucid'
-]
+export const providers = ['@adonisjs/core', '@adonisjs/lucid']

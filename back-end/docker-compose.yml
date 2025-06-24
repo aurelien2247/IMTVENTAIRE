@@ -3,12 +3,15 @@ version: '3.8'
 services:
   frontend:
     build:
-      context: ../front-end
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: front-end/Dockerfile
     ports:
       - "5173:80"
+      - "443:443"
     depends_on:
       - backend
+    volumes:
+      - ../ssl:/etc/nginx/ssl:ro
 
   backend:
     build:
@@ -18,12 +21,13 @@ services:
     hostname: imtventaire-backend
     ports:
       - "${PORT:-3333}:3333"
+    volumes:
+      - ../ssl:/app/ssl:ro
 
     env_file:
       - .env
     depends_on:
       - postgres
-    command: npm run dev
     environment:
       - NODE_ENV=production
       - HOST=0.0.0.0
@@ -44,8 +48,8 @@ services:
     command: -p 5433
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./database/insert_table.sql:/docker-entrypoint-initdb.d/01-create-tables.sql
-      - ./database/insert_data.sql:/docker-entrypoint-initdb.d/02-insert-data.sql
+      - ./database/insert_table.sql:/docker-entrypoint-initdb.d/01-create-tables.sql:ro
+      - ./database/insert_data.sql:/docker-entrypoint-initdb.d/02-insert-data.sql:ro
     env_file:
       - .env
 

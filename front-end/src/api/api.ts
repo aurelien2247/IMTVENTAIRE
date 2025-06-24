@@ -1,5 +1,5 @@
 // Configuration de l'API
-export const API_BASE_URL = 'http://localhost:3333'
+export const API_BASE_URL = 'https://10.144.193.151:3333'
 
 // Configuration des headers par défaut
 export const DEFAULT_HEADERS = {

@@ -60,10 +60,7 @@ export default function ModifierArticle() {
           num_inventaire: article.num_inventaire.toString(),
           categorie: article.categorie.id.toString(),
           etat: article.etat.id.toString(),
-          id_piece:
-            article.piece?.id != null
-              ? article.piece.id.toString()
-              : "Aucune pièce",
+          id_piece: article.piece?.id.toString() ?? "",
           num_bon_commande: article.num_bon_commande,
           fournisseur: article.fournisseur,
           code_fournisseur: article.code_fournisseur?.toString() || "",

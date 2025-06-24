@@ -1,14 +1,15 @@
-# Stage 1: Build the React application
 FROM node:18-alpine AS build
 WORKDIR /app
-COPY package*.json ./
+COPY front-end/package*.json ./
 RUN npm install
-COPY . .
+COPY front-end/. .
 RUN npm run build
 
-# Stage 2: Serve the application with Nginx
 FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY front-end/nginx.conf /etc/nginx/conf.d/default.conf
+COPY ssl/server.crt /etc/nginx/ssl/server.crt
+COPY ssl/server.key /etc/nginx/ssl/server.key
 EXPOSE 80
+EXPOSE 443
 CMD ["nginx", "-g", "daemon off;"]
