@@ -9,13 +9,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Card from "@/components/custom/Card";
 import { useNavigate, useParams } from "react-router-dom";
-import { useArticle, useUpdateArticle } from "@/hooks/useArticle";
+import { useArticle, useUpdateArticle, useDeleteArticle } from "@/hooks/useArticle";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import ChoisirPiece from "@/components/custom/piece/ChoisirPiece";
 import { usePiece } from "@/hooks/usePiece";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Trash2 } from "lucide-react";
 
 const ModifierSchema = z.object({
   num_inventaire: z.string().regex(/^\d{5,}$/, {
@@ -51,7 +53,18 @@ export default function ModifierArticle() {
   const { data: article, isLoading } = useArticle(articleId || null);
 
   const updateArticle = useUpdateArticle();
+  const deleteArticleMutation = useDeleteArticle();
   const [modeChangementPiece, setModeChangementPiece] = useState(false);
+
+  const handleDeleteArticle = () => {
+    if (!articleId) return;
+
+    deleteArticleMutation.mutate(articleId, {
+      onSuccess: () => {
+        navigate(-1);
+      }
+    });
+  };
 
   const form = useForm<ModifierFormValues>({
     resolver: zodResolver(ModifierSchema),
@@ -107,7 +120,30 @@ export default function ModifierArticle() {
 
   return (
     <div className="container">
-      <Header title="Modifier article" />
+      <div className="flex items-center gap-2 justify-between">
+        <Header title="Modifier article" />
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive" size="sm" disabled={isLoading} className="flex items-center gap-2">
+              <Trash2/>
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Êtes-vous sûr de vouloir supprimer cet article ?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Cette action est irréversible. L'article sera définitivement supprimé de l'inventaire.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Annuler</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeleteArticle} variant="destructive">
+                Supprimer
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

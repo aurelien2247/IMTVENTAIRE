@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchArticle, fetchArticles, addArticle, addArticlesBatch, updateArticle, fetchCategories, fetchEtats, createCategory } from "@/api/article";
+import { fetchArticle, fetchArticles, addArticle, addArticlesBatch, updateArticle, fetchCategories, fetchEtats, createCategory, deleteArticle } from "@/api/article";
 import { toast } from "sonner";
 
 // Type pour la création d'un article (sans les dates qui sont gérées par la BDD)
@@ -111,6 +111,23 @@ export const useAddCategorie = () => {
         richColors: true
       });
       queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+  });
+};
+
+export const useDeleteArticle = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteArticle,
+    onSuccess: () => {
+      toast.success("Article supprimé avec succès", {
+        position: "top-center",
+        richColors: true
+      });
+      // Invalider le cache des articles pour forcer un rechargement
+      queryClient.invalidateQueries({ queryKey: ["articles"] });
+      queryClient.invalidateQueries({ queryKey: ["article"] });
     },
   });
 };

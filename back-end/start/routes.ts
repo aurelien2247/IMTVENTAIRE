@@ -313,8 +313,27 @@ Route.put('/article/:num_inventaire', 'ArticleController.update')
  *               $ref: '#/components/schemas/Article'
  *       404:
  *         description: Article non trouvé
+ *   delete:
+ *     tags:
+ *       - Articles
+ *     description: Supprime un article par son numéro d'inventaire
+ *     parameters:
+ *       - in: path
+ *         name: num_inventaire
+ *         required: true
+ *         description: Numéro d'inventaire de l'article à supprimer
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Article supprimé avec succès
+ *       404:
+ *         description: Article non trouvé
+ *       500:
+ *         description: Erreur lors de la suppression de l'article
  */
 Route.get('/article/:num_inventaire', 'ArticleController.show')
+Route.delete('/article/:num_inventaire', 'ArticleController.destroy')
 
 Route.post('/categories', 'CategorieController.add')
 Route.get('/categories', 'CategorieController.getAll')

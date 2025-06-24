@@ -103,3 +103,14 @@ export const updateArticle = async (articleId: string, articleData: ArticleData)
 export const fetchEtats = async (): Promise<Etat[]> => {
   return await fetchApi(`/etats`);
 };
+
+/**
+ * Supprime un article par son numéro d'inventaire
+ * @param articleId - Le numéro d'inventaire de l'article à supprimer
+ * @returns Un message de confirmation
+ */
+export const deleteArticle = async (articleId: string): Promise<{ message: string }> => {
+  return await fetchApi(`/article/${articleId}`, {
+    method: "DELETE",
+  });
+};
