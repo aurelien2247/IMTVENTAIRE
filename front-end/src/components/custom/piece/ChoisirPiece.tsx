@@ -45,6 +45,7 @@ export default function ChoisirPiece({ onSelect, onClose }: ChoisirPieceProps) {
   return (
     <div className="container flex flex-col gap-6">
       <Header title="Choisir une pièce" onBack={handleBack} />
+      
       <div>
         {step === 'batiment' && (
           <ListeBatiments onSelect={handleSelectBatiment} />

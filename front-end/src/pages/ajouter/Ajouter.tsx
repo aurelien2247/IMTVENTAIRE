@@ -38,7 +38,9 @@ const AjouterSchema = z.object({
     .string()
     .regex(/.+/, { message: "Veuillez renseigner la catégorie" }),
   etat: z.string(),
-  id_piece: z.string(),
+  id_piece: z
+    .string()
+    .regex(/.+/, { message: "Veuillez sélectionner une pièce" }),
   num_bon_commande: z
     .string()
     .regex(/.+/, { message: "Veuillez renseigner le numéro de commande" }),
@@ -225,8 +227,16 @@ export default function Ajouter() {
               content={piece?.nom || "Aucune pièce"}
               size="small"
               onClick={() => setModeChangementPiece(true)}
-              className={cn(piece?.nom ? "" : "text-muted-foreground")}
+              className={cn(
+                piece?.nom ? "" : "text-muted-foreground",
+                !piece?.nom && form.formState.errors.id_piece ? "border-destructive" : ""
+              )}
             />
+            {form.formState.errors.id_piece && (
+              <p className="text-sm font-medium text-destructive">
+                {form.formState.errors.id_piece.message}
+              </p>
+            )}
           </div>
           <FormField
             control={form.control}
@@ -272,7 +282,7 @@ export default function Ajouter() {
             name="code_fournisseur"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Code fournisseur</FormLabel>
+                <FormLabel>Code fournisseur <i>(Optionnel)</i></FormLabel>
                 <FormControl>
                   <Input type="number" placeholder="8573" {...field} />
                 </FormControl>
