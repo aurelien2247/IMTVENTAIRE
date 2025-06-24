@@ -13,7 +13,9 @@ const ignitor = new Ignitor(__dirname)
 const httpServer = ignitor.httpServer()
 
 httpServer.start((server) => {
-  return https.createServer({ key, cert }, server).listen(process.env.PORT || 3333, () => {
-    console.log('HTTPS server running on port', process.env.PORT || 3333)
-  })
+  return https
+    .createServer({ key, cert }, server)
+    .listen(Number(process.env.PORT) || 3333, '0.0.0.0', () => {
+      console.log('HTTPS server running on port', process.env.PORT || 3333)
+    })
 })
