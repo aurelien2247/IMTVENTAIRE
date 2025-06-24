@@ -332,7 +332,7 @@ export default class ArticleController {
   /**
    * Delete an article by its inventory number
    */
-  public async destroy({ params, response }: HttpContextContract) {
+  public async delete({ params, response }: HttpContextContract) {
     try {
       const article = await Article.find(params.num_inventaire)
 
@@ -344,10 +344,7 @@ export default class ArticleController {
 
       return response.ok({ message: 'Article supprimé avec succès' })
     } catch (error) {
-      console.error(error)
-      return response.internalServerError({
-        error: "Erreur lors de la suppression de l'article",
-      })
+      return response.internalServerError({ error: "Erreur lors de la suppression de l'article" })
     }
   }
 }

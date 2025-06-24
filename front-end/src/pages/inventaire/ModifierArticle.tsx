@@ -9,15 +9,28 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Card from "@/components/custom/Card";
 import { useNavigate, useParams } from "react-router-dom";
-import { useArticle, useUpdateArticle, useDeleteArticle } from "@/hooks/useArticle";
+import {
+  useArticle,
+  useUpdateArticle,
+  useDeleteArticle,
+} from "@/hooks/useArticle";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import ChoisirPiece from "@/components/custom/piece/ChoisirPiece";
 import { usePiece } from "@/hooks/usePiece";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const ModifierSchema = z.object({
   num_inventaire: z.string().regex(/^\d{5,}$/, {
@@ -62,7 +75,7 @@ export default function ModifierArticle() {
     deleteArticleMutation.mutate(articleId, {
       onSuccess: () => {
         navigate(-1);
-      }
+      },
     });
   };
 
@@ -122,27 +135,6 @@ export default function ModifierArticle() {
     <div className="container">
       <div className="flex items-center gap-2 justify-between">
         <Header title="Modifier article" />
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="destructive" size="sm" disabled={isLoading} className="flex items-center gap-2">
-              <Trash2/>
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Êtes-vous sûr de vouloir supprimer cet article ?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Cette action est irréversible. L'article sera définitivement supprimé de l'inventaire.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Annuler</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDeleteArticle} variant="destructive">
-                Supprimer
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
       </div>
       <Form {...form}>
         <form
@@ -312,13 +304,42 @@ export default function ModifierArticle() {
               </span>
             )}
           </div>
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={isLoading || !form.formState.isDirty}
-          >
-            Modifier
-          </Button>
+          <div className="flex flex-col gap-2">
+            <Button
+              type="submit"
+              disabled={isLoading || !form.formState.isDirty}
+            >
+              Modifier
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  disabled={isLoading}
+                  className="flex items-center gap-2"
+                >
+                  Supprimer
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Êtes-vous sûr de vouloir supprimer cet article ?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Cette action est irréversible. L'article sera définitivement
+                    supprimé de l'inventaire.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Annuler</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDeleteArticle}>
+                    Supprimer
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </form>
       </Form>
     </div>

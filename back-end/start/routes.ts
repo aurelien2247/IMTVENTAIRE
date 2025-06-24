@@ -333,7 +333,7 @@ Route.put('/article/:num_inventaire', 'ArticleController.update')
  *         description: Erreur lors de la suppression de l'article
  */
 Route.get('/article/:num_inventaire', 'ArticleController.show')
-Route.delete('/article/:num_inventaire', 'ArticleController.destroy')
+Route.delete('/article/:num_inventaire', 'ArticleController.delete')
 
 Route.post('/categories', 'CategorieController.add')
 Route.get('/categories', 'CategorieController.getAll')
