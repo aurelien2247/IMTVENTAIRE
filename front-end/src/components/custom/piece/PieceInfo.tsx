@@ -47,9 +47,7 @@ export default function PieceInfo() {
   const saveScan = async () => {
     saveScanMutate();
     resetArticlesScanned();
-    // if (codeScanned === piece?.nom) {
-      setCodeScanned(null);
-    // }
+    setCodeScanned(null);
   };
 
   const resetArticlesScanned = () => {
