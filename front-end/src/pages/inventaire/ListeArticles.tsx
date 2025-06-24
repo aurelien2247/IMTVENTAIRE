@@ -1,16 +1,36 @@
 import { useParams } from "react-router-dom";
 import { SearchBar } from "@/components/custom/SearchBar";
 import Header, { HeaderSkeleton } from "@/components/custom/Header";
-import ArticleCard, { ArticleCardSkeleton } from "@/components/custom/article/ArticleCard";
+import ArticleCard, {
+  ArticleCardSkeleton,
+} from "@/components/custom/article/ArticleCard";
 import NotFound from "../common/NotFound";
 import { useArticles } from "@/hooks/useArticle";
 import { usePieces } from "@/hooks/usePiece";
 import Error from "../common/Error";
+import ArticleList from "@/components/custom/article/ArticleList";
+import type { Article } from "@/types";
+
+const ArticleCardWithLink = (props: { article: Article }) => (
+  <ArticleCard
+    key={props.article.num_inventaire}
+    article={props.article}
+    link={`/inventaire/${props.article.num_inventaire}/modifier`}
+  />
+);
 
 export default function ListeArticles() {
   const { etageId, pieceId } = useParams();
-  const { data: articles, isLoading: isLoadingArticles, error: errorArticles } = useArticles(pieceId);
-  const { data: pieces, isLoading: isLoadingPieces, error: errorPieces } = usePieces(etageId);
+  const {
+    data: articles,
+    isLoading: isLoadingArticles,
+    error: errorArticles,
+  } = useArticles(pieceId);
+  const {
+    data: pieces,
+    isLoading: isLoadingPieces,
+    error: errorPieces,
+  } = usePieces(etageId);
 
   const piece = pieces?.find((p) => p.id === Number(pieceId));
   const headerTitle = `${piece?.nom?.toUpperCase() ?? ""}`;
@@ -53,15 +73,7 @@ export default function ListeArticles() {
     <div className="container">
       <Header title={headerTitle} />
       <SearchBar />
-      <div className="flex flex-col gap-2">
-        {articles.map((article) => (
-          <ArticleCard
-            key={article.num_inventaire}
-            article={article}
-            link={`/inventaire/${article.num_inventaire}/modifier`}
-          />
-        ))}
-      </div>
+      <ArticleList articles={articles} ArticleComponent={ArticleCardWithLink} />
     </div>
   );
 }
