@@ -1,15 +1,23 @@
 import type { Article } from "@/types";
-import { useNavigate } from "react-router-dom";
 import ArticleItem, { ArticleItemSkeleton } from "./ArticleItem";
 import { PackageX } from "lucide-react";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
 
 interface ArticleListProps {
   articles?: Article[];
+  ArticleComponent?: React.ComponentType<{ article: Article }>;
 }
 
-export default function ArticleList({ articles }: ArticleListProps) {
-  const navigate = useNavigate();
-
+export default function ArticleList({
+  articles,
+  ArticleComponent = ArticleItem,
+}: ArticleListProps) {
   if (!articles || articles.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 py-8">
@@ -18,19 +26,55 @@ export default function ArticleList({ articles }: ArticleListProps) {
       </div>
     );
   }
-  
+
+  /**
+   * Groupe les articles par leur catégorie
+   * @param articles - Les articles à grouper
+   * @returns Un objet où les clés sont les noms des catégories et les valeurs sont les articles correspondants
+   */
+  const groupArticlesByCategory = (
+    articles: Article[]
+  ): Record<string, Article[]> => {
+    return articles.reduce((groupedArticles, article) => {
+      const categoryName = article.categorie.nom;
+
+      // Crée un tableau vide pour la catégorie si elle n'existe pas encore
+      if (!groupedArticles[categoryName]) {
+        groupedArticles[categoryName] = [];
+      }
+
+      // Ajoute l'article au tableau de sa catégorie
+      groupedArticles[categoryName].push(article);
+
+      return groupedArticles;
+    }, {} as Record<string, Article[]>);
+  };
+
+  const grouped = groupArticlesByCategory(articles);
+
   return (
     <div className="flex flex-col gap-6">
-      <p className="text-muted-foreground">Articles dans la pièce</p>
-      {articles.map((article) => (
-        <div
-          key={article.num_inventaire}
-          onClick={() => navigate(`/inventaire/${article.num_inventaire}/modifier`)}
-          className="cursor-pointer hover:bg-muted/50 p-2 -m-2 rounded-md transition-colors"
-        >
-          <ArticleItem article={article} />
-        </div>
-      ))}
+      <Accordion type="multiple" className="w-full">
+        {Object.entries(grouped).map(([categorieNom, articles]) => (
+          <AccordionItem key={categorieNom} value={categorieNom}>
+            <AccordionTrigger>
+              <div className="flex items-center gap-2 justify-between w-full">
+                <p>{categorieNom}</p>
+                <Badge variant="secondary">{articles.length}</Badge>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="flex flex-col gap-4">
+                {articles.map((article) => (
+                  <div key={article.num_inventaire}>
+                    <ArticleComponent article={article} />
+                  </div>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
     </div>
   );
 }

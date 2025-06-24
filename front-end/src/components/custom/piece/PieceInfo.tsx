@@ -47,9 +47,7 @@ export default function PieceInfo() {
   const saveScan = async () => {
     saveScanMutate();
     resetArticlesScanned();
-    // if (codeScanned === piece?.nom) {
-      setCodeScanned(null);
-    // }
+    setCodeScanned(null);
   };
 
   const resetArticlesScanned = () => {
@@ -97,7 +95,10 @@ export default function PieceInfo() {
       {scanMode && piece ? (
         <ScanMode piece={piece} articlesScanned={articlesScanned} />
       ) : (
-        <ArticleList articles={piece?.articles} />
+        <div className="flex flex-col gap-6">
+          <p className="text-muted-foreground">Articles dans la pièce</p>
+          <ArticleList articles={piece?.articles} />
+        </div>
       )}
       <ScanConfirmDialog open={openConfirmScan} onConfirm={handleConfirmScan} />
       <ScanPieceButton onClick={handleButtonScan} />
