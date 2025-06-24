@@ -22,7 +22,7 @@ export default class EtageController {
       const etage = await Etage.find(params.id)
 
       if (!etage) {
-        return response.notFound({ message: 'Etage non trouvés' })
+        return response.notFound({ error: 'Etage non trouvés' })
       }
 
       return response.ok(etage)
@@ -39,6 +39,7 @@ export default class EtageController {
       const etages = await Etage.query()
         .where('id_batiment', params.id_batiment)
         .preload('batiment')
+        .orderByRaw(`CASE WHEN nom = 'Rez-de-chaussée' THEN 0 ELSE 1 END, nom ASC`)
 
       return response.ok(etages)
     } catch (error) {

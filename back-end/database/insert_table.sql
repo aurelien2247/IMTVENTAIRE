@@ -4,20 +4,11 @@ drop table if exists etat;
 drop table if exists piece;
 drop table if exists etage;
 drop table if exists batiment;
-drop table if exists zone;
 
-create table zone (
-	id SERIAL PRIMARY KEY,
-    nom VARCHAR(100) NOT NULL
-);
 
 create table batiment (
 	id SERIAL PRIMARY KEY,
-    nom VARCHAR(100) NOT null,
-    id_zone INTEGER NOT NULL,
-    CONSTRAINT fk_zone
-        FOREIGN KEY (id_zone)
-        REFERENCES zone(id)
+    nom VARCHAR(100) NOT null
 );
 
 create table etage (
@@ -51,15 +42,17 @@ create table etat (
 );
 
 create table article (
-	num_inventaire VARCHAR(10) PRIMARY KEY,
+	num_inventaire VARCHAR(20) PRIMARY KEY,
     categorie INTEGER,
     etat INTEGER not null,
     id_piece INTEGER,
     num_serie VARCHAR(100),
     num_bon_commande VARCHAR(100),
     fournisseur VARCHAR(100),
-    code_fournisseur INTEGER,
+    code_fournisseur BIGINT,
     marque VARCHAR(100),
+    date_creation TIMESTAMP DEFAULT NOW(),
+    date_modification TIMESTAMP DEFAULT NOW(),
     CONSTRAINT fk_piece
         FOREIGN KEY (id_piece)
         REFERENCES piece(id),
@@ -70,3 +63,17 @@ create table article (
         FOREIGN KEY (etat)
         REFERENCES etat(id)
 );
+
+-- Trigger pour mettre à jour automatiquement date_modification
+CREATE OR REPLACE FUNCTION maj_date_modification_article()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.date_modification = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_maj_date_modif_article
+BEFORE UPDATE ON article
+FOR EACH ROW
+EXECUTE FUNCTION maj_date_modification_article();

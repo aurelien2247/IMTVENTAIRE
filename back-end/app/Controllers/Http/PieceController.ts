@@ -1,4 +1,5 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Article from 'App/Models/Article'
 import Piece from 'App/Models/Piece'
 
 export default class PieceController {
@@ -22,7 +23,7 @@ export default class PieceController {
       const piece = await Piece.find(params.id)
 
       if (!piece) {
-        return response.notFound({ message: 'Pièce non trouvée' })
+        return response.notFound({ error: 'Pièce non trouvée' })
       }
 
       return response.ok(piece)
@@ -36,7 +37,10 @@ export default class PieceController {
    */
   public async getByEtage({ params, response }: HttpContextContract) {
     try {
-      const pieces = await Piece.query().where('id_etage', params.id_etage).preload('etage')
+      const pieces = await Piece.query()
+        .where('id_etage', params.id_etage)
+        .preload('etage')
+        .orderBy('nom', 'asc')
 
       return response.ok(pieces)
     } catch (error) {
@@ -60,12 +64,31 @@ export default class PieceController {
         .first()
 
       if (!piece) {
-        return response.notFound({ message: 'Pièce non trouvée' })
+        return response.notFound({ error: 'Pièce non trouvée' })
       }
 
       return response.ok(piece)
     } catch (error) {
-      return response.internalServerError({ error: 'Erreur lors de la recherche de la pièce' })
+      return response.internalServerError({ error: error.message })
+    }
+  }
+
+  public async saveScan({ params, request, response }: HttpContextContract) {
+    try {
+      const piece = await Piece.find(params.id)
+      const articlesId = request.body() as string[]
+
+      const articles = await Article.query().whereIn('num_inventaire', articlesId)
+
+      if (!piece) {
+        return response.notFound({ error: 'Pièce non trouvée' })
+      }
+
+      await piece.related('articles').saveMany(articles)
+
+      return response.ok({ message: 'Articles sauvegardés avec succès' })
+    } catch (error) {
+      return response.internalServerError({ error: 'Erreur lors de la sauvegarde du scan' })
     }
   }
 }

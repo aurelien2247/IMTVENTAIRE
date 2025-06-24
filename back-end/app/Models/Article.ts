@@ -1,4 +1,5 @@
 import { BaseModel, column, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
+import { DateTime } from 'luxon'
 import Piece from './Piece'
 import Categorie from './Categorie'
 import Etat from './Etat'
@@ -50,4 +51,10 @@ export default class Article extends BaseModel {
     serializeAs: 'etat',
   })
   public etatRelation: BelongsTo<typeof Etat>
+
+  @column.dateTime()
+  public date_creation: DateTime
+
+  @column.dateTime()
+  public date_modification: DateTime
 }

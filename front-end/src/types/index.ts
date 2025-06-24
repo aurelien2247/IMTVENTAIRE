@@ -6,32 +6,12 @@ export interface Etage {
   nom: string;
   batiment: Batiment;
 }
-
-/**
- * Représente une catégorie de bâtiment
- */
-export interface Categorie {
-  id: number;
-  nom: string;
-  batiments: Batiment[];
-}
-
 /**
  * Représente un bâtiment
  */
 export interface Batiment {
   id: number;
   nom: string;
-  zone: Zone;
-}
-
-/**
- * Représente une zone
- */
-export interface Zone {
-  id: number;
-  nom: string;
-  batiments: Batiment[];
 }
 
 /**
@@ -54,6 +34,11 @@ export interface Article {
   num_bon_commande: string;
   etat: Etat;
   piece: Piece;
+  fournisseur: string;
+  code_fournisseur: number;
+  marque: string;
+  date_creation: string;
+  date_modification: string;
 }
 
 export interface Etat {

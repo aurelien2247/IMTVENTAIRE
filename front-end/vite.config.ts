@@ -19,4 +19,7 @@ export default defineConfig({
     },
     host: true,
   },
+  optimizeDeps: {
+    exclude: ["react-barcode-scanner"],
+  }
 })

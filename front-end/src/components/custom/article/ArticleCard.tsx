@@ -12,9 +12,11 @@ export default function ArticleCard({ article, link }: Props) {
   const content = (
     <div className="flex flex-col gap-4">
       <span className="flex flex-col">
-        <div className="flex items-center gap-2">
-          <ArticleEtat etat={article.etat} />
-          <p>{article.categorie.nom}</p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <ArticleEtat etat={article.etat} />
+            <p>{article.categorie.nom}</p>
+          </div>
         </div>
         <p className="text-sm text-muted-foreground">
           #{article.num_inventaire}
@@ -23,12 +25,12 @@ export default function ArticleCard({ article, link }: Props) {
       <div className="flex gap-4">
         <span>
           <p className="text-sm">Numéro de série</p>
-          <p className="text-sm text-muted-foreground">{article.num_serie}</p>
+          <p className="text-sm text-muted-foreground">{article.num_serie || "Non renseigné"}</p>
         </span>
         <span>
           <p className="text-sm">N° de commande</p>
           <p className="text-sm text-muted-foreground">
-            {article.num_bon_commande}
+            {article.num_bon_commande || "Non renseigné"}
           </p>
         </span>
       </div>

@@ -10,7 +10,7 @@ import ListeArticles from './pages/inventaire/ListeArticles'
 import ModifierArticle from './pages/inventaire/ModifierArticle'
 import SearchResults from './pages/SearchResults'
 
-function App() {
+export default function App() {
   return (
     <>
       <Layout>
@@ -20,16 +20,14 @@ function App() {
             <Route path=":batimentId" element={<ListeEtages />} />
             <Route path=":batimentId/:etageId" element={<ListePieces />} />
             <Route path=":batimentId/:etageId/:pieceId" element={<ListeArticles />} />
-            <Route path=":batimentId/:etageId/:pieceId/:articleId" element={<ModifierArticle />} />
+            <Route path=":articleId/modifier" element={<ModifierArticle />} />
+            <Route path="search" element={<SearchResults />} />
           </Route>
           <Route path="/" element={<Scanner />} />
           <Route path="/ajouter" element={<Ajouter />} />
-          <Route path="/search" element={<SearchResults />} />
         </Routes>
       </Layout>
       <NavBar />
     </>
   )
 }
-
-export default App

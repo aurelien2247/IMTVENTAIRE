@@ -7,7 +7,7 @@ export default class BatimentController {
    */
   public async index({ response }: HttpContextContract) {
     try {
-      const batiment = await Batiment.all()
+      const batiment = await Batiment.query().orderBy('nom', 'asc')
       return response.ok(batiment)
     } catch (error) {
       return response.internalServerError({ error: 'Erreur lors de la recherche des bâtiments' })

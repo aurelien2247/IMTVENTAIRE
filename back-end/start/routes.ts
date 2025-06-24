@@ -33,21 +33,8 @@ import './swagger'
  *         description: Message de bienvenue
  */
 Route.get('/', async () => {
-  return { hello: 'world' }
+  return { IMT: 'ventaire' }
 })
-
-/**
- * @swagger
- * /zones:
- *   get:
- *     tags:
- *       - Zones
- *     description: Récupère la liste de toutes les zones avec leurs bâtiments
- *     responses:
- *       200:
- *         description: Liste des zones avec leurs bâtiments
- */
-Route.get('/zones', 'ZoneController.index')
 
 /**
  * @swagger
@@ -120,7 +107,69 @@ Route.get('/etages/:id_etage', 'PieceController.getByEtage')
  *       200:
  *         description: Liste des articles de la pièce
  */
-Route.get('/pieces/:id', 'ArticleController.getByPiece')
+Route.get('/pieces/articles/:id', 'ArticleController.getByPiece')
+
+/**
+ * @swagger
+ * /pieces/{id}:
+ *   get:
+ *     tags:
+ *       - Pièces
+ *     description: Récupère une pièce spécifique
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Identifiant de la pièce
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Pièce trouvée
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Piece'
+ *       404:
+ *         description: Pièce non trouvée
+ */
+Route.get('/pieces/:id', 'PieceController.show')
+
+/**
+ * @swagger
+ * /pieces/{id}/scan:
+ *   post:
+ *     tags:
+ *       - Pièces
+ *     description: Sauvegarde les articles dans une pièce
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Identifiant de la pièce
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
+ *             items:
+ *               type: object
+ *               properties:
+ *                 num_inventaire:
+ *                   type: string
+ *                   description: Numéro d'inventaire de l'article
+ *     responses:
+ *       200:
+ *         description: Articles sauvegardés avec succès
+ *       404:
+ *         description: Pièce non trouvée
+ *       500:
+ *         description: Erreur lors de la sauvegarde du scan
+ */
+Route.post('/pieces/:id/scan', 'PieceController.saveScan')
 
 /**
  * @swagger
@@ -186,6 +235,7 @@ Route.get('/pieces/nom/:nom', 'PieceController.getByName')
  */
 Route.get('/articles', 'ArticleController.index')
 Route.post('/articles', 'ArticleController.store')
+Route.post('/articles/batch', 'ArticleController.storeBatch')
 
 /**
  * @swagger
@@ -239,7 +289,7 @@ Route.post('/articles', 'ArticleController.store')
  *       400:
  *         description: Données invalides
  */
-Route.put('/articles/:num_inventaire', 'ArticleController.update')
+Route.put('/article/:num_inventaire', 'ArticleController.update')
 /**
  * @swagger
  * /article/{num_inventaire}:
@@ -275,18 +325,19 @@ Route.get('/categories', 'CategorieController.getAll')
  *   get:
  *     tags:
  *       - Recherche
- *     description: Recherche des articles par numéro d'inventaire ou nom de pièce
+ *     description: Recherche des articles par numéro d'inventaire, nom de pièce, nom de catégorie, marque ou fournisseur
  *     parameters:
  *       - in: query
  *         name: query
  *         required: true
- *         description: Terme de recherche (numéro d'inventaire ou nom de pièce)
+ *         description: Terme de recherche (numéro d'inventaire, nom de pièce, nom de catégorie, marque ou fournisseur)
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: Liste des articles correspondant à la recherche
+ *         description: Liste des articles et salles correspondant à la recherche
  *       400:
  *         description: Paramètre de recherche manquant
  */
 Route.get('/search', 'ArticleController.search')
+Route.get('/etats', 'EtatController.getAll')

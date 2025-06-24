@@ -142,6 +142,6 @@
   }
 
   .container {
-    @apply px-8 py-12 flex flex-col gap-4;
+    @apply px-8 py-12 flex flex-col gap-4 mx-auto;
   }
 }

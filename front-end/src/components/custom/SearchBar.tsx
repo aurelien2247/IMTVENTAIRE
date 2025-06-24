@@ -1,61 +1,61 @@
 import { Search } from "lucide-react";
-import { useState, useEffect, type ComponentProps, FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import type { ComponentProps } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAtom } from "jotai";
+import { useEffect } from "react";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "../ui/input";
+import { searchQueryAtom } from "@/lib/atoms";
 
 interface Props extends ComponentProps<"form"> {
-  label: string;
-  onSearch?: (query: string) => void;
-  defaultValue?: string;
+  label?: string;
 }
 
-export function SearchBar({ label, onSearch, defaultValue = "", ...props }: Props) {
-  const [query, setQuery] = useState(defaultValue);
-  const [debouncedQuery, setDebouncedQuery] = useState(defaultValue);
+export function SearchBar({ label = "Rechercher", ...props }: Props) {
   const navigate = useNavigate();
+  const [query, setQuery] = useAtom(searchQueryAtom);
+  const location = useLocation();
 
-  // Debounce the search query
+  /**
+   * Si on n'est pas sur la page de recherche, on réinitialise la recherche
+   */
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedQuery(query);
-    }, 300);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [query]);
-
-  // Trigger search when debounced query changes
-  useEffect(() => {
-    if (debouncedQuery.trim()) {
-      if (onSearch) {
-        onSearch(debouncedQuery);
-      } else {
-        // Navigate to search results page if no custom handler is provided
-        navigate(`/search?q=${encodeURIComponent(debouncedQuery)}`);
-      }
+    if (!location.pathname.includes("/inventaire/search")) {
+      setQuery("");
     }
-  }, [debouncedQuery, onSearch, navigate]);
+  }, [location.pathname, setQuery]);
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    // Form submission is now just for handling Enter key press
-    // The actual search is triggered by the useEffect above
+  /**
+   * Dès que l'on commence à taper, on redirige vers la page de recherche
+   */
+  useEffect(() => {
+    if (query.trim().length === 1) {
+      redirectToSearch();
+    }
+  }, [query, location.pathname, navigate]);
+
+  /**
+   * Redirige vers la page de résultats si une valeur est fournie
+   */
+  const redirectToSearch = () => {
+    if (query.trim()) {
+      navigate(`/inventaire/search?q=${encodeURIComponent(query)}`);
+    } 
   };
 
   return (
-    <form {...props} className="relative" onSubmit={handleSubmit}>
+    <form {...props} className="relative" onSubmit={redirectToSearch}>
       <Label htmlFor="search" className="sr-only">
         {label}
       </Label>
-      <Input 
-        id="search" 
-        placeholder={label} 
-        className="pl-8" 
+      <Input
+        id="search"
+        placeholder={label}
+        className="pl-8"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        autoFocus
       />
       <Search className="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 select-none opacity-50" />
     </form>

@@ -8,59 +8,102 @@ import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Card from "@/components/custom/Card";
-import { toast } from "sonner";
-import { useParams } from "react-router-dom";
-import { EtatEnum } from "@/types";
+import { useNavigate, useParams } from "react-router-dom";
+import { useArticle, useUpdateArticle } from "@/hooks/useArticle";
+import { cn } from "@/lib/utils";
+import { useState } from "react";
+import ChoisirPiece from "@/components/custom/piece/ChoisirPiece";
+import { usePiece } from "@/hooks/usePiece";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
 const ModifierSchema = z.object({
-  numInventaire: z.number(),
-  categorie: z.string(),
-  piece: z.string(),
-  numCommande: z.string(),
-  fournisseur: z.string(),
-  codeFournisseur: z.string(),
-  marque: z.string(),
+  num_inventaire: z.string().regex(/^\d{5,}$/, {
+    message:
+      "Veuillez renseigner un numéro d'inventaire valide (5 chiffres minimum)",
+  }),
+  num_serie: z
+    .string()
+    .regex(/.+/, { message: "Veuillez renseigner le numéro de série" }),
+  categorie: z
+    .string()
+    .min(1, { message: "Veuillez sélectionner une catégorie" }),
+  etat: z.string().min(1, { message: "Veuillez sélectionner un état" }),
+  id_piece: z.string().min(1, { message: "Veuillez sélectionner une pièce" }),
+  num_bon_commande: z
+    .string()
+    .regex(/.+/, { message: "Veuillez renseigner le numéro de commande" }),
+  fournisseur: z
+    .string()
+    .regex(/.+/, { message: "Veuillez renseigner le nom du fournisseur" }),
+  code_fournisseur: z.string().optional(),
+  marque: z
+    .string()
+    .regex(/.+/, { message: "Veuillez renseigner une marque valide" }),
 });
+
+type ModifierFormValues = z.infer<typeof ModifierSchema>;
 
 export default function ModifierArticle() {
   const { articleId } = useParams();
-  const form = useForm<z.infer<typeof ModifierSchema>>({
+  const navigate = useNavigate();
+
+  const { data: article, isLoading } = useArticle(articleId || null);
+
+  const updateArticle = useUpdateArticle();
+  const [modeChangementPiece, setModeChangementPiece] = useState(false);
+
+  const form = useForm<ModifierFormValues>({
     resolver: zodResolver(ModifierSchema),
+    values: article
+      ? {
+          num_inventaire: article.num_inventaire.toString(),
+          categorie: article.categorie.id.toString(),
+          etat: article.etat.id.toString(),
+          id_piece:
+            article.piece?.id != null
+              ? article.piece.id.toString()
+              : "Aucune pièce",
+          num_bon_commande: article.num_bon_commande,
+          fournisseur: article.fournisseur,
+          code_fournisseur: article.code_fournisseur?.toString() || "",
+          marque: article.marque,
+          num_serie: article.num_serie,
+        }
+      : undefined,
   });
 
-  function onSubmit(data: z.infer<typeof ModifierSchema>) {
-    toast("You submitted the following values: " + data);
+  const { data: piece } = usePiece(
+    form.watch("id_piece"),
+    form.watch("id_piece")?.length > 0
+  );
+
+  const onSubmit = async (data: ModifierFormValues) => {
+    if (!articleId) return;
+
+    updateArticle.mutate(
+      { articleId, data },
+      {
+        onSuccess: () => {
+          navigate(-1);
+        },
+      }
+    );
+  };
+
+  const handleSelectPiece = (pieceId: string) => {
+    form.setValue("id_piece", pieceId, { shouldDirty: true });
+    setModeChangementPiece(false);
+  };
+
+  if (modeChangementPiece) {
+    return (
+      <ChoisirPiece
+        onSelect={handleSelectPiece}
+        onClose={() => setModeChangementPiece(false)}
+      />
+    );
   }
-
-  const categories = [
-    {
-      value: "chaise",
-      label: "Chaise",
-    },
-    {
-      value: "table",
-      label: "Table",
-    },
-    {
-      value: "ordinateur",
-      label: "Ordinateur",
-    },
-    {
-      value: "souris",
-      label: "Souris",
-    },
-    {
-      value: "clavier",
-      label: "Clavier",
-    },
-  ];
-
-  const etats = Object.keys(EtatEnum)
-    .filter((key) => isNaN(Number(key)))
-    .map((key) => ({
-      value: key,
-      label: key,
-    }));
 
   return (
     <div className="container">
@@ -72,37 +115,79 @@ export default function ModifierArticle() {
         >
           <FormField
             control={form.control}
-            name="numInventaire"
+            disabled={isLoading}
+            name="num_inventaire"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Numéro d'inventaire</FormLabel>
                 <FormControl>
-                  <Input placeholder="12345" {...field} disabled />
+                  <Input {...field} disabled />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="categorie"
+            disabled={isLoading}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Catégorie</FormLabel>
+                <FormControl>
+                  <Combobox
+                    type="categorie"
+                    disabled={isLoading}
+                    status={article?.categorie}
+                    onSelectedStatusChange={(status) => {
+                      field.onChange(status?.id.toString() || "");
+                    }}
+                    allowCreate={true}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
           <div className="flex flex-col gap-2.5">
-            <FormLabel>Catégorie</FormLabel>
-            <Combobox options={categories} noOptionText="Aucune catégorie" />
-          </div>
-          <div className="flex flex-col gap-2.5">
             <FormLabel>Pièce</FormLabel>
             <Card
-              content="Aucune pièce"
+              content={
+                !article?.piece || article?.piece?.id == null
+                  ? "Aucune pièce"
+                  : article.piece.nom
+              }
               size="small"
-              link="/piece"
-              className="text-muted-foreground "
+              onClick={() => setModeChangementPiece(true)}
+              className={cn(piece?.nom ? "" : "text-muted-foreground")}
+              disabled={isLoading}
             />
-          </div>
-          <div className="flex flex-col gap-2.5">
-            <FormLabel>Etat</FormLabel>
-            <Combobox options={etats} noOptionText="Aucun état" />
           </div>
           <FormField
             control={form.control}
-            name="numCommande"
+            name="etat"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>État</FormLabel>
+                <FormControl>
+                  <Combobox
+                    type="etat"
+                    disabled={isLoading}
+                    status={article?.etat}
+                    onSelectedStatusChange={(status) => {
+                      field.onChange(status?.id.toString() || "");
+                    }}
+                    noOptionText="Aucun état"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="num_bon_commande"
+            disabled={isLoading}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Numéro de commande</FormLabel>
@@ -115,7 +200,22 @@ export default function ModifierArticle() {
           />
           <FormField
             control={form.control}
+            name="num_serie"
+            disabled={isLoading}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Numéro de série</FormLabel>
+                <FormControl>
+                  <Input placeholder="FUDGZ67328EYGH" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="fournisseur"
+            disabled={isLoading}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Fournisseur</FormLabel>
@@ -128,7 +228,8 @@ export default function ModifierArticle() {
           />
           <FormField
             control={form.control}
-            name="codeFournisseur"
+            name="code_fournisseur"
+            disabled={isLoading}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Code fournisseur</FormLabel>
@@ -141,7 +242,8 @@ export default function ModifierArticle() {
           />
           <FormField
             control={form.control}
-            name="numInventaire"
+            name="marque"
+            disabled={isLoading}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Marque</FormLabel>
@@ -152,17 +254,33 @@ export default function ModifierArticle() {
               </FormItem>
             )}
           />
-          <div className="flex gap-4 justify-between *:text-sm">
-            <span>
-              <p className="font-bold">Dernier inventaire</p>
-              <p>02/03/2025</p>
-            </span>
-            <span>
-              <p className="font-bold">Crée le</p>
-              <p>13/01/2019</p>
-            </span>
+          <div className="w-full flex justify-between gap-4">
+            {article?.date_modification && (
+              <span>
+                <p className="font-bold">Dernière modification</p>
+                <p>
+                  {format(new Date(article.date_modification), "dd/MM/yyyy", {
+                    locale: fr,
+                  })}
+                </p>
+              </span>
+            )}
+            {article?.date_creation && (
+              <span>
+                <p className="font-bold">Créé le</p>
+                <p>
+                  {format(new Date(article.date_creation), "dd/MM/yyyy", {
+                    locale: fr,
+                  })}
+                </p>
+              </span>
+            )}
           </div>
-          <Button type="submit" className="w-full">
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={isLoading || !form.formState.isDirty}
+          >
             Modifier
           </Button>
         </form>

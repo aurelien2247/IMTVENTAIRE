@@ -1,15 +1,16 @@
 import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Skeleton } from "../ui/skeleton";
 
 interface Props {
   title: string;
+  onBack?: () => void;
 }
 
-export default function Header({ title }: Props) {
+export default function Header({ title, onBack }: Props) {
   return (
     <div className="flex items-center gap-2">
-      <BackButton />
+      <BackButton onBack={onBack} />
       <h1>{title}</h1>
     </div>
   );
@@ -24,10 +25,25 @@ export function HeaderSkeleton() {
   );
 }
 
-export function BackButton() {
-  return window.location.pathname.split("/").filter(Boolean).length > 1 ? (
-    <Link to=".." relative="path" className="hover:opacity-70 transition-opacity">
-      <ArrowLeft />
-    </Link>
+interface BackButtonProps {
+  onBack?: () => void;
+}
+
+export function BackButton({ onBack }: BackButtonProps) {
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    } else {
+      navigate(-1);
+    }
+  };
+  return onBack ||
+    window.location.pathname.split("/").filter(Boolean).length > 1 ? (
+    <ArrowLeft
+      onClick={handleBack}
+      className="hover:opacity-70 transition-opacity cursor-pointer"
+    />
   ) : null;
 }

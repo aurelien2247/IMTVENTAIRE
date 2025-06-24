@@ -1,18 +1,28 @@
 import { Button } from "@/components/ui/button";
 import ArticleEtat, { ArticleEtatSkeleton } from "./ArticleEtat";
 import { cn } from "@/lib/utils";
-import type { Article } from "@/types";
+import type { Article, Piece } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useNavigate } from "react-router-dom";
 
 interface ArticleItemProps {
   article: Article;
   isScanned?: boolean;
+  piece?: Piece;
 }
 
 export default function ArticleItem({
   article,
   isScanned = true,
 }: ArticleItemProps) {
+  const navigate = useNavigate();
+
+  const handleModifierClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    navigate(`/inventaire/${article.num_inventaire}/modifier`);
+  };
+
   return (
     <div
       key={article.num_inventaire}
@@ -27,16 +37,20 @@ export default function ArticleItem({
           #{article.num_inventaire}
         </small>
       </div>
-      <Button variant="secondary">Modifier</Button>
+      <Button
+        variant="secondary"
+        onClick={handleModifierClick}
+        disabled={!article.num_inventaire}
+      >
+        Modifier
+      </Button>
     </div>
   );
 }
 
 export function ArticleItemSkeleton() {
   return (
-    <div
-      className="flex justify-between gap-4 items-center"
-    >
+    <div className="flex justify-between gap-4 items-center">
       <div>
         <span className="flex items-center gap-2">
           <ArticleEtatSkeleton />
@@ -46,7 +60,9 @@ export function ArticleItemSkeleton() {
           #<Skeleton className="h-3.5 w-24" />
         </small>
       </div>
-      <Button variant="secondary" disabled>Modifier</Button>
+      <Button variant="secondary" disabled>
+        Modifier
+      </Button>
     </div>
   );
 }

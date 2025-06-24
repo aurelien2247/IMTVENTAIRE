@@ -3,19 +3,23 @@ import { SearchBar } from "@/components/custom/SearchBar";
 import Header, { HeaderSkeleton } from "@/components/custom/Header";
 import ArticleCard, { ArticleCardSkeleton } from "@/components/custom/article/ArticleCard";
 import NotFound from "../common/NotFound";
-import { useArticles } from "@/hooks/useArticles";
+import { useArticles } from "@/hooks/useArticle";
+import { usePieces } from "@/hooks/usePiece";
 import Error from "../common/Error";
 
 export default function ListeArticles() {
-  const { batimentId, etageId, pieceId } = useParams();
-  const { data: articles, isLoading, error } = useArticles(pieceId);
-  const headerTitle = `Salle ${articles?.[0]?.piece.nom.toUpperCase()}`;
+  const { etageId, pieceId } = useParams();
+  const { data: articles, isLoading: isLoadingArticles, error: errorArticles } = useArticles(pieceId);
+  const { data: pieces, isLoading: isLoadingPieces, error: errorPieces } = usePieces(etageId);
 
-  if (isLoading) {
+  const piece = pieces?.find((p) => p.id === Number(pieceId));
+  const headerTitle = `${piece?.nom?.toUpperCase() ?? ""}`;
+
+  if (isLoadingArticles || isLoadingPieces) {
     return (
       <div className="container">
         <HeaderSkeleton />
-        <SearchBar label="Rechercher" />
+        <SearchBar />
         <div className="flex flex-col gap-2">
           {Array.from({ length: 10 }).map((_, index) => (
             <ArticleCardSkeleton key={index} />
@@ -25,11 +29,11 @@ export default function ListeArticles() {
     );
   }
 
-  if (error) {
+  if (errorArticles || errorPieces) {
     return (
       <div className="container">
         <Header title="Salle introuvable" />
-        <SearchBar label="Rechercher" />
+        <SearchBar />
         <Error />
       </div>
     );
@@ -39,7 +43,7 @@ export default function ListeArticles() {
     return (
       <div className="container">
         <Header title={headerTitle} />
-        <SearchBar label="Rechercher" />
+        <SearchBar />
         <NotFound message="Aucun article trouvé" />
       </div>
     );
@@ -48,13 +52,13 @@ export default function ListeArticles() {
   return (
     <div className="container">
       <Header title={headerTitle} />
-      <SearchBar label="Rechercher" />
+      <SearchBar />
       <div className="flex flex-col gap-2">
         {articles.map((article) => (
           <ArticleCard
             key={article.num_inventaire}
             article={article}
-            link={`/inventaire/${batimentId}/${etageId}/${pieceId}/${article.num_inventaire}`}
+            link={`/inventaire/${article.num_inventaire}/modifier`}
           />
         ))}
       </div>

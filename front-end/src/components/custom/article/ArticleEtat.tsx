@@ -24,13 +24,16 @@ export default function ArticleEtat({ etat }: ArticleEtatProps) {
   };
 
   return (
-    <div
-      className={`w-1.5 aspect-square rounded-full ${getEtatColor(etat)}`}
-      title={EtatEnum[etat.id]}
-    />
+    <div className="flex items-center gap-2">
+      <div
+        className={`w-2.5 h-2.5 rounded-full ${getEtatColor(etat)}`}
+        title={EtatEnum[etat.id]}
+        aria-label={etat.nom}
+      />
+    </div>
   );
 }
 
 export function ArticleEtatSkeleton() {
-  return <Skeleton className="w-1.5 aspect-square rounded-full" />;
+  return <Skeleton className="w-2.5 h-2.5 aspect-square rounded-full" />;
 }
