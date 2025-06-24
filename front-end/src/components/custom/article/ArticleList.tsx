@@ -7,6 +7,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
 
 interface ArticleListProps {
   articles?: Article[];
@@ -51,7 +52,14 @@ export default function ArticleList({ articles }: ArticleListProps) {
       <Accordion type="multiple" className="w-full">
         {Object.entries(grouped).map(([categorieNom, articles]) => (
           <AccordionItem key={categorieNom} value={categorieNom}>
-            <AccordionTrigger>{categorieNom}</AccordionTrigger>
+            <AccordionTrigger>
+              <div className="flex items-center gap-2 justify-between w-full">
+                <p>{categorieNom}</p>
+                <Badge variant="secondary">
+                  {articles.length}
+                </Badge>
+              </div>
+            </AccordionTrigger>
             <AccordionContent>
               <div className="flex flex-col gap-4">
                 {articles.map((article) => (
