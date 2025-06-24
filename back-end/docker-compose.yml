@@ -12,6 +12,7 @@ services:
       - backend
     volumes:
       - ../ssl:/etc/nginx/ssl:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
 
   backend:
     build:
