@@ -177,20 +177,25 @@ export default function ModifierArticle() {
               </FormItem>
             )}
           />
-          <div className="flex flex-col gap-2.5">
-            <FormLabel>Pièce</FormLabel>
-            <Card
-              content={
-                !article?.piece || article?.piece?.id == null
-                  ? "Aucune pièce"
-                  : article.piece.nom
-              }
-              size="small"
-              onClick={() => setModeChangementPiece(true)}
-              className={cn(piece?.nom ? "" : "text-muted-foreground")}
-              disabled={isLoading}
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="id_piece"
+            render={() => (
+              <FormItem>
+                <FormLabel>Pièce</FormLabel>
+                <FormControl>
+                  <Card
+                    content={piece?.nom || "Aucune pièce"}
+                    size="small"
+                    onClick={() => setModeChangementPiece(true)}
+                    className={cn(piece?.nom ? "" : "text-muted-foreground")}
+                    disabled={isLoading}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="etat"
@@ -260,7 +265,10 @@ export default function ModifierArticle() {
             disabled={isLoading}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Code fournisseur</FormLabel>
+                <FormLabel>
+                  Code fournisseur{" "}
+                  <i className="text-muted-foreground">(Optionnel)</i>
+                </FormLabel>
                 <FormControl>
                   <Input placeholder="8573" {...field} />
                 </FormControl>
