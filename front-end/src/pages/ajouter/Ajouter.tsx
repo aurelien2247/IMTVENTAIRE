@@ -88,7 +88,6 @@ export default function Ajouter() {
   function onSubmit(data: AjouterFormValues) {
     const nbArticles = parseInt(data.nb_articles, 10);
     
-    // On ne passe pas les dates à l'API
     const submitData = {
       num_inventaire: data.num_inventaire,
       categorie: data.categorie,

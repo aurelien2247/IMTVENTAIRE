@@ -240,7 +240,6 @@ export default class ArticleController {
 
       return response.ok(article)
     } catch (error) {
-      console.error(error)
       return response.internalServerError({
         error: "Erreur lors de la mise à jour de l'article",
       })
@@ -322,7 +321,6 @@ export default class ArticleController {
         rooms: [],
       })
     } catch (error) {
-      console.error(error)
       return response.internalServerError({
         error: 'Erreur lors de la recherche des articles et des salles',
       })
