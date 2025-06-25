@@ -26,6 +26,7 @@ import AjoutMultipleDialog from "@/components/custom/ajouterArticle/AjoutMultipl
 import ChoisirPiece from "@/components/custom/piece/ChoisirPiece";
 import { usePiece } from "@/hooks/usePiece";
 import { cn } from "@/lib/utils";
+import { useSearchParams } from "react-router-dom";
 
 const AjouterSchema = z.object({
   num_inventaire: z.string().regex(/^\d{5,}$/, {
@@ -60,13 +61,15 @@ const AjouterSchema = z.object({
 type AjouterFormValues = z.infer<typeof AjouterSchema>;
 
 export default function Ajouter() {
+  const [searchParams] = useSearchParams();
+  const numInventaireFromUrl = searchParams.get("num_inventaire") || "";
   const [showMultipleDialog, setShowMultipleDialog] = useState(false);
   const [modeChangementPiece, setModeChangementPiece] = useState(false);
 
   const form = useForm<AjouterFormValues>({
     resolver: zodResolver(AjouterSchema),
     defaultValues: {
-      num_inventaire: "",
+      num_inventaire: numInventaireFromUrl,
       nb_articles: "1",
       num_serie: "",
       categorie: "",
