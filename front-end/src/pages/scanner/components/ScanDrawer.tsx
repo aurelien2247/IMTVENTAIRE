@@ -52,7 +52,7 @@ export function ScanDrawer({ children }: ScanDrawerProps) {
       activeSnapPoint={snap}
       setActiveSnapPoint={setSnap}
     >
-      <DrawerContent className="h-screen *:pt-4 overflow-y-auto">{children}</DrawerContent>
+      <DrawerContent className="h-screen *:overflow-y-auto *:pt-4">{children}</DrawerContent>
     </Drawer>
   );
 }
