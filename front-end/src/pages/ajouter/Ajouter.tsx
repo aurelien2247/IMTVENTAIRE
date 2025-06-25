@@ -17,7 +17,11 @@ import { NumericInput } from "@/components/ui/numeric-input";
 import Card from "@/components/custom/Card";
 import { Combobox } from "@/components/ui/combobox";
 import Header from "@/components/custom/Header";
-import { useAddArticle, useAddArticlesBatch, useCategories } from "@/hooks/useArticle";
+import {
+  useAddArticle,
+  useAddArticlesBatch,
+  useCategories,
+} from "@/hooks/useArticle";
 import AjoutMultipleDialog from "@/components/custom/ajouterArticle/AjoutMultipleDialog";
 import ChoisirPiece from "@/components/custom/piece/ChoisirPiece";
 import { usePiece } from "@/hooks/usePiece";
@@ -50,7 +54,7 @@ const AjouterSchema = z.object({
   code_fournisseur: z.string().optional(),
   marque: z
     .string()
-    .regex(/.+/, { message: "Veuillez renseigner une marque valide" })
+    .regex(/.+/, { message: "Veuillez renseigner une marque valide" }),
 });
 
 type AjouterFormValues = z.infer<typeof AjouterSchema>;
@@ -71,13 +75,16 @@ export default function Ajouter() {
       num_bon_commande: "",
       fournisseur: "",
       code_fournisseur: "",
-      marque: ""
+      marque: "",
     },
   });
 
   const addArticle = useAddArticle();
   const addArticlesBatch = useAddArticlesBatch();
-  const { data: piece } = usePiece(form.watch("id_piece"), form.watch("id_piece").length > 0);
+  const { data: piece } = usePiece(
+    form.watch("id_piece"),
+    form.watch("id_piece").length > 0
+  );
   const { data: categories = [] } = useCategories();
 
   // Trouver la catégorie correspondante à l'identifiant stocké dans le formulaire
@@ -87,7 +94,7 @@ export default function Ajouter() {
 
   function onSubmit(data: AjouterFormValues) {
     const nbArticles = parseInt(data.nb_articles, 10);
-    
+
     const submitData = {
       num_inventaire: data.num_inventaire,
       categorie: data.categorie,
@@ -97,7 +104,7 @@ export default function Ajouter() {
       fournisseur: data.fournisseur,
       code_fournisseur: data.code_fournisseur,
       marque: data.marque,
-      etat: data.etat
+      etat: data.etat,
     };
 
     if (nbArticles > 1) {
@@ -220,23 +227,26 @@ export default function Ajouter() {
               </FormItem>
             )}
           />
-          <div className="flex flex-col gap-2.5">
-            <FormLabel>Pièce</FormLabel>
-            <Card
-              content={piece?.nom || "Aucune pièce"}
-              size="small"
-              onClick={() => setModeChangementPiece(true)}
-              className={cn(
-                piece?.nom ? "" : "text-muted-foreground",
-                !piece?.nom && form.formState.errors.id_piece ? "border-destructive" : ""
-              )}
-            />
-            {form.formState.errors.id_piece && (
-              <p className="text-sm font-medium text-destructive">
-                {form.formState.errors.id_piece.message}
-              </p>
+          <FormField
+            control={form.control}
+            name="id_piece"
+            render={() => (
+              <FormItem>
+                <FormLabel>Pièce</FormLabel>
+                <FormControl>
+                  <Card
+                    content={piece?.nom || "Aucune pièce"}
+                    size="small"
+                    onClick={() => setModeChangementPiece(true)}
+                    className={cn(
+                      piece?.nom ? "" : "text-muted-foreground"
+                    )}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
-          </div>
+          />
           <FormField
             control={form.control}
             name="num_bon_commande"
@@ -281,7 +291,9 @@ export default function Ajouter() {
             name="code_fournisseur"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Code fournisseur <i>(Optionnel)</i></FormLabel>
+                <FormLabel>
+                  Code fournisseur <i className="text-muted-foreground">(Optionnel)</i>
+                </FormLabel>
                 <FormControl>
                   <Input type="number" placeholder="8573" {...field} />
                 </FormControl>
@@ -302,7 +314,7 @@ export default function Ajouter() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full" >
+          <Button type="submit" className="w-full">
             Ajouter
           </Button>
         </form>
