@@ -1,5 +1,6 @@
 import { usePieceByName, useSaveScan } from "@/hooks/usePiece";
 import { useState, useEffect } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import type { Article } from "@/types";
 import { useAtom } from "jotai";
 import { codeScannedAtom, scanModeAtom } from "@/lib/atoms";
@@ -10,11 +11,15 @@ import ScanMode from "@/pages/scanner/components/ScanMode";
 import Error from "@/pages/common/Error";
 import ScanPieceButton from "./ScanPieceButton";
 
-export default function PieceInfo() {
+interface PieceInfoProps {
+  openConfirmScan: boolean;
+  setOpenConfirmScan: Dispatch<SetStateAction<boolean>>;
+}
+
+export default function PieceInfo({ openConfirmScan, setOpenConfirmScan }: PieceInfoProps) {
   const [scanMode, setScanMode] = useAtom(scanModeAtom);
   const [codeScanned, setCodeScanned] = useAtom(codeScannedAtom);
   const [articlesScanned, setArticlesScanned] = useState<Article[]>([]);
-  const [openConfirmScan, setOpenConfirmScan] = useState(false);
 
   const changePiece = scanMode ? articlesScanned.length === 0 : true;
   const isPiece = !!codeScanned?.match(/[a-zA-Z]/);
