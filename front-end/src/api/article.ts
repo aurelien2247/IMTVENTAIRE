@@ -1,10 +1,10 @@
-import type { Article, Categorie, Etat } from "@/types";
+import type { Article, Categorie, Etat, EtatEnum } from "@/types";
 import { fetchApi } from "./api";
 
 // Type pour la création/modification d'un article (sans les dates qui sont gérées par la BDD)
 type ArticleData = {
   num_inventaire: string;
-  num_serie?: string;
+  num_serie?: string | null;
   categorie: string;
   etat: string;
   id_piece: string;
@@ -29,6 +29,14 @@ export const fetchArticles = async (pieceId: string): Promise<Article[]> => {
  */
 export const fetchArticle = async (articleId: string): Promise<Article> => {
   return await fetchApi(`/article/${articleId}`);
+};
+
+/**
+ * Récupère les articles archivés
+ * @returns Les articles archivés
+ */
+export const fetchArchives = async (etat: EtatEnum): Promise<Article[]> => {
+  return await fetchApi(`/articles/archives/${etat.toString()}`);
 };
 
 /**

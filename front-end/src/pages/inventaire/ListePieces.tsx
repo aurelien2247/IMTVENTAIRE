@@ -10,7 +10,6 @@ import { searchPiecesOnly, searchQueryAtom } from "@/lib/atoms";
 import { useAtom } from "jotai";
 import SearchResults from "../SearchResults";
 
-
 interface ListePiecesProps {
   batimentId?: string;
   etageId?: string;

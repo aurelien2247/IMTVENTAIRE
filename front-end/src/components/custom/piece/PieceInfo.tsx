@@ -117,7 +117,10 @@ export function PieceInfoSkeleton() {
       <div className="flex flex-col gap-1">
         <div className="h-8 w-48 bg-muted animate-pulse rounded" />
       </div>
-      <ArticleListSkeleton />
+      <div className="flex flex-col gap-6">
+          <p className="text-muted-foreground">Articles dans la pièce</p>
+          <ArticleListSkeleton />
+        </div>
     </div>
   );
 }

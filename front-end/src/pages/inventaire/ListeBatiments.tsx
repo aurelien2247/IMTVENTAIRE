@@ -6,8 +6,12 @@ import NotFound from "../common/NotFound";
 import Error from "../common/Error";
 import { useBatiments } from "@/hooks/useBatiment";
 import { cn } from "@/lib/utils";
+import { Archive } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useDesktop } from "@/hooks/use-media-query";
+import { useNavigate } from "react-router-dom";
 import { useAtom } from "jotai";
-import { searchQueryAtom} from "@/lib/atoms";
+import { searchQueryAtom } from "@/lib/atoms";
 import SearchResults from "../SearchResults";
 
 interface ListeBatimentsProps {
@@ -15,15 +19,19 @@ interface ListeBatimentsProps {
   title?: string;
 }
 
-export default function ListeBatiments({ onSelect, title = "Inventaire" }: ListeBatimentsProps) {
+export default function ListeBatiments({
+  onSelect,
+  title = "Inventaire",
+}: ListeBatimentsProps) {
   const { data: batiments, isLoading, error } = useBatiments();
+  const isDesktop = useDesktop();
+  const navigate = useNavigate();
   const [query] = useAtom(searchQueryAtom);
 
-
   const style = cn(!onSelect && "container", "flex flex-col gap-6");
-  
+
   if (query.trim().length >= 1) {
-    return (<SearchResults queryParam={query} />)
+    return <SearchResults queryParam={query} />;
   } else {
     if (isLoading) {
       return (
@@ -69,13 +77,24 @@ export default function ListeBatiments({ onSelect, title = "Inventaire" }: Liste
     return (
       <div className={style}>
         {!onSelect && <Header title={title} />}
-        <SearchBar />
+        <div className="flex justify-between gap-2">
+          <SearchBar />
+          <Button
+            variant="outline"
+            onClick={() => navigate("/inventaire/archives")}
+          >
+            <Archive />
+            {isDesktop && "Archives"}
+          </Button>
+        </div>
         <div className="flex flex-col gap-2">
           {batiments.map((batiment: Batiment) => (
             <Card
               key={batiment.id}
               content={`Bâtiment ${batiment.nom}`}
-              onClick={onSelect ? () => onSelect(batiment.id.toString()) : undefined}
+              onClick={
+                onSelect ? () => onSelect(batiment.id.toString()) : undefined
+              }
               link={!onSelect ? `/inventaire/${batiment.id}` : undefined}
             />
           ))}

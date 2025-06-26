@@ -23,7 +23,7 @@ export function SearchBar({ label = "Rechercher", ...props }: Props) {
   }, [location]);
 
 return (
-    <form {...props} className="relative">
+    <form {...props} className="relative flex-1">
       <Label htmlFor="search" className="sr-only">
         {label}
       </Label>

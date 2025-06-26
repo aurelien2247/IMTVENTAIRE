@@ -7,7 +7,6 @@ import { useSetAtom } from "jotai";
 import { pieceSelectedAtom, searchPiecesOnly, searchQueryAtom} from "@/lib/atoms";
 
 
-
 export default function ChoisirPiece() {
   const [batimentId, setBatimentId] = useState<string | undefined>(undefined);
   const [etageId, setEtageId] = useState<string | undefined>(undefined);

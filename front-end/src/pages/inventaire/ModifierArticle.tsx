@@ -35,10 +35,7 @@ import { useAtom } from "jotai";
 import { pieceSelectedAtom } from "@/lib/atoms";
 
 const ModifierSchema = z.object({
-  num_inventaire: z.string().regex(/^\d{5,}$/, {
-    message:
-      "Veuillez renseigner un numéro d'inventaire valide (5 chiffres minimum)",
-  }),
+  num_inventaire: z.string().regex(/^\d+$/, { message: "Veuillez renseigner un numéro d'inventaire valide" }),
   num_serie: z.string().optional(),
   categorie: z
     .string()
@@ -82,17 +79,17 @@ export default function ModifierArticle() {
     resolver: zodResolver(ModifierSchema),
     values: article
       ? {
-          num_inventaire: article.num_inventaire.toString(),
-          categorie: article.categorie.id.toString(),
-          etat: article.etat.id.toString(),
+          num_inventaire: article.num_inventaire.toString() ?? "",
+          categorie: article.categorie.id.toString() ?? "",
+          etat: article.etat.id.toString() ?? "",
           id_piece:
             article.piece?.id != null
               ? article.piece.id.toString()
-              : "Aucune pièce",
-          num_bon_commande: article.num_bon_commande,
-          fournisseur: article.fournisseur,
-          marque: article.marque,
-          num_serie: article.num_serie,
+              : "",
+          num_bon_commande: article.num_bon_commande ?? "",
+          fournisseur: article.fournisseur ?? "",
+          marque: article.marque ?? "",
+          num_serie: article.num_serie || undefined,
         }
       : undefined,
   });

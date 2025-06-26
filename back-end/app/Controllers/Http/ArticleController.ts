@@ -74,6 +74,25 @@ export default class ArticleController {
     }
   }
 
+  public async getArchives({ params, response }: HttpContextContract) {
+    try {
+      const articles = await Article.query()
+        .where('etat', params.etat)
+        .orderBy('date_modification', 'desc')
+        .orderBy('num_inventaire', 'asc')
+        .preload('categorieRelation')
+        .preload('etatRelation')
+        .preload('piece', (pieceQuery) => {
+          pieceQuery.preload('etage', (etageQuery) => {
+            etageQuery.preload('batiment')
+          })
+        })
+      return response.ok(articles)
+    } catch (error) {
+      return response.internalServerError({ error: 'Erreur lors de la récupération des archives' })
+    }
+  }
+
   /**
    * Store a new article
    */

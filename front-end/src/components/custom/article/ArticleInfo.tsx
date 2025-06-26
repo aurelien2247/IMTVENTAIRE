@@ -16,7 +16,6 @@ export default function ArticleInfo() {
 
   const articleId = article?.num_inventaire;
 
-
   if (!article) {
     return <ArticleInfoNotFound />;
   }
@@ -37,7 +36,11 @@ export default function ArticleInfo() {
               <h1>{article.categorie.nom}</h1>
             </span>
           </div>
-          <p className="text-muted-foreground">{!article.piece || article.piece.id == null ? "Aucune pièce" : article.piece.nom}</p>
+          <p className="text-muted-foreground">
+            {!article.piece || article.piece.id == null
+              ? "Aucune pièce"
+              : article.piece.nom}
+          </p>
         </div>
         <div className="flex gap-8 flex-wrap">
           <span className="min-w-0">

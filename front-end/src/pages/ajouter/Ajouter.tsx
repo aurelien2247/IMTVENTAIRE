@@ -27,16 +27,15 @@ import { pieceSelectedAtom, searchPiecesOnly } from "@/lib/atoms";
 
 
 const AjouterSchema = z.object({
-  num_inventaire: z.string().regex(/^\d{5,}$/, {
-    message:
-      "Veuillez renseigner un numéro d'inventaire valide (5 chiffres minimum)",
-  }),
+  num_inventaire: z
+    .string()
+    .regex(/^\d+$/, {
+      message: "Veuillez renseigner un numéro d'inventaire valide",
+    }),
   nb_articles: z.string().regex(/^[1-9]\d*$/, {
     message: "Le nombre doit être supérieur à 0",
   }),
-  num_serie: z
-    .string()
-    .regex(/.+/, { message: "Veuillez renseigner le numéro de série" }),
+  num_serie: z.string().optional(),
   categorie: z
     .string()
     .regex(/.+/, { message: "Veuillez renseigner la catégorie" }),
@@ -59,13 +58,15 @@ const AjouterSchema = z.object({
 type AjouterFormValues = z.infer<typeof AjouterSchema>;
 
 export default function Ajouter() {
+  const [searchParams] = useSearchParams();
+  const numInventaireFromUrl = searchParams.get("num_inventaire") || "";
   const [showMultipleDialog, setShowMultipleDialog] = useState(false);
   const [modeChangementPiece, setModeChangementPiece] = useAtom(searchPiecesOnly);
 
   const form = useForm<AjouterFormValues>({
     resolver: zodResolver(AjouterSchema),
     defaultValues: {
-      num_inventaire: "",
+      num_inventaire: numInventaireFromUrl,
       nb_articles: "1",
       num_serie: "",
       categorie: "",
@@ -232,23 +233,24 @@ export default function Ajouter() {
               </FormItem>
             )}
           />
-          <div className="flex flex-col gap-2.5">
-            <FormLabel>Pièce</FormLabel>
-            <Card
-              content={piece?.nom || "Aucune pièce"}
-              size="small"
-              onClick={() => setModeChangementPiece(true)}
-              className={cn(
-                piece?.nom ? "" : "text-muted-foreground",
-                !piece?.nom && form.formState.errors.id_piece ? "border-destructive" : ""
-              )}
-            />
-            {form.formState.errors.id_piece && (
-              <p className="text-sm font-medium text-destructive">
-                {form.formState.errors.id_piece.message}
-              </p>
+          <FormField
+            control={form.control}
+            name="id_piece"
+            render={() => (
+              <FormItem>
+                <FormLabel>Pièce</FormLabel>
+                <FormControl>
+                  <Card
+                    content={piece?.nom || "Aucune pièce"}
+                    size="small"
+                    onClick={() => setModeChangementPiece(true)}
+                    className={cn(piece?.nom ? "" : "text-muted-foreground")}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
-          </div>
+          />
           <FormField
             control={form.control}
             name="num_bon_commande"
@@ -267,7 +269,10 @@ export default function Ajouter() {
             name="num_serie"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Numéro de série</FormLabel>
+                <FormLabel>
+                  Numéro de série{" "}
+                  <i className="text-muted-foreground">(Optionnel)</i>
+                </FormLabel>
                 <FormControl>
                   <Input placeholder="FUDGZ67328EYGH" {...field} />
                 </FormControl>
