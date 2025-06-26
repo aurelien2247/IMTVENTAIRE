@@ -6,10 +6,10 @@ import { usePieces } from "@/hooks/usePiece";
 import NotFound from "../common/NotFound";
 import Error from "../common/Error";
 import { cn } from "@/lib/utils";
-import { pieceSelectedAtom, searchPiecesOnly, searchQueryAtom } from "@/lib/atoms";
-import { useAtom, useSetAtom } from "jotai";
+import { searchPiecesOnly, searchQueryAtom } from "@/lib/atoms";
+import { useAtom } from "jotai";
 import SearchResults from "../SearchResults";
-import { useEffect } from "react";
+
 
 interface ListePiecesProps {
   batimentId?: string;

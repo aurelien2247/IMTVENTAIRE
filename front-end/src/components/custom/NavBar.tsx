@@ -1,8 +1,7 @@
 import { Folder, PackagePlus, ScanBarcode } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { Menubar, MenubarMenu, MenubarTrigger } from "../ui/menubar";
-import { useAtom } from "jotai";
-import { searchQueryAtom } from "@/lib/atoms";
+
 
 const NavBar = () => {
   return (

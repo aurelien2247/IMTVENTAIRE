@@ -5,7 +5,7 @@ import { useAtom } from "jotai";
 import { Label } from "@/components/ui/label";
 import { Input } from "../ui/input";
 import { searchQueryAtom } from "@/lib/atoms";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 interface Props extends ComponentProps<"form"> {
   label?: string;
