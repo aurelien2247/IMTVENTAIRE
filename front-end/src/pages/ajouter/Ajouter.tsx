@@ -184,7 +184,6 @@ export default function Ajouter() {
   }
 
   const formData = form.getValues();
-  console.log(form.formState.errors, formData);
 
   return (
     <div className="container gap-8">
