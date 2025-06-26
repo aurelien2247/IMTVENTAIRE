@@ -8,7 +8,6 @@ import ListeEtages from './pages/inventaire/ListeEtages'
 import ListePieces from './pages/inventaire/ListePieces'
 import ListeArticles from './pages/inventaire/ListeArticles'
 import ModifierArticle from './pages/inventaire/ModifierArticle'
-import SearchResults from './pages/SearchResults'
 import Archives from './pages/inventaire/Archives'
 
 export default function App() {
@@ -22,7 +21,6 @@ export default function App() {
             <Route path=":batimentId/:etageId" element={<ListePieces />} />
             <Route path=":batimentId/:etageId/:pieceId" element={<ListeArticles />} />
             <Route path=":articleId/modifier" element={<ModifierArticle />} />
-            <Route path="search" element={<SearchResults />} />
             <Route path="archives" element={<Archives />} />
           </Route>
           <Route path="/" element={<Scanner />} />

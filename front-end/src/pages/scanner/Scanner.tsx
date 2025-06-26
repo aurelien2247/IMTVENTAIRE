@@ -12,10 +12,13 @@ export default function Scanner() {
   const [codeScanned, setCodeScanned] = useAtom(codeScannedAtom);
   const [scanMode] = useAtom(scanModeAtom);
   const [openConfirmScan, setOpenConfirmScan] = useState(false);
+  const soundPath = new URL('../../assets/sound/scan-article.mp3', import.meta.url).href;
+  const audio = new Audio(soundPath);
 
   const handleCapture = useCallback(
     (result: DetectedBarcode[]) => {
       setCodeScanned(result[0].rawValue);
+      audio.play();
     },
     [setCodeScanned]
   );

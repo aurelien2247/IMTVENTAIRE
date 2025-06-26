@@ -15,7 +15,7 @@ import {
   useDeleteArticle,
 } from "@/hooks/useArticle";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChoisirPiece from "@/components/custom/piece/ChoisirPiece";
 import { usePiece } from "@/hooks/usePiece";
 import { format } from "date-fns";
@@ -31,6 +31,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useAtom } from "jotai";
+import { pieceSelectedAtom } from "@/lib/atoms";
 
 const ModifierSchema = z.object({
   num_inventaire: z.string().regex(/^\d+$/, { message: "Veuillez renseigner un numéro d'inventaire valide" }),
@@ -110,17 +112,29 @@ export default function ModifierArticle() {
     );
   };
 
-  const handleSelectPiece = (pieceId: string) => {
-    form.setValue("id_piece", pieceId, { shouldDirty: true });
+  const [pieceSelected, setPieceSelected] = useAtom(pieceSelectedAtom);
+
+  useEffect(() => {
+    setPieceSelected("");
+    return () => {
+      setPieceSelected("");
+    };
+  }, []);
+
+  useEffect(()=>{
+    if(pieceSelected!==""){
+      handleSelectPiece(pieceSelected);
+    }
+  },[pieceSelected])
+
+  function handleSelectPiece(pieceId: string) {
+    form.setValue("id_piece", pieceId, { shouldValidate: true });
     setModeChangementPiece(false);
-  };
+  }
 
   if (modeChangementPiece) {
     return (
-      <ChoisirPiece
-        onSelect={handleSelectPiece}
-        onClose={() => setModeChangementPiece(false)}
-      />
+      <ChoisirPiece/>
     );
   }
 

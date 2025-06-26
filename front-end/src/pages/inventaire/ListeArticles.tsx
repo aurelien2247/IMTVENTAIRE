@@ -10,6 +10,9 @@ import { usePieces } from "@/hooks/usePiece";
 import Error from "../common/Error";
 import ArticleList from "@/components/custom/article/ArticleList";
 import type { Article } from "@/types";
+import { searchQueryAtom } from "@/lib/atoms";
+import { useAtom } from "jotai";
+import SearchResults from "../SearchResults";
 
 const ArticleCardWithLink = (props: { article: Article }) => (
   <ArticleCard
@@ -31,9 +34,14 @@ export default function ListeArticles() {
     isLoading: isLoadingPieces,
     error: errorPieces,
   } = usePieces(etageId);
+  const [query] = useAtom(searchQueryAtom);
 
   const piece = pieces?.find((p) => p.id === Number(pieceId));
   const headerTitle = `${piece?.nom?.toUpperCase() ?? ""}`;
+
+  if (query.trim().length >= 1) {
+    return (<SearchResults queryParam={query} />)
+  }
 
   if (isLoadingArticles || isLoadingPieces) {
     return (
@@ -48,6 +56,7 @@ export default function ListeArticles() {
       </div>
     );
   }
+
 
   if (errorArticles || errorPieces) {
     return (

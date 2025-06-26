@@ -1,51 +1,29 @@
 import { Search } from "lucide-react";
-import type { ComponentProps } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, type ComponentProps } from "react";
 import { useAtom } from "jotai";
-import { useEffect } from "react";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "../ui/input";
 import { searchQueryAtom } from "@/lib/atoms";
+import { useLocation } from "react-router-dom";
 
 interface Props extends ComponentProps<"form"> {
   label?: string;
 }
 
 export function SearchBar({ label = "Rechercher", ...props }: Props) {
-  const navigate = useNavigate();
   const [query, setQuery] = useAtom(searchQueryAtom);
-  const location = useLocation();
+  const location = useLocation()
 
-  /**
-   * Si on n'est pas sur la page de recherche, on réinitialise la recherche
-   */
   useEffect(() => {
-    if (!location.pathname.includes("/inventaire/search")) {
+    setQuery("");
+    return () => {
       setQuery("");
-    }
-  }, [location.pathname, setQuery]);
+    };
+  }, [location]);
 
-  /**
-   * Dès que l'on commence à taper, on redirige vers la page de recherche
-   */
-  useEffect(() => {
-    if (query.trim().length === 1) {
-      redirectToSearch();
-    }
-  }, [query, location.pathname, navigate]);
-
-  /**
-   * Redirige vers la page de résultats si une valeur est fournie
-   */
-  const redirectToSearch = () => {
-    if (query.trim()) {
-      navigate(`/inventaire/search?q=${encodeURIComponent(query)}`);
-    } 
-  };
-
-  return (
-    <form {...props} className="relative flex-1" onSubmit={redirectToSearch}>
+return (
+    <form {...props} className="relative flex-1">
       <Label htmlFor="search" className="sr-only">
         {label}
       </Label>

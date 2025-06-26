@@ -1,5 +1,4 @@
-import { useSearchParams } from "react-router-dom";
-import { useSetAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 import Header, { HeaderSkeleton } from "@/components/custom/Header";
@@ -11,7 +10,7 @@ import Card from "@/components/custom/Card";
 import NotFound from "./common/NotFound";
 import Error from "./common/Error";
 import { useSearch } from "@/hooks/common/useSearch";
-import { searchQueryAtom } from "@/lib/atoms";
+import { pieceSelectedAtom, searchPiecesOnly, searchQueryAtom } from "@/lib/atoms";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -34,11 +33,18 @@ const itemVariants = {
   }
 };
 
-export default function SearchResults() {
-  const [searchParams] = useSearchParams();
-  const queryParam = searchParams.get("q") || "";
+interface SearchResultsProps {
+  queryParam: string;
+  piecesOnly?: boolean;
+  articlesOnly?: boolean;
+} 
+
+export default function SearchResults({queryParam}:SearchResultsProps) {
   const setSearchQuery = useSetAtom(searchQueryAtom);
   const { articles, rooms, isLoading, error } = useSearch();
+  const [peekPieceMode, setPeekPieceMode] = useAtom(searchPiecesOnly);
+  const setQuery = useSetAtom(searchQueryAtom)
+  const setPieceSelected = useSetAtom(pieceSelectedAtom);
 
   useEffect(() => {
     setSearchQuery(queryParam);
@@ -69,12 +75,12 @@ export default function SearchResults() {
   }
 
   const hasResults =
-    (articles && articles.length > 0) || (rooms && rooms.length > 0);
+    (articles && !peekPieceMode && articles.length > 0) || (rooms && rooms.length > 0);
 
   if (!hasResults) {
     return (
-      <div className="container">
-        <Header title="Résultats de la recherche" />
+      <div className={peekPieceMode ? "" : "container"}>
+        {!peekPieceMode && <Header title="Résultats de la recherche" />}
         <SearchBar />
         <NotFound message="Aucun résultat trouvé pour cette recherche" />
       </div>
@@ -82,8 +88,8 @@ export default function SearchResults() {
   }
 
   return (
-    <div className="container">
-      <Header title="Résultats de la recherche" />
+    <div className={peekPieceMode ? "" : "container"}>
+      {!peekPieceMode && <Header title="Résultats de la recherche" />}
       <SearchBar />
       <motion.div 
         className="flex flex-col gap-2 mt-2"
@@ -99,10 +105,11 @@ export default function SearchResults() {
               variants={containerVariants}
             >
               {rooms.map((room) => (
-                <motion.div key={room.id} variants={itemVariants}>
+                <motion.div key={room.id} variants={itemVariants} onClick={()=>{setQuery("");setPeekPieceMode(false);setPieceSelected(room.id.toString())}}>
                   <Card
                     content={room.nom}
-                    link={`/inventaire/${room.etage?.batiment?.id}/${room.etage?.id}/${room.id}`}
+                    link={peekPieceMode ? undefined : `/inventaire/${room.etage?.batiment?.id}/${room.etage?.id}/${room.id}`
+                  }
                   />
                 </motion.div>
               ))}
@@ -110,7 +117,7 @@ export default function SearchResults() {
           </motion.div>
         )}
 
-        {articles.length > 0 && (
+        {articles.length > 0 && !peekPieceMode && (
           <motion.div variants={itemVariants}>
             <h3>Articles</h3>
             <motion.div 
@@ -118,7 +125,7 @@ export default function SearchResults() {
               variants={containerVariants}
             >
               {articles.map((article) => (
-                <motion.div key={article.num_inventaire} variants={itemVariants}>
+                <motion.div key={article.num_inventaire} variants={itemVariants} onClick={()=>setQuery("")}>
                   <ArticleCard
                     article={article}
                     link={`/inventaire/${article.num_inventaire}/modifier`}
