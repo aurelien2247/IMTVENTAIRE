@@ -291,7 +291,6 @@ class SQLGenerator:
                     'num_serie',          # 7: N° de série
                     'num_bon_commande',   # 8: N° de commande
                     'fournisseur',        # 9: Fournisseur
-                    'code_fournisseur',   # 10: Code Fournisseur
                     'type_equipement',    # 11: Type
                     'equipement',         # 12: Equipement
                     'modele',             # 13: Modèle
@@ -414,20 +413,10 @@ class SQLGenerator:
                     num_serie = self.clean_value(row.get('num_serie'))
                     num_bon_commande = self.clean_value(row.get('num_bon_commande'))
                     fournisseur = self.clean_value(row.get('fournisseur'))
-                    code_fournisseur = self.clean_value(row.get('code_fournisseur'))
                     marque = self.clean_value(row.get('marque'))
                     
-                    # Convertir code_fournisseur en entier si possible
-                    code_fournisseur_val = 'NULL'
-                    if code_fournisseur:
-                        try:
-                            code_fournisseur_int = int(float(code_fournisseur))
-                            code_fournisseur_val = str(code_fournisseur_int)
-                        except:
-                            code_fournisseur_val = 'NULL'
-                    
                     # Générer l'INSERT pour l'article
-                    article_sql = f"""INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, code_fournisseur, marque) VALUES ({self.escape_sql_string(num_inventaire)}, {id_categorie or 'NULL'}, {id_etat}, {id_piece or 'NULL'}, {self.escape_sql_string(num_serie)}, {self.escape_sql_string(num_bon_commande)}, {self.escape_sql_string(fournisseur)}, {code_fournisseur_val}, {self.escape_sql_string(marque)});"""
+                    article_sql = f"""INSERT INTO article (num_inventaire, categorie, etat, id_piece, num_serie, num_bon_commande, fournisseur, marque) VALUES ({self.escape_sql_string(num_inventaire)}, {id_categorie or 'NULL'}, {id_etat}, {id_piece or 'NULL'}, {self.escape_sql_string(num_serie)}, {self.escape_sql_string(num_bon_commande)}, {self.escape_sql_string(fournisseur)}, {self.escape_sql_string(marque)});"""
                     
                     self.sql_statements.append(article_sql)
                     success_count += 1
