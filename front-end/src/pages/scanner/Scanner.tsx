@@ -7,6 +7,7 @@ import ArticleInfo from "@/components/custom/article/ArticleInfo";
 import PieceInfo from "@/components/custom/piece/PieceInfo";
 import { useAtom } from "jotai";
 import { codeScannedAtom, scanModeAtom } from "@/lib/atoms";
+import { toast } from "sonner";
 
 export default function Scanner() {
   const [codeScanned, setCodeScanned] = useAtom(codeScannedAtom);
@@ -17,7 +18,14 @@ export default function Scanner() {
 
   const handleCapture = useCallback(
     (result: DetectedBarcode[]) => {
-      setCodeScanned(result[0].rawValue);
+      const code = result[0].rawValue;
+      if (code === codeScanned) {
+        toast.error("Vous avez déjà scanné cet article", {
+          position: "top-center",
+          richColors: true
+        });
+      }
+      setCodeScanned(code);
       audio.play();
     },
     [setCodeScanned]

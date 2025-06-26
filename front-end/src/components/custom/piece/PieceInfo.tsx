@@ -36,10 +36,6 @@ export default function PieceInfo({ openConfirmScan, setOpenConfirmScan }: Piece
   );
 
   useEffect(() => {
-    resetArticlesScanned();
-  }, [piece]);
-
-  useEffect(() => {
     if (scanMode) {
       if (article) {
         setArticlesScanned((articles) => [...articles, article]);
@@ -62,7 +58,9 @@ export default function PieceInfo({ openConfirmScan, setOpenConfirmScan }: Piece
   const saveScan = async () => {
     saveScanMutate();
     resetArticlesScanned();
-    setCodeScanned(null);
+    if (!isPiece) {
+      setCodeScanned(null);
+    }
   };
 
   const resetArticlesScanned = () => {
