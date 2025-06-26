@@ -5,18 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9859b909-6f2d-4047-8197-3469f5771912" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/back-end/app/Controllers/Http/ArticleController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/app/Controllers/Http/ArticleController.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/back-end/app/Models/Article.ts" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/app/Models/Article.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/back-end/script-insertion/script.py" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/script-insertion/script.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/src/api/article.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/src/api/article.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/src/components/custom/article/ArticleInfo.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/src/components/custom/article/ArticleInfo.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/src/components/custom/piece/PieceInfo.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/src/components/custom/piece/PieceInfo.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/src/api/api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/src/api/api.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/src/lib/utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/src/lib/utils.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/src/pages/ajouter/Ajouter.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/src/pages/ajouter/Ajouter.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/src/pages/inventaire/ModifierArticle.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/src/pages/inventaire/ModifierArticle.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/src/pages/scanner/Scanner.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/src/pages/scanner/Scanner.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/src/pages/scanner/components/ScanConfirmDialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/src/pages/scanner/components/ScanConfirmDialog.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/src/pages/scanner/components/ScanDrawer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/src/pages/scanner/components/ScanDrawer.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/src/types/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/src/types/index.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,27 +37,27 @@
     <option name="showExcludedFiles" value="false" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Merging main",
-    "ignore.virus.scanning.warn.message": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "C:/Users/aurel/prod/IMTVENTAIRE",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2025.1.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/aurel/prod/IMTVENTAIRE&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2025.1.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -85,7 +76,7 @@
       <workItem from="1750772172836" duration="319000" />
       <workItem from="1750773371910" duration="3681000" />
       <workItem from="1750843726260" duration="5793000" />
-      <workItem from="1750925086711" duration="1096000" />
+      <workItem from="1750925086711" duration="308000" />
     </task>
     <servers />
   </component>

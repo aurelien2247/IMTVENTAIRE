@@ -8,7 +8,6 @@ import ListeEtages from './pages/inventaire/ListeEtages'
 import ListePieces from './pages/inventaire/ListePieces'
 import ListeArticles from './pages/inventaire/ListeArticles'
 import ModifierArticle from './pages/inventaire/ModifierArticle'
-import SearchResults from './pages/SearchResults'
 
 export default function App() {
   return (
@@ -21,7 +20,6 @@ export default function App() {
             <Route path=":batimentId/:etageId" element={<ListePieces />} />
             <Route path=":batimentId/:etageId/:pieceId" element={<ListeArticles />} />
             <Route path=":articleId/modifier" element={<ModifierArticle />} />
-            <Route path="search" element={<SearchResults />} />
           </Route>
           <Route path="/" element={<Scanner />} />
           <Route path="/ajouter" element={<Ajouter />} />
