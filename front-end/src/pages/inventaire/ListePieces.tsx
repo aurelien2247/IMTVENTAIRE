@@ -35,11 +35,6 @@ export default function ListePieces({ batimentId: propBatimentId, etageId: propE
 
   const style = cn(!onSelect && "container", "flex flex-col gap-6");
 
-  useEffect(()=>{
-    console.log("is Peek ?"+ peekPieceMode);
-  })
-
-  
   if (query.trim().length >= 1) {
     return (<SearchResults queryParam={query} />)
   } else {

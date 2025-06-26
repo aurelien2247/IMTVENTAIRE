@@ -7,9 +7,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ChoisirPiece from "../piece/ChoisirPiece";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
-import { History } from "lucide-react";
 
 export default function ArticleInfo() {
   const navigate = useNavigate();
@@ -31,7 +28,6 @@ export default function ArticleInfo() {
         etat: article?.etat.id.toString() || "",
         num_bon_commande: article?.num_bon_commande || "",
         fournisseur: article?.fournisseur || "",
-        code_fournisseur: article?.code_fournisseur?.toString() || "",
         marque: article?.marque || "",
       },
     });
@@ -60,10 +56,6 @@ export default function ArticleInfo() {
               <ArticleEtat etat={article.etat} />
               <h1>{article.categorie.nom}</h1>
             </span>
-            <span className="flex items-center gap-1 text-xs text-muted-foreground">
-              <History className="h-3 w-3" />
-              {format(new Date(article.date_modification), "dd/MM/yyyy HH:mm", { locale: fr })}
-            </span>
           </div>
           <p className="text-muted-foreground">{!article.piece || article.piece.id == null ? "Aucune pièce" : article.piece.nom}</p>
         </div>
@@ -74,7 +66,7 @@ export default function ArticleInfo() {
           </span>
           <span className="min-w-0">
             <p className="font-bold truncate w-full">N° de commande</p>
-            <p>{article.num_serie}</p>
+            <p>{article.num_bon_commande}</p>
           </span>
         </div>
       </div>

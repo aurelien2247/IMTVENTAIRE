@@ -20,9 +20,6 @@ export default class Article extends BaseModel {
   public fournisseur: string
 
   @column()
-  public code_fournisseur: number
-
-  @column()
   public marque: string
 
   @column({ serializeAs: null })

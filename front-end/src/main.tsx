@@ -7,11 +7,23 @@ import {
   QueryCache,
   QueryClient,
   QueryClientProvider,
+  MutationCache,
 } from "@tanstack/react-query";
 import { toast, Toaster } from "sonner";
 
 const queryClient = new QueryClient({
   queryCache: new QueryCache({
+    onError: (error) => {
+      if (!error.message) {
+        return;
+      }
+      toast.error(error.message, {
+        position: "top-center",
+        richColors: true
+      });
+    },
+  }),
+  mutationCache: new MutationCache({
     onError: (error) => {
       if (!error.message) {
         return;

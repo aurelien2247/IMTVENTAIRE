@@ -17,7 +17,6 @@ export default class CategorieController {
 
       return response.created(newCategorie)
     } catch (error) {
-      console.error(error)
       return response.internalServerError({ error: "Erreur lors de l'ajout d'une catégorie" })
     }
   }

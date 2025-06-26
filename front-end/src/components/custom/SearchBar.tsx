@@ -16,14 +16,11 @@ export function SearchBar({ label = "Rechercher", ...props }: Props) {
   const location = useLocation()
 
   useEffect(() => {
-    console.log(location)
     setQuery("");
     return () => {
       setQuery("");
     };
   }, [location]);
-
-  console.log(query)
 
 return (
     <form {...props} className="relative">

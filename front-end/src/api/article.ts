@@ -4,13 +4,12 @@ import { fetchApi } from "./api";
 // Type pour la création/modification d'un article (sans les dates qui sont gérées par la BDD)
 type ArticleData = {
   num_inventaire: string;
-  num_serie: string;
+  num_serie?: string;
   categorie: string;
   etat: string;
   id_piece: string;
   num_bon_commande: string;
   fournisseur: string;
-  code_fournisseur?: string;
   marque: string;
 };
 
@@ -40,9 +39,6 @@ export const fetchArticle = async (articleId: string): Promise<Article> => {
 export const addArticle = async (articleData: ArticleData): Promise<Article> => {
   const payload = {
     ...articleData,
-    code_fournisseur: articleData.code_fournisseur
-      ? parseInt(articleData.code_fournisseur, 10)
-      : undefined,
     etat: parseInt(articleData.etat, 10),
     id_piece: parseInt(articleData.id_piece, 10),
     categorie: parseInt(articleData.categorie, 10),
@@ -57,9 +53,6 @@ export const addArticle = async (articleData: ArticleData): Promise<Article> => 
 export const addArticlesBatch = async (articles: ArticleData[]): Promise<Article[]> => {
   const articlesWithParsedInts = articles.map(article => ({
     ...article,
-    code_fournisseur: article.code_fournisseur
-      ? parseInt(article.code_fournisseur, 10)
-      : undefined,
     etat: parseInt(article.etat, 10),
     id_piece: parseInt(article.id_piece, 10),
     categorie: parseInt(article.categorie, 10),
@@ -86,9 +79,6 @@ export const updateArticle = async (articleId: string, articleData: ArticleData)
   const payload = {
     ...articleData,
     num_inventaire: parseInt(articleData.num_inventaire, 10),
-    code_fournisseur: articleData.code_fournisseur
-      ? parseInt(articleData.code_fournisseur, 10)
-      : undefined,
     etat: parseInt(articleData.etat, 10),
     id_piece: parseInt(articleData.id_piece, 10),
     categorie: parseInt(articleData.categorie, 10),
@@ -102,4 +92,15 @@ export const updateArticle = async (articleId: string, articleData: ArticleData)
 
 export const fetchEtats = async (): Promise<Etat[]> => {
   return await fetchApi(`/etats`);
+};
+
+/**
+ * Supprime un article par son numéro d'inventaire
+ * @param articleId - Le numéro d'inventaire de l'article à supprimer
+ * @returns Un message de confirmation
+ */
+export const deleteArticle = async (articleId: string): Promise<{ message: string }> => {
+  return await fetchApi(`/article/${articleId}`, {
+    method: "DELETE",
+  });
 };

@@ -9,13 +9,28 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Card from "@/components/custom/Card";
 import { useNavigate, useParams } from "react-router-dom";
-import { useArticle, useUpdateArticle } from "@/hooks/useArticle";
+import {
+  useArticle,
+  useUpdateArticle,
+  useDeleteArticle,
+} from "@/hooks/useArticle";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import ChoisirPiece from "@/components/custom/piece/ChoisirPiece";
 import { usePiece } from "@/hooks/usePiece";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useAtom } from "jotai";
 import { pieceSelectedAtom } from "@/lib/atoms";
 
@@ -24,9 +39,7 @@ const ModifierSchema = z.object({
     message:
       "Veuillez renseigner un numéro d'inventaire valide (5 chiffres minimum)",
   }),
-  num_serie: z
-    .string()
-    .regex(/.+/, { message: "Veuillez renseigner le numéro de série" }),
+  num_serie: z.string().optional(),
   categorie: z
     .string()
     .min(1, { message: "Veuillez sélectionner une catégorie" }),
@@ -38,7 +51,6 @@ const ModifierSchema = z.object({
   fournisseur: z
     .string()
     .regex(/.+/, { message: "Veuillez renseigner le nom du fournisseur" }),
-  code_fournisseur: z.string().optional(),
   marque: z
     .string()
     .regex(/.+/, { message: "Veuillez renseigner une marque valide" }),
@@ -53,7 +65,18 @@ export default function ModifierArticle() {
   const { data: article, isLoading } = useArticle(articleId || null);
 
   const updateArticle = useUpdateArticle();
+  const deleteArticleMutation = useDeleteArticle();
   const [modeChangementPiece, setModeChangementPiece] = useState(false);
+
+  const handleDeleteArticle = () => {
+    if (!articleId) return;
+
+    deleteArticleMutation.mutate(articleId, {
+      onSuccess: () => {
+        navigate(-1);
+      },
+    });
+  };
 
   const form = useForm<ModifierFormValues>({
     resolver: zodResolver(ModifierSchema),
@@ -68,7 +91,6 @@ export default function ModifierArticle() {
               : "Aucune pièce",
           num_bon_commande: article.num_bon_commande,
           fournisseur: article.fournisseur,
-          code_fournisseur: article.code_fournisseur?.toString() || "",
           marque: article.marque,
           num_serie: article.num_serie,
         }
@@ -121,7 +143,9 @@ export default function ModifierArticle() {
 
   return (
     <div className="container">
-      <Header title="Modifier article" />
+      <div className="flex items-center gap-2 justify-between">
+        <Header title="Modifier article" />
+      </div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -163,23 +187,25 @@ export default function ModifierArticle() {
               </FormItem>
             )}
           />
-          <div className="flex flex-col gap-2.5">
-            <FormLabel>Pièce</FormLabel>
-            <Card
-              content={piece?.nom || "Aucune pièce"}
-              size="small"
-              onClick={() => {setModeChangementPiece(true);console.log("on envoie true")}}
-              className={cn(
-                piece?.nom ? "" : "text-muted-foreground",
-                !piece?.nom && form.formState.errors.id_piece ? "border-destructive" : ""
-              )}
-            />
-            {form.formState.errors.id_piece && (
-              <p className="text-sm font-medium text-destructive">
-                {form.formState.errors.id_piece.message}
-              </p>
+          <FormField
+            control={form.control}
+            name="id_piece"
+            render={() => (
+              <FormItem>
+                <FormLabel>Pièce</FormLabel>
+                <FormControl>
+                  <Card
+                    content={piece?.nom || "Aucune pièce"}
+                    size="small"
+                    onClick={() => setModeChangementPiece(true)}
+                    className={cn(piece?.nom ? "" : "text-muted-foreground")}
+                    disabled={isLoading}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
-          </div>
+          />
           <FormField
             control={form.control}
             name="etat"
@@ -221,7 +247,7 @@ export default function ModifierArticle() {
             disabled={isLoading}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Numéro de série</FormLabel>
+                <FormLabel>Numéro de série <i className="text-muted-foreground">(Optionnel)</i></FormLabel>
                 <FormControl>
                   <Input placeholder="FUDGZ67328EYGH" {...field} />
                 </FormControl>
@@ -238,20 +264,6 @@ export default function ModifierArticle() {
                 <FormLabel>Fournisseur</FormLabel>
                 <FormControl>
                   <Input placeholder="Samas Office" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="code_fournisseur"
-            disabled={isLoading}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Code fournisseur</FormLabel>
-                <FormControl>
-                  <Input placeholder="8573" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -293,13 +305,42 @@ export default function ModifierArticle() {
               </span>
             )}
           </div>
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={isLoading || !form.formState.isDirty}
-          >
-            Modifier
-          </Button>
+          <div className="flex flex-col gap-2">
+            <Button
+              type="submit"
+              disabled={isLoading || !form.formState.isDirty}
+            >
+              Modifier
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  disabled={isLoading}
+                  className="flex items-center gap-2"
+                >
+                  Supprimer
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Êtes-vous sûr de vouloir supprimer cet article ?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Cette action est irréversible. L'article sera définitivement
+                    supprimé de l'inventaire.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Annuler</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDeleteArticle}>
+                    Supprimer
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </form>
       </Form>
     </div>

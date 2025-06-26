@@ -86,7 +86,6 @@ export default class ArticleController {
         'num_serie',
         'num_bon_commande',
         'fournisseur',
-        'code_fournisseur',
         'marque',
         'etat',
       ])
@@ -96,7 +95,6 @@ export default class ArticleController {
         !articleData.num_inventaire ||
         !articleData.categorie ||
         !articleData.id_piece ||
-        !articleData.num_serie ||
         !articleData.num_bon_commande ||
         !articleData.fournisseur ||
         !articleData.marque ||
@@ -119,7 +117,6 @@ export default class ArticleController {
       article.num_serie = articleData.num_serie
       article.num_bon_commande = articleData.num_bon_commande
       article.fournisseur = articleData.fournisseur
-      article.code_fournisseur = articleData.code_fournisseur
       article.marque = articleData.marque
       article.etat = articleData.etat
 
@@ -153,7 +150,6 @@ export default class ArticleController {
           !data.num_inventaire ||
           !data.categorie ||
           !data.id_piece ||
-          !data.num_serie ||
           !data.num_bon_commande ||
           !data.fournisseur ||
           !data.marque ||
@@ -174,7 +170,6 @@ export default class ArticleController {
           num_serie: data.num_serie,
           num_bon_commande: data.num_bon_commande,
           fournisseur: data.fournisseur,
-          code_fournisseur: data.code_fournisseur,
           marque: data.marque,
           etat: data.etat,
         })
@@ -212,7 +207,6 @@ export default class ArticleController {
         'num_serie',
         'num_bon_commande',
         'fournisseur',
-        'code_fournisseur',
         'marque',
         'etat',
       ])
@@ -240,7 +234,6 @@ export default class ArticleController {
 
       return response.ok(article)
     } catch (error) {
-      console.error(error)
       return response.internalServerError({
         error: "Erreur lors de la mise à jour de l'article",
       })
@@ -322,10 +315,28 @@ export default class ArticleController {
         rooms: [],
       })
     } catch (error) {
-      console.error(error)
       return response.internalServerError({
         error: 'Erreur lors de la recherche des articles et des salles',
       })
+    }
+  }
+
+  /**
+   * Delete an article by its inventory number
+   */
+  public async delete({ params, response }: HttpContextContract) {
+    try {
+      const article = await Article.find(params.num_inventaire)
+
+      if (!article) {
+        return response.notFound({ error: 'Article non trouvé' })
+      }
+
+      await article.delete()
+
+      return response.ok({ message: 'Article supprimé avec succès' })
+    } catch (error) {
+      return response.internalServerError({ error: "Erreur lors de la suppression de l'article" })
     }
   }
 }

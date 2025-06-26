@@ -1,5 +1,6 @@
 import { usePieceByName, useSaveScan } from "@/hooks/usePiece";
 import { useState, useEffect } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import type { Article } from "@/types";
 import { useAtom } from "jotai";
 import { codeScannedAtom, scanModeAtom } from "@/lib/atoms";
@@ -10,11 +11,15 @@ import ScanMode from "@/pages/scanner/components/ScanMode";
 import Error from "@/pages/common/Error";
 import ScanPieceButton from "./ScanPieceButton";
 
-export default function PieceInfo() {
+interface PieceInfoProps {
+  openConfirmScan: boolean;
+  setOpenConfirmScan: Dispatch<SetStateAction<boolean>>;
+}
+
+export default function PieceInfo({ openConfirmScan, setOpenConfirmScan }: PieceInfoProps) {
   const [scanMode, setScanMode] = useAtom(scanModeAtom);
   const [codeScanned, setCodeScanned] = useAtom(codeScannedAtom);
   const [articlesScanned, setArticlesScanned] = useState<Article[]>([]);
-  const [openConfirmScan, setOpenConfirmScan] = useState(false);
 
   const changePiece = scanMode ? articlesScanned.length === 0 : true;
   const isPiece = !!codeScanned?.match(/[a-zA-Z]/);
@@ -47,9 +52,7 @@ export default function PieceInfo() {
   const saveScan = async () => {
     saveScanMutate();
     resetArticlesScanned();
-    // if (codeScanned === piece?.nom) {
-      setCodeScanned(null);
-    // }
+    setCodeScanned(null);
   };
 
   const resetArticlesScanned = () => {
@@ -97,7 +100,10 @@ export default function PieceInfo() {
       {scanMode && piece ? (
         <ScanMode piece={piece} articlesScanned={articlesScanned} />
       ) : (
-        <ArticleList articles={piece?.articles} />
+        <div className="flex flex-col gap-6">
+          <p className="text-muted-foreground">Articles dans la pièce</p>
+          <ArticleList articles={piece?.articles} />
+        </div>
       )}
       <ScanConfirmDialog open={openConfirmScan} onConfirm={handleConfirmScan} />
       <ScanPieceButton onClick={handleButtonScan} />
