@@ -1,5 +1,5 @@
 // Configuration de l'API
-export const API_BASE_URL = 'https://toys-burton-truth-commonly.trycloudflare.com'
+export const API_BASE_URL = 'https://partner-surname-tablets-live.trycloudflare.com'
 
 // Configuration des headers par défaut
 export const DEFAULT_HEADERS = {
