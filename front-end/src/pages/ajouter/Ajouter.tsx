@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -22,6 +22,8 @@ import AjoutMultipleDialog from "@/components/custom/ajouterArticle/AjoutMultipl
 import ChoisirPiece from "@/components/custom/piece/ChoisirPiece";
 import { usePiece } from "@/hooks/usePiece";
 import { cn } from "@/lib/utils";
+import { useAtom } from "jotai";
+import { pieceSelectedAtom, searchPiecesOnly } from "@/lib/atoms";
 
 const AjouterSchema = z.object({
   num_inventaire: z.string().regex(/^\d{5,}$/, {
@@ -57,7 +59,7 @@ type AjouterFormValues = z.infer<typeof AjouterSchema>;
 
 export default function Ajouter() {
   const [showMultipleDialog, setShowMultipleDialog] = useState(false);
-  const [modeChangementPiece, setModeChangementPiece] = useState(false);
+  const [modeChangementPiece, setModeChangementPiece] = useAtom(searchPiecesOnly);
 
   const form = useForm<AjouterFormValues>({
     resolver: zodResolver(AjouterSchema),
@@ -114,6 +116,17 @@ export default function Ajouter() {
     }
   }
 
+  const [pieceSelected,setPieceSelected] = useAtom(pieceSelectedAtom);
+  useEffect(()=>{
+    handleSelectPiece(pieceSelected);
+  },[pieceSelected])
+
+  useEffect(() => {
+    setPieceSelected("");
+    return () => {
+      setPieceSelected("");
+    };
+  }, []);
   function handleSelectPiece(pieceId: string) {
     form.setValue("id_piece", pieceId, { shouldValidate: true });
     setModeChangementPiece(false);
@@ -157,10 +170,7 @@ export default function Ajouter() {
 
   if (modeChangementPiece) {
     return (
-      <ChoisirPiece
-        onSelect={handleSelectPiece}
-        onClose={() => setModeChangementPiece(false)}
-      />
+      <ChoisirPiece/>
     );
   }
 

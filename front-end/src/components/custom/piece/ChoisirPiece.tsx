@@ -1,18 +1,28 @@
 import ListeBatiments from "@/pages/inventaire/ListeBatiments";
 import ListeEtages from "@/pages/inventaire/ListeEtages";
 import ListePieces from "@/pages/inventaire/ListePieces";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "../Header";
+import { useSetAtom } from "jotai";
+import { pieceSelectedAtom, searchPiecesOnly, searchQueryAtom} from "@/lib/atoms";
+import { useSet } from "@uidotdev/usehooks";
 
-interface ChoisirPieceProps {
-  onSelect: (pieceId: string) => void;
-  onClose: () => void;
-}
 
-export default function ChoisirPiece({ onSelect, onClose }: ChoisirPieceProps) {
+export default function ChoisirPiece() {
   const [batimentId, setBatimentId] = useState<string | undefined>(undefined);
   const [etageId, setEtageId] = useState<string | undefined>(undefined);
   const [step, setStep] = useState<'batiment' | 'etage' | 'piece'>('batiment');
+  const setModeChangementPiece = useSetAtom(searchPiecesOnly);
+  const setPieceSelected = useSetAtom(pieceSelectedAtom);
+  const setQuery = useSetAtom(searchQueryAtom);
+
+
+  //On passe à une recherche par salle uniquement (var globale)
+  useEffect(() => {
+    setModeChangementPiece(true);
+    return () => setModeChangementPiece(false);
+  }, [setModeChangementPiece]);
+
 
   const handleSelectBatiment = (id: string) => {
     setBatimentId(id);
@@ -24,8 +34,8 @@ export default function ChoisirPiece({ onSelect, onClose }: ChoisirPieceProps) {
     setStep('piece');
   };
   const handleSelectPiece = (id: string) => {
-    onSelect(id);
-    onClose();
+    setPieceSelected(id);
+    setModeChangementPiece(false); //On ferme la fenetre
   };
 
   const handleBack = () => {
@@ -37,7 +47,8 @@ export default function ChoisirPiece({ onSelect, onClose }: ChoisirPieceProps) {
         setStep('batiment');
         break;
       case 'batiment':
-        onClose();
+        setModeChangementPiece(false); //On ferme la fenetre
+        setQuery("");
         break;
     }
   };

@@ -11,11 +11,13 @@ import Card from "@/components/custom/Card";
 import { useNavigate, useParams } from "react-router-dom";
 import { useArticle, useUpdateArticle } from "@/hooks/useArticle";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChoisirPiece from "@/components/custom/piece/ChoisirPiece";
 import { usePiece } from "@/hooks/usePiece";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { useAtom } from "jotai";
+import { pieceSelectedAtom } from "@/lib/atoms";
 
 const ModifierSchema = z.object({
   num_inventaire: z.string().regex(/^\d{5,}$/, {
@@ -91,17 +93,29 @@ export default function ModifierArticle() {
     );
   };
 
-  const handleSelectPiece = (pieceId: string) => {
-    form.setValue("id_piece", pieceId, { shouldDirty: true });
+  const [pieceSelected, setPieceSelected] = useAtom(pieceSelectedAtom);
+
+  useEffect(() => {
+    setPieceSelected("");
+    return () => {
+      setPieceSelected("");
+    };
+  }, []);
+
+  useEffect(()=>{
+    if(pieceSelected!==""){
+      handleSelectPiece(pieceSelected);
+    }
+  },[pieceSelected])
+
+  function handleSelectPiece(pieceId: string) {
+    form.setValue("id_piece", pieceId, { shouldValidate: true });
     setModeChangementPiece(false);
-  };
+  }
 
   if (modeChangementPiece) {
     return (
-      <ChoisirPiece
-        onSelect={handleSelectPiece}
-        onClose={() => setModeChangementPiece(false)}
-      />
+      <ChoisirPiece/>
     );
   }
 
@@ -152,16 +166,19 @@ export default function ModifierArticle() {
           <div className="flex flex-col gap-2.5">
             <FormLabel>Pièce</FormLabel>
             <Card
-              content={
-                !article?.piece || article?.piece?.id == null
-                  ? "Aucune pièce"
-                  : article.piece.nom
-              }
+              content={piece?.nom || "Aucune pièce"}
               size="small"
-              onClick={() => setModeChangementPiece(true)}
-              className={cn(piece?.nom ? "" : "text-muted-foreground")}
-              disabled={isLoading}
+              onClick={() => {setModeChangementPiece(true);console.log("on envoie true")}}
+              className={cn(
+                piece?.nom ? "" : "text-muted-foreground",
+                !piece?.nom && form.formState.errors.id_piece ? "border-destructive" : ""
+              )}
             />
+            {form.formState.errors.id_piece && (
+              <p className="text-sm font-medium text-destructive">
+                {form.formState.errors.id_piece.message}
+              </p>
+            )}
           </div>
           <FormField
             control={form.control}
