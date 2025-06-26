@@ -10,6 +10,7 @@ import ArticleList, { ArticleListSkeleton } from "../article/ArticleList";
 import ScanMode from "@/pages/scanner/components/ScanMode";
 import Error from "@/pages/common/Error";
 import ScanPieceButton from "./ScanPieceButton";
+import { toast } from "sonner";
 
 interface PieceInfoProps {
   openConfirmScan: boolean;
@@ -28,7 +29,7 @@ export default function PieceInfo({ openConfirmScan, setOpenConfirmScan }: Piece
     codeScanned,
     isPiece && changePiece
   );
-  const { data: article } = useArticle(codeScanned, scanMode && !isPiece);
+  const { data: article, error: articleError } = useArticle(codeScanned, scanMode && !isPiece);
   const { mutate: saveScanMutate } = useSaveScan(
     piece?.id.toString() || "",
     articlesScanned.map((article) => article.num_inventaire)
@@ -48,6 +49,15 @@ export default function PieceInfo({ openConfirmScan, setOpenConfirmScan }: Piece
       }
     }
   }, [codeScanned, scanMode, article, piece]);
+
+  useEffect(() => {
+    if (articleError) {
+      toast.error("Aucun article n'a été trouvé avec ce numéro d'inventaire", {
+        position: "top-center",
+        richColors: true
+      });
+    }
+  }, [articleError]);
 
   const saveScan = async () => {
     saveScanMutate();

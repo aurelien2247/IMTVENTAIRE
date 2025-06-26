@@ -24,6 +24,7 @@ export const useArticle = (idArticle: string | null, enabled = true) => {
     queryKey: ["article", idArticle],
     queryFn: () => fetchArticle(idArticle),
     enabled,
+    retry: false
   });
 };
 
