@@ -45,7 +45,7 @@ export function SearchBar({ label = "Rechercher", ...props }: Props) {
   };
 
   return (
-    <form {...props} className="relative" onSubmit={redirectToSearch}>
+    <form {...props} className="relative flex-1" onSubmit={redirectToSearch}>
       <Label htmlFor="search" className="sr-only">
         {label}
       </Label>

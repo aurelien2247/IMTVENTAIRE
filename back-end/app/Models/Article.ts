@@ -1,4 +1,4 @@
-import { BaseModel, column, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, belongsTo, BelongsTo, computed } from '@ioc:Adonis/Lucid/Orm'
 import { DateTime } from 'luxon'
 import Piece from './Piece'
 import Categorie from './Categorie'
@@ -54,4 +54,9 @@ export default class Article extends BaseModel {
 
   @column.dateTime()
   public date_modification: DateTime
+
+  @computed()
+  public get annee_derniere_modification(): number | null {
+    return this.date_modification ? this.date_modification.year : null
+  }
 }

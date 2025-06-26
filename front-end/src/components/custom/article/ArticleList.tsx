@@ -12,54 +12,62 @@ import { Badge } from "@/components/ui/badge";
 interface ArticleListProps {
   articles?: Article[];
   ArticleComponent?: React.ComponentType<{ article: Article }>;
+  groupBy?: string;
+  openFirstByDefault?: boolean;
 }
+
+// Utilitaire pour accéder à une propriété imbriquée via une string (ex: 'categorie.nom')
+function getNestedValue<T, R>(obj: T, path: string): R | undefined {
+  return path.split(".").reduce((acc: unknown, part) => (acc && typeof acc === "object" ? (acc as Record<string, unknown>)[part] : undefined), obj) as R | undefined;
+}
+
+/**
+ * Groupe les articles par l'attribut spécifié dans groupBy
+ * @param articles - Les articles à grouper
+ * @param groupBy - Le chemin de la propriété (ex: 'categorie.nom')
+ * @returns Un objet où les clés sont les valeurs de l'attribut et les valeurs sont les articles correspondants
+ */
+const groupArticles = (
+  articles: Article[],
+  groupBy: string
+): Record<string, Article[]> => {
+  return articles.reduce((groupedArticles: Record<string, Article[]>, article) => {
+    const groupValue = getNestedValue<Article, string>(article, groupBy) ?? "Inconnu";
+    if (!groupedArticles[groupValue]) {
+      groupedArticles[groupValue] = [];
+    }
+    groupedArticles[groupValue].push(article);
+    return groupedArticles;
+  }, {} as Record<string, Article[]>);
+};
 
 export default function ArticleList({
   articles,
   ArticleComponent = ArticleItem,
+  groupBy = "categorie.nom",
+  openFirstByDefault = false,
 }: ArticleListProps) {
   if (!articles || articles.length === 0) {
     return (
-      <div className="flex flex-col items-center gap-4 py-8">
+      <div className="flex flex-col items-center gap-4 pb-8 pt-12">
         <PackageX className="w-12 h-12" />
-        <p className="text-muted-foreground">Aucun article dans la pièce</p>
+        <p className="text-muted-foreground">Aucun article trouvé</p>
       </div>
     );
   }
 
-  /**
-   * Groupe les articles par leur catégorie
-   * @param articles - Les articles à grouper
-   * @returns Un objet où les clés sont les noms des catégories et les valeurs sont les articles correspondants
-   */
-  const groupArticlesByCategory = (
-    articles: Article[]
-  ): Record<string, Article[]> => {
-    return articles.reduce((groupedArticles, article) => {
-      const categoryName = article.categorie.nom;
-
-      // Crée un tableau vide pour la catégorie si elle n'existe pas encore
-      if (!groupedArticles[categoryName]) {
-        groupedArticles[categoryName] = [];
-      }
-
-      // Ajoute l'article au tableau de sa catégorie
-      groupedArticles[categoryName].push(article);
-
-      return groupedArticles;
-    }, {} as Record<string, Article[]>);
-  };
-
-  const grouped = groupArticlesByCategory(articles);
+  const grouped = groupArticles(articles, groupBy);
+  const groupKeys = Object.keys(grouped);
+  const defaultOpen = openFirstByDefault && groupKeys.length > 0 ? [groupKeys[0]] : [];
 
   return (
     <div className="flex flex-col gap-6">
-      <Accordion type="multiple" className="w-full">
-        {Object.entries(grouped).map(([categorieNom, articles]) => (
-          <AccordionItem key={categorieNom} value={categorieNom}>
+      <Accordion type="multiple" className="w-full" defaultValue={defaultOpen}>
+        {Object.entries(grouped).map(([nomGroupe, articles]) => (
+          <AccordionItem key={nomGroupe} value={nomGroupe}>
             <AccordionTrigger>
               <div className="flex items-center gap-2 justify-between w-full">
-                <p>{categorieNom}</p>
+                <p>{nomGroupe}</p>
                 <Badge variant="secondary">{articles.length}</Badge>
               </div>
             </AccordionTrigger>
@@ -79,13 +87,23 @@ export default function ArticleList({
   );
 }
 
-export function ArticleListSkeleton() {
+interface ArticleListSkeletonProps {
+  ArticleComponent?: React.ComponentType;
+}
+
+export function ArticleListSkeleton({ ArticleComponent = ArticleItemSkeleton }: ArticleListSkeletonProps) {
   return (
-    <div className="flex flex-col gap-6">
-      <p className="text-muted-foreground">Articles dans la pièce</p>
-      {[...Array(3)].map((_, index) => (
-        <ArticleItemSkeleton key={index} />
-      ))}
+    <div className="flex flex-col gap-6 pt-4">
+      <ArticleComponent />
+      <ArticleComponent />
+      <ArticleComponent />
+      <ArticleComponent />
+      <ArticleComponent />
+      <ArticleComponent />
+      <ArticleComponent />
+      <ArticleComponent />
+      <ArticleComponent />
+      <ArticleComponent />
     </div>
   );
 }

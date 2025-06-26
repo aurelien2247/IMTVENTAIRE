@@ -1,4 +1,4 @@
-import { useMediaQuery } from "@/hooks/use-media-query";
+import { useDesktop } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -40,7 +40,7 @@ export function Combobox({
   allowCreate = false 
 }: ComboboxProps) {
   const [open, setOpen] = useState(false);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isDesktop = useDesktop();
   const [selectedStatus, setSelectedStatus] = useState<Status | null>(status || null);
 
   useEffect(() => {

@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchArticle, fetchArticles, addArticle, addArticlesBatch, updateArticle, fetchCategories, fetchEtats, createCategory, deleteArticle } from "@/api/article";
+import { fetchArticle, fetchArticles, addArticle, addArticlesBatch, updateArticle, fetchCategories, fetchEtats, createCategory, deleteArticle, fetchArchives } from "@/api/article";
 import { toast } from "sonner";
+import type { EtatEnum } from "@/types";
 
 
 export const useArticles = (pieceId: string | undefined) => {
@@ -23,6 +24,13 @@ export const useArticle = (idArticle: string | null, enabled = true) => {
     queryKey: ["article", idArticle],
     queryFn: () => fetchArticle(idArticle),
     enabled,
+  });
+};
+
+export const useArchives = (etat: EtatEnum) => {
+  return useQuery({
+    queryKey: ["archives", etat],
+    queryFn: () => fetchArchives(etat),
   });
 };
 

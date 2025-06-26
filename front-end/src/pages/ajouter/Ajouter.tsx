@@ -29,16 +29,15 @@ import { cn } from "@/lib/utils";
 import { useSearchParams } from "react-router-dom";
 
 const AjouterSchema = z.object({
-  num_inventaire: z.string().regex(/^\d{5,}$/, {
-    message:
-      "Veuillez renseigner un numéro d'inventaire valide (5 chiffres minimum)",
-  }),
+  num_inventaire: z
+    .string()
+    .regex(/^\d+$/, {
+      message: "Veuillez renseigner un numéro d'inventaire valide",
+    }),
   nb_articles: z.string().regex(/^[1-9]\d*$/, {
     message: "Le nombre doit être supérieur à 0",
   }),
-  num_serie: z
-    .string()
-    .optional(),
+  num_serie: z.string().optional(),
   categorie: z
     .string()
     .regex(/.+/, { message: "Veuillez renseigner la catégorie" }),
@@ -238,9 +237,7 @@ export default function Ajouter() {
                     content={piece?.nom || "Aucune pièce"}
                     size="small"
                     onClick={() => setModeChangementPiece(true)}
-                    className={cn(
-                      piece?.nom ? "" : "text-muted-foreground"
-                    )}
+                    className={cn(piece?.nom ? "" : "text-muted-foreground")}
                   />
                 </FormControl>
                 <FormMessage />
@@ -265,7 +262,10 @@ export default function Ajouter() {
             name="num_serie"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Numéro de série <i className="text-muted-foreground">(Optionnel)</i></FormLabel>
+                <FormLabel>
+                  Numéro de série{" "}
+                  <i className="text-muted-foreground">(Optionnel)</i>
+                </FormLabel>
                 <FormControl>
                   <Input placeholder="FUDGZ67328EYGH" {...field} />
                 </FormControl>

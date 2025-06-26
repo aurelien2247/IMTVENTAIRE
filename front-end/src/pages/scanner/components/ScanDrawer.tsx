@@ -1,4 +1,4 @@
-import { useMediaQuery } from "@/hooks/use-media-query";
+import { useDesktop } from "@/hooks/use-media-query";
 import {
   Dialog,
   DialogContent,
@@ -20,7 +20,7 @@ const snapPoints = [0.4, 0.6, 0.9];
 export function ScanDrawer({ children, onClose }: ScanDrawerProps) {
   const [codeScanned] = useAtom(codeScannedAtom);
   const [snap, setSnap] = useState<number | string | null>(snapPoints[0]);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isDesktop = useDesktop();
   const isOpen = codeScanned !== null;
 
   if (!codeScanned) {

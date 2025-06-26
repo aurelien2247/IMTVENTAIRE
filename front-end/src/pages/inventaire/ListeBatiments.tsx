@@ -6,6 +6,10 @@ import NotFound from "../common/NotFound";
 import Error from "../common/Error";
 import { useBatiments } from "@/hooks/useBatiment";
 import { cn } from "@/lib/utils";
+import { Archive } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useDesktop } from "@/hooks/use-media-query";
+import { useNavigate } from "react-router-dom";
 
 interface ListeBatimentsProps {
   onSelect?: (id: string) => void;
@@ -14,7 +18,8 @@ interface ListeBatimentsProps {
 
 export default function ListeBatiments({ onSelect, title = "Inventaire" }: ListeBatimentsProps) {
   const { data: batiments, isLoading, error } = useBatiments();
-
+  const isDesktop = useDesktop();
+  const navigate = useNavigate();
   const style = cn(!onSelect && "container", "flex flex-col gap-6");
 
   if (isLoading) {
@@ -60,7 +65,13 @@ export default function ListeBatiments({ onSelect, title = "Inventaire" }: Liste
   return (
     <div className={style}>
       {!onSelect && <Header title={title} />}
-      <SearchBar  />
+      <div className="flex justify-between gap-2">
+        <SearchBar />
+        <Button variant="outline" onClick={() => navigate("/inventaire/archives")}>
+          <Archive />
+          {isDesktop && "Archives"}
+        </Button>
+      </div>
       <div className="flex flex-col gap-2">
         {batiments.map((batiment: Batiment) => (
           <Card

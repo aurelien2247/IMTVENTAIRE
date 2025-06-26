@@ -9,6 +9,7 @@ import ListePieces from './pages/inventaire/ListePieces'
 import ListeArticles from './pages/inventaire/ListeArticles'
 import ModifierArticle from './pages/inventaire/ModifierArticle'
 import SearchResults from './pages/SearchResults'
+import Archives from './pages/inventaire/Archives'
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
             <Route path=":batimentId/:etageId/:pieceId" element={<ListeArticles />} />
             <Route path=":articleId/modifier" element={<ModifierArticle />} />
             <Route path="search" element={<SearchResults />} />
+            <Route path="archives" element={<Archives />} />
           </Route>
           <Route path="/" element={<Scanner />} />
           <Route path="/ajouter" element={<Ajouter />} />
