@@ -17,7 +17,11 @@ import { NumericInput } from "@/components/ui/numeric-input";
 import Card from "@/components/custom/Card";
 import { Combobox } from "@/components/ui/combobox";
 import Header from "@/components/custom/Header";
-import { useAddArticle, useAddArticlesBatch, useCategories } from "@/hooks/useArticle";
+import {
+  useAddArticle,
+  useAddArticlesBatch,
+  useCategories,
+} from "@/hooks/useArticle";
 import AjoutMultipleDialog from "@/components/custom/ajouterArticle/AjoutMultipleDialog";
 import ChoisirPiece from "@/components/custom/piece/ChoisirPiece";
 import { usePiece } from "@/hooks/usePiece";
@@ -27,11 +31,9 @@ import { pieceSelectedAtom, searchPiecesOnly } from "@/lib/atoms";
 import { useSearchParams } from "react-router-dom";
 
 const AjouterSchema = z.object({
-  num_inventaire: z
-    .string()
-    .regex(/^\d+$/, {
-      message: "Veuillez renseigner un numéro d'inventaire valide",
-    }),
+  num_inventaire: z.string().regex(/^\d+$/, {
+    message: "Veuillez renseigner un numéro d'inventaire valide",
+  }),
   nb_articles: z.string().regex(/^[1-9]\d*$/, {
     message: "Le nombre doit être supérieur à 0",
   }),
@@ -52,7 +54,7 @@ const AjouterSchema = z.object({
   code_fournisseur: z.string().optional(),
   marque: z
     .string()
-    .regex(/.+/, { message: "Veuillez renseigner une marque valide" })
+    .regex(/.+/, { message: "Veuillez renseigner une marque valide" }),
 });
 
 type AjouterFormValues = z.infer<typeof AjouterSchema>;
@@ -61,7 +63,9 @@ export default function Ajouter() {
   const [searchParams] = useSearchParams();
   const numInventaireFromUrl = searchParams.get("num_inventaire") || "";
   const [showMultipleDialog, setShowMultipleDialog] = useState(false);
-  const [modeChangementPiece, setModeChangementPiece] = useAtom(searchPiecesOnly);
+  const [pieceSelected, setPieceSelected] = useAtom(pieceSelectedAtom);
+  const [modeChangementPiece, setModeChangementPiece] =
+    useAtom(searchPiecesOnly);
 
   const form = useForm<AjouterFormValues>({
     resolver: zodResolver(AjouterSchema),
@@ -75,13 +79,16 @@ export default function Ajouter() {
       num_bon_commande: "",
       fournisseur: "",
       code_fournisseur: "",
-      marque: ""
+      marque: "",
     },
   });
 
   const addArticle = useAddArticle();
   const addArticlesBatch = useAddArticlesBatch();
-  const { data: piece } = usePiece(form.watch("id_piece"), form.watch("id_piece").length > 0);
+  const { data: piece } = usePiece(
+    form.watch("id_piece"),
+    form.watch("id_piece").length > 0
+  );
   const { data: categories = [] } = useCategories();
 
   // Trouver la catégorie correspondante à l'identifiant stocké dans le formulaire
@@ -91,7 +98,7 @@ export default function Ajouter() {
 
   function onSubmit(data: AjouterFormValues) {
     const nbArticles = parseInt(data.nb_articles, 10);
-    
+
     // On ne passe pas les dates à l'API
     const submitData = {
       num_inventaire: data.num_inventaire,
@@ -102,7 +109,7 @@ export default function Ajouter() {
       fournisseur: data.fournisseur,
       code_fournisseur: data.code_fournisseur,
       marque: data.marque,
-      etat: data.etat
+      etat: data.etat,
     };
 
     if (nbArticles > 1) {
@@ -118,10 +125,11 @@ export default function Ajouter() {
     }
   }
 
-  const [pieceSelected,setPieceSelected] = useAtom(pieceSelectedAtom);
-  useEffect(()=>{
-    handleSelectPiece(pieceSelected);
-  },[pieceSelected])
+  useEffect(() => {
+    if (pieceSelected) {
+      handleSelectPiece(pieceSelected);
+    }
+  }, [pieceSelected]);
 
   useEffect(() => {
     setPieceSelected("");
@@ -171,12 +179,11 @@ export default function Ajouter() {
   }
 
   if (modeChangementPiece) {
-    return (
-      <ChoisirPiece/>
-    );
+    return <ChoisirPiece />;
   }
 
   const formData = form.getValues();
+  console.log(form.formState.errors, formData);
 
   return (
     <div className="container gap-8">
@@ -244,7 +251,7 @@ export default function Ajouter() {
                     content={piece?.nom || "Aucune pièce"}
                     size="small"
                     onClick={() => setModeChangementPiece(true)}
-                    className={cn(piece?.nom ? "" : "text-muted-foreground")}
+                    className={cn(piece?.nom ? "" : "text-muted-foreground", form.formState.errors.id_piece ? "border-1 border-destructive" : "")}
                   />
                 </FormControl>
                 <FormMessage />
@@ -298,7 +305,9 @@ export default function Ajouter() {
             name="code_fournisseur"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Code fournisseur <i>(Optionnel)</i></FormLabel>
+                <FormLabel>
+                  Code fournisseur <i>(Optionnel)</i>
+                </FormLabel>
                 <FormControl>
                   <Input type="number" placeholder="8573" {...field} />
                 </FormControl>
@@ -319,7 +328,7 @@ export default function Ajouter() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full" >
+          <Button type="submit" className="w-full">
             Ajouter
           </Button>
         </form>
