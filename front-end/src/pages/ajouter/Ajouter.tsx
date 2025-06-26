@@ -244,7 +244,7 @@ export default function Ajouter() {
                     content={piece?.nom || "Aucune pièce"}
                     size="small"
                     onClick={() => setModeChangementPiece(true)}
-                    className={cn(piece?.nom ? "" : "text-muted-foreground", !piece?.nom && form.formState.errors.id_piece ? "border-destructive" : "")}
+                    className={cn(piece?.nom ? "" : "text-muted-foreground")}
                   />
                 </FormControl>
                 <FormMessage />

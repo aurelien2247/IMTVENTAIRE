@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import Header from "../Header";
 import { useSetAtom } from "jotai";
 import { pieceSelectedAtom, searchPiecesOnly, searchQueryAtom} from "@/lib/atoms";
-import { useSet } from "@uidotdev/usehooks";
 
 
 export default function ChoisirPiece() {

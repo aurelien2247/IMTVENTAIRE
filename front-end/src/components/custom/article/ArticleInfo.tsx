@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useArticle, useUpdateArticle } from "@/hooks/useArticle";
+import { useArticle } from "@/hooks/useArticle";
 import ArticleEtat, { ArticleEtatSkeleton } from "./ArticleEtat";
 import { useAtom } from "jotai";
 import { codeScannedAtom } from "@/lib/atoms";
@@ -10,41 +10,18 @@ import ChoisirPiece from "../piece/ChoisirPiece";
 
 export default function ArticleInfo() {
   const navigate = useNavigate();
-  const updateArticle = useUpdateArticle();
   const [codeScanned] = useAtom(codeScannedAtom);
   const { data: article } = useArticle(codeScanned);
   const [modeChangementPiece, setModeChangementPiece] = useState(false);
 
   const articleId = article?.num_inventaire;
 
-  const handleSelectPiece = (pieceId: string) => {
-    updateArticle.mutate({
-      articleId: articleId || "",
-      data: {
-        id_piece: pieceId,
-        num_inventaire: article?.num_inventaire || "",
-        num_serie: article?.num_serie || "",
-        categorie: article?.categorie.id.toString() || "",
-        etat: article?.etat.id.toString() || "",
-        num_bon_commande: article?.num_bon_commande || "",
-        fournisseur: article?.fournisseur || "",
-        marque: article?.marque || "",
-      },
-    });
-    setModeChangementPiece(false);
-  };
-
   if (!article) {
     return <ArticleInfoNotFound />;
   }
 
   if (modeChangementPiece) {
-    return (
-      <ChoisirPiece
-        onSelect={handleSelectPiece}
-        onClose={() => setModeChangementPiece(false)}
-      />
-    );
+    return <ChoisirPiece />;
   }
 
   return (
@@ -57,7 +34,11 @@ export default function ArticleInfo() {
               <h1>{article.categorie.nom}</h1>
             </span>
           </div>
-          <p className="text-muted-foreground">{!article.piece || article.piece.id == null ? "Aucune pièce" : article.piece.nom}</p>
+          <p className="text-muted-foreground">
+            {!article.piece || article.piece.id == null
+              ? "Aucune pièce"
+              : article.piece.nom}
+          </p>
         </div>
         <div className="flex gap-8 flex-wrap">
           <span className="min-w-0">
