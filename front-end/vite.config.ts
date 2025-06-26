@@ -19,10 +19,11 @@ export default defineConfig({
       manifest: {
         name: 'IMT VENTAIRE',
         short_name: 'IMTVENTAIRE',
-        description: 'Application d’inventaire pour Thierry. Développée par Hugo, Enzo, Mathilde et Aurélien.',
+        description: 'Application d\'inventaire pour Thierry. Développée par Hugo, Enzo, Mathilde et Aurélien.',
         theme_color: '#ffffff',
         background_color: '#ffffff',
         display: 'standalone',
+        display_override: ['standalone', 'minimal-ui'],
         start_url: '/',
         icons: [
           {
@@ -36,6 +37,9 @@ export default defineConfig({
             type: 'image/png',
           },
         ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
       },
     }),
   ],

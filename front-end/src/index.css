@@ -123,6 +123,27 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Support pour les safe areas de l'iPhone */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Support spécifique pour les PWA sur iPhone */
+  @supports (padding: max(0px)) {
+    body {
+      padding-top: max(env(safe-area-inset-top), 0px);
+      padding-bottom: max(env(safe-area-inset-bottom), 0px);
+      padding-left: max(env(safe-area-inset-left), 0px);
+      padding-right: max(env(safe-area-inset-right), 0px);
+    }
+  }
+
+  /* Assurer que le contenu principal respecte les safe areas */
+  #root {
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height pour les navigateurs modernes */
   }
 
   h1 {
