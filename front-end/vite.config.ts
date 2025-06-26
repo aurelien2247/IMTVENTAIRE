@@ -16,7 +16,6 @@ export default defineConfig({
     // Configuration PWA
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['logo-192.png', 'logo-512.png'],
       manifest: {
         name: 'IMT VENTAIRE',
         short_name: 'IMTVENTAIRE',
@@ -31,37 +30,19 @@ export default defineConfig({
             src: '/logo-192.png',
             sizes: '192x192',
             type: 'image/png',
-            purpose: 'any maskable',
           },
           {
             src: '/logo-512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any maskable',
           },
         ],
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/.*\.(png|jpg|jpeg|svg|gif|ico)$/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'images-cache',
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 jours
-              },
-            },
-          },
-        ],
       },
     }),
   ],
-
-  // Configuration pour les fichiers statiques
-  publicDir: 'public',
 
   // Aliases personnalisés pour des imports plus clairs
   resolve: {
