@@ -231,8 +231,8 @@ export default function Ajouter() {
                     type="categorie"
                     allowCreate={true}
                     noOptionText="Aucune catégorie"
-                    onSelectedStatusChange={(status) => {
-                      field.onChange(status?.id.toString() || "");
+                    onSelectedStatusChange={(statusId) => {
+                      field.onChange(statusId || "");
                     }}
                   />
                 </FormControl>

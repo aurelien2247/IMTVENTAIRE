@@ -1,7 +1,7 @@
 import { ChevronRight } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const cardVariants = cva(
   "flex items-center justify-between gap-4 bg-muted rounded-2xl hover:bg-muted-foreground/10 transition-colors group cursor-pointer",
@@ -29,26 +29,28 @@ interface Props extends VariantProps<typeof cardVariants> {
   disabled?: boolean;
 }
 
-export default function Card({ content, link, size, className, onClick, disabled }: Props) {
-  const classes = cn(cardVariants({ size, className }));
-  if (onClick) {
-    return (
-      <div className={classes} onClick={onClick} role="button" tabIndex={0}>
-        <p
-          className={cn(
-            "font-semibold",
-            size === "medium" && "text-base",
-            size === "small" && "text-sm"
-          )}
-        >
-          {content}
-        </p>
-        {!disabled && <ChevronRight className="text-muted-foreground transition-transform group-hover:translate-x-1" />}
-      </div>
-    );
-  }
+export default function Card({
+  content,
+  link,
+  size,
+  className,
+  onClick,
+  disabled,
+}: Props) {
+  const navigate = useNavigate();
+  const classes = cn(cardVariants({ size, className, disabled }));
+
+  const handleClick = () => {
+    if (disabled) return;
+    if (onClick) {
+      onClick();
+    } else if (link) {
+      navigate(link || "");
+    }
+  };
+
   return (
-    <Link to={disabled ? "" : link || ""} className={cn(cardVariants({ size, className, disabled }))}>
+    <div className={classes} onClick={handleClick} role="button" tabIndex={0}>
       <p
         className={cn(
           "font-semibold",
@@ -58,7 +60,9 @@ export default function Card({ content, link, size, className, onClick, disabled
       >
         {content}
       </p>
-      {link && !disabled && <ChevronRight className="text-muted-foreground transition-transform group-hover:translate-x-1" />}
-    </Link>
+      {!disabled && (
+        <ChevronRight className="text-muted-foreground transition-transform group-hover:translate-x-1" />
+      )}
+    </div>
   );
 }

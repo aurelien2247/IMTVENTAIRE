@@ -24,9 +24,9 @@ type ComboboxType = "categorie" | "etat";
 
 interface ComboboxProps {
   type: ComboboxType;
-  status?: Status;
+  status?: Status | string;
   noOptionText?: string;
-  onSelectedStatusChange?: (status: Status | null) => void;
+  onSelectedStatusChange?: (status: string) => void;
   disabled?: boolean;
   allowCreate?: boolean;
 }
@@ -41,16 +41,16 @@ export function Combobox({
 }: ComboboxProps) {
   const [open, setOpen] = useState(false);
   const isDesktop = useDesktop();
-  const [selectedStatus, setSelectedStatus] = useState<Status | null>(status || null);
-
-  useEffect(() => {
-    setSelectedStatus(status || null);
-  }, [status]);
+  const [selectedStatus, setSelectedStatus] = useState<Status | null>(null);
 
   const { data: categories = [] } = useCategories();
   const { data: etats = [] } = useEtats();
   
   const options = type === "categorie" ? categories : etats;
+
+  useEffect(() => {
+    setSelectedStatus(options.find((option) => option.id.toString() === status) || null);
+  }, [status, options]);
 
   if (isDesktop) {
     return (
@@ -111,7 +111,7 @@ interface StatusListProps {
   setSelectedStatus: (status: Status | null) => void;
   options: Status[];
   noOptionText: string;
-  onSelectedStatusChange?: (status: Status | null) => void;
+  onSelectedStatusChange?: (status: string) => void;
   allowCreate?: boolean;
 }
 
@@ -128,7 +128,7 @@ function StatusList({
 
   const handleSelect = (status: Status) => {
     setSelectedStatus(status);
-    onSelectedStatusChange?.(status);
+    onSelectedStatusChange?.(status.id.toString());
     setOpen(false);
   };
 

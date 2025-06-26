@@ -54,7 +54,7 @@ export default function ArticleInfo() {
         </div>
       </div>
       <div className="flex flex-col gap-2 flex-shrink-0">
-        <Button onClick={() => setModeChangementPiece(true)}>
+        <Button onClick={() => setModeChangementPiece(true)} disabled={article.piece?.id == null}>
           Changer de pièce
         </Button>
         <Button

@@ -33,9 +33,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useAtom } from "jotai";
 import { pieceSelectedAtom } from "@/lib/atoms";
+import { EtatEnum } from "@/types";
 
 const ModifierSchema = z.object({
-  num_inventaire: z.string().regex(/^\d+$/, { message: "Veuillez renseigner un numéro d'inventaire valide" }),
+  num_inventaire: z.string().regex(/^\d+$/, {
+    message: "Veuillez renseigner un numéro d'inventaire valide",
+  }),
   num_serie: z.string().optional(),
   categorie: z
     .string()
@@ -83,9 +86,7 @@ export default function ModifierArticle() {
           categorie: article.categorie.id.toString() ?? "",
           etat: article.etat.id.toString() ?? "",
           id_piece:
-            article.piece?.id != null
-              ? article.piece.id.toString()
-              : "",
+            article.piece?.id != null ? article.piece.id.toString() : "",
           num_bon_commande: article.num_bon_commande ?? "",
           fournisseur: article.fournisseur ?? "",
           marque: article.marque ?? "",
@@ -121,11 +122,11 @@ export default function ModifierArticle() {
     };
   }, []);
 
-  useEffect(()=>{
-    if(pieceSelected!==""){
+  useEffect(() => {
+    if (pieceSelected !== "") {
       handleSelectPiece(pieceSelected);
     }
-  },[pieceSelected])
+  }, [pieceSelected]);
 
   function handleSelectPiece(pieceId: string) {
     form.setValue("id_piece", pieceId, { shouldValidate: true });
@@ -133,9 +134,7 @@ export default function ModifierArticle() {
   }
 
   if (modeChangementPiece) {
-    return (
-      <ChoisirPiece/>
-    );
+    return <ChoisirPiece />;
   }
 
   return (
@@ -173,9 +172,9 @@ export default function ModifierArticle() {
                   <Combobox
                     type="categorie"
                     disabled={isLoading}
-                    status={article?.categorie}
-                    onSelectedStatusChange={(status) => {
-                      field.onChange(status?.id.toString() || "");
+                    status={form.getValues()?.categorie}
+                    onSelectedStatusChange={(statusId) => {
+                      field.onChange(statusId || "");
                     }}
                     allowCreate={true}
                   />
@@ -195,8 +194,18 @@ export default function ModifierArticle() {
                     content={piece?.nom || "Aucune pièce"}
                     size="small"
                     onClick={() => setModeChangementPiece(true)}
-                    className={cn(piece?.nom ? "" : "text-muted-foreground")}
-                    disabled={isLoading}
+                    className={cn(
+                      piece?.nom ? "" : "text-muted-foreground",
+                      form.formState.errors.id_piece
+                        ? "border-1 border-destructive"
+                        : ""
+                    )}
+                    disabled={
+                      isLoading ||
+                      form.watch("etat") ===
+                        EtatEnum["En attente de destruction"].toString() ||
+                      form.watch("etat") === EtatEnum["Détruit"].toString()
+                    }
                   />
                 </FormControl>
                 <FormMessage />
@@ -213,9 +222,9 @@ export default function ModifierArticle() {
                   <Combobox
                     type="etat"
                     disabled={isLoading}
-                    status={article?.etat}
-                    onSelectedStatusChange={(status) => {
-                      field.onChange(status?.id.toString() || "");
+                    status={form.getValues()?.etat}
+                    onSelectedStatusChange={(statusId) => {
+                      field.onChange(statusId || "");
                     }}
                     noOptionText="Aucun état"
                   />
@@ -244,7 +253,10 @@ export default function ModifierArticle() {
             disabled={isLoading}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Numéro de série <i className="text-muted-foreground">(Optionnel)</i></FormLabel>
+                <FormLabel>
+                  Numéro de série{" "}
+                  <i className="text-muted-foreground">(Optionnel)</i>
+                </FormLabel>
                 <FormControl>
                   <Input placeholder="FUDGZ67328EYGH" {...field} />
                 </FormControl>
