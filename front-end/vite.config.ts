@@ -23,7 +23,6 @@ export default defineConfig({
         theme_color: '#ffffff',
         background_color: '#ffffff',
         display: 'standalone',
-        display_override: ['standalone', 'minimal-ui'],
         start_url: '/',
         icons: [
           {
