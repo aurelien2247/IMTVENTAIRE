@@ -21,7 +21,9 @@ export default function ArticleInfo() {
   }
 
   if (modeChangementPiece) {
-    return <ChoisirPiece />;
+    return (
+      <ChoisirPiece />
+    );
   }
 
   return (

@@ -28,7 +28,7 @@ import { usePiece } from "@/hooks/usePiece";
 import { cn } from "@/lib/utils";
 import { useAtom } from "jotai";
 import { pieceSelectedAtom, searchPiecesOnly } from "@/lib/atoms";
-import { useSearchParams } from "react-router-dom";
+
 
 const AjouterSchema = z.object({
   num_inventaire: z.string().regex(/^\d+$/, {
