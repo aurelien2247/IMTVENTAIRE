@@ -86,7 +86,6 @@ export default class ArticleController {
         'num_serie',
         'num_bon_commande',
         'fournisseur',
-        'code_fournisseur',
         'marque',
         'etat',
       ])
@@ -96,7 +95,6 @@ export default class ArticleController {
         !articleData.num_inventaire ||
         !articleData.categorie ||
         !articleData.id_piece ||
-        !articleData.num_serie ||
         !articleData.num_bon_commande ||
         !articleData.fournisseur ||
         !articleData.marque ||
@@ -119,7 +117,6 @@ export default class ArticleController {
       article.num_serie = articleData.num_serie
       article.num_bon_commande = articleData.num_bon_commande
       article.fournisseur = articleData.fournisseur
-      article.code_fournisseur = articleData.code_fournisseur
       article.marque = articleData.marque
       article.etat = articleData.etat
 
@@ -153,7 +150,6 @@ export default class ArticleController {
           !data.num_inventaire ||
           !data.categorie ||
           !data.id_piece ||
-          !data.num_serie ||
           !data.num_bon_commande ||
           !data.fournisseur ||
           !data.marque ||
@@ -174,7 +170,6 @@ export default class ArticleController {
           num_serie: data.num_serie,
           num_bon_commande: data.num_bon_commande,
           fournisseur: data.fournisseur,
-          code_fournisseur: data.code_fournisseur,
           marque: data.marque,
           etat: data.etat,
         })
@@ -212,7 +207,6 @@ export default class ArticleController {
         'num_serie',
         'num_bon_commande',
         'fournisseur',
-        'code_fournisseur',
         'marque',
         'etat',
       ])

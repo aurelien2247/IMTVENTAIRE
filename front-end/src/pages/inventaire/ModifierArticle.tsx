@@ -37,9 +37,7 @@ const ModifierSchema = z.object({
     message:
       "Veuillez renseigner un numéro d'inventaire valide (5 chiffres minimum)",
   }),
-  num_serie: z
-    .string()
-    .regex(/.+/, { message: "Veuillez renseigner le numéro de série" }),
+  num_serie: z.string().optional(),
   categorie: z
     .string()
     .min(1, { message: "Veuillez sélectionner une catégorie" }),
@@ -51,7 +49,6 @@ const ModifierSchema = z.object({
   fournisseur: z
     .string()
     .regex(/.+/, { message: "Veuillez renseigner le nom du fournisseur" }),
-  code_fournisseur: z.string().optional(),
   marque: z
     .string()
     .regex(/.+/, { message: "Veuillez renseigner une marque valide" }),
@@ -92,7 +89,6 @@ export default function ModifierArticle() {
               : "Aucune pièce",
           num_bon_commande: article.num_bon_commande,
           fournisseur: article.fournisseur,
-          code_fournisseur: article.code_fournisseur?.toString() || "",
           marque: article.marque,
           num_serie: article.num_serie,
         }
@@ -237,7 +233,7 @@ export default function ModifierArticle() {
             disabled={isLoading}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Numéro de série</FormLabel>
+                <FormLabel>Numéro de série <i className="text-muted-foreground">(Optionnel)</i></FormLabel>
                 <FormControl>
                   <Input placeholder="FUDGZ67328EYGH" {...field} />
                 </FormControl>
@@ -254,23 +250,6 @@ export default function ModifierArticle() {
                 <FormLabel>Fournisseur</FormLabel>
                 <FormControl>
                   <Input placeholder="Samas Office" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="code_fournisseur"
-            disabled={isLoading}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Code fournisseur{" "}
-                  <i className="text-muted-foreground">(Optionnel)</i>
-                </FormLabel>
-                <FormControl>
-                  <Input placeholder="8573" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

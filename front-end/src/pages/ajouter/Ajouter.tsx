@@ -38,7 +38,7 @@ const AjouterSchema = z.object({
   }),
   num_serie: z
     .string()
-    .regex(/.+/, { message: "Veuillez renseigner le numéro de série" }),
+    .optional(),
   categorie: z
     .string()
     .regex(/.+/, { message: "Veuillez renseigner la catégorie" }),
@@ -52,7 +52,6 @@ const AjouterSchema = z.object({
   fournisseur: z
     .string()
     .regex(/.+/, { message: "Veuillez renseigner le nom du fournisseur" }),
-  code_fournisseur: z.string().optional(),
   marque: z
     .string()
     .regex(/.+/, { message: "Veuillez renseigner une marque valide" }),
@@ -77,7 +76,6 @@ export default function Ajouter() {
       id_piece: "",
       num_bon_commande: "",
       fournisseur: "",
-      code_fournisseur: "",
       marque: "",
     },
   });
@@ -105,7 +103,6 @@ export default function Ajouter() {
       num_serie: data.num_serie,
       num_bon_commande: data.num_bon_commande,
       fournisseur: data.fournisseur,
-      code_fournisseur: data.code_fournisseur,
       marque: data.marque,
       etat: data.etat,
     };
@@ -268,7 +265,7 @@ export default function Ajouter() {
             name="num_serie"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Numéro de série</FormLabel>
+                <FormLabel>Numéro de série <i className="text-muted-foreground">(Optionnel)</i></FormLabel>
                 <FormControl>
                   <Input placeholder="FUDGZ67328EYGH" {...field} />
                 </FormControl>
@@ -284,21 +281,6 @@ export default function Ajouter() {
                 <FormLabel>Fournisseur</FormLabel>
                 <FormControl>
                   <Input placeholder="Samas Office" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="code_fournisseur"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Code fournisseur <i className="text-muted-foreground">(Optionnel)</i>
-                </FormLabel>
-                <FormControl>
-                  <Input type="number" placeholder="8573" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

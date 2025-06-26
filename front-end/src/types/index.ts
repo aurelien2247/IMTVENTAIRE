@@ -30,12 +30,11 @@ export interface Piece {
 export interface Article {
   num_inventaire: string;
   categorie: Categorie;
-  num_serie: string;
+  num_serie?: string;
   num_bon_commande: string;
   etat: Etat;
   piece: Piece;
   fournisseur: string;
-  code_fournisseur: number;
   marque: string;
   date_creation: string;
   date_modification: string;

@@ -28,7 +28,6 @@ export default function ArticleInfo() {
         etat: article?.etat.id.toString() || "",
         num_bon_commande: article?.num_bon_commande || "",
         fournisseur: article?.fournisseur || "",
-        code_fournisseur: article?.code_fournisseur?.toString() || "",
         marque: article?.marque || "",
       },
     });
