@@ -11,10 +11,13 @@ import { codeScannedAtom, scanModeAtom } from "@/lib/atoms";
 export default function Scanner() {
   const [codeScanned, setCodeScanned] = useAtom(codeScannedAtom);
   const [scanMode] = useAtom(scanModeAtom);
+  const soundPath = new URL('../../assets/sound/scan-article.mp3', import.meta.url).href;
+  const audio = new Audio(soundPath);
 
   const handleCapture = useCallback(
     (result: DetectedBarcode[]) => {
       setCodeScanned(result[0].rawValue);
+      audio.play();      
     },
     [setCodeScanned]
   );
@@ -27,6 +30,7 @@ export default function Scanner() {
         options={{ formats: ["code_128"] }}
         onCapture={handleCapture}
         className="w-full h-full object-cover"
+        
       />
       <ScanRectangle />
       <ScanDrawer>{isPiece ? <PieceInfo /> : <ArticleInfo />}</ScanDrawer>
