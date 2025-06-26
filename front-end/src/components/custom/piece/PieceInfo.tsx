@@ -71,9 +71,15 @@ export default function PieceInfo({ openConfirmScan, setOpenConfirmScan }: Piece
   const handleConfirmScan = async (confirm: boolean) => {
     if (confirm) {
       await saveScan();
-    } else {
-      setCodeScanned(piece?.nom || null);
     }
+    setOpenConfirmScan(false);
+  };
+
+  const handleQuitScan = () => {
+    if (!isPiece) {
+      setCodeScanned(null);
+    }
+    resetArticlesScanned();
     setOpenConfirmScan(false);
   };
 
@@ -105,7 +111,7 @@ export default function PieceInfo({ openConfirmScan, setOpenConfirmScan }: Piece
           <ArticleList articles={piece?.articles} />
         </div>
       )}
-      <ScanConfirmDialog open={openConfirmScan} onConfirm={handleConfirmScan} />
+      <ScanConfirmDialog open={openConfirmScan} onConfirm={handleConfirmScan} onQuit={handleQuitScan} />
       <ScanPieceButton onClick={handleButtonScan} />
     </div>
   );

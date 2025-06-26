@@ -4,11 +4,13 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 interface ScanConfirmDialogProps {
   open: boolean;
   onConfirm: (confirm: boolean) => void;
+  onQuit: () => void;
 }
 
 export default function ScanConfirmDialog({
   open,
   onConfirm,
+  onQuit,
 }: ScanConfirmDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onConfirm}>
@@ -22,7 +24,7 @@ export default function ScanConfirmDialog({
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="secondary" onClick={() => onConfirm(false)}>
+          <Button variant="secondary" onClick={onQuit}>
             Quitter
           </Button>
           <Button onClick={() => onConfirm(true)}>Enregistrer</Button>
