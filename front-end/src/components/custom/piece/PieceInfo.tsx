@@ -43,7 +43,7 @@ export default function PieceInfo({ openConfirmScan, setOpenConfirmScan }: Piece
       if (article) {
         setArticlesScanned((articles) => [...articles, article]);
       }
-      if (codeScanned !== piece?.nom && articlesScanned.length > 0) {
+      if (isPiece && codeScanned !== piece?.nom && articlesScanned.length > 0) {
         setOpenConfirmScan(true);
       }
     }
