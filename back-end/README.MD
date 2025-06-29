@@ -27,12 +27,9 @@ $ npm install
 
 # Lancer les conteneurs
 $ docker-compose up --build
-
-# Lancer l'application
-$ npm run dev
 ```
 
-L'application sera accessible à l'adresse https://localhost:3333 et la base de données PostgreSQL à localhost:5432.
+L'application sera accessible à l'adresse http://localhost:3333 et la base de données PostgreSQL à l'adresse http://localhost:5432.
 
 C'est prêt ! 🚀
 

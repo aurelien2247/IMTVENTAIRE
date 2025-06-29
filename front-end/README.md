@@ -31,6 +31,8 @@ $ npm install
 $ npm run dev
 ```
 
+L'application sera disponible à l'adrese http://localhost:5173
+
 Tadaaam ✨
 
 ## 🕹️ Technologies
